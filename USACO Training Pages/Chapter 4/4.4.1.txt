@@ -1,0 +1,158 @@
+/*
+ID: riya.ar1
+PROG: shuttle
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int M, N;
+char order[30];
+vector<int> moves;
+
+void print() {
+	ffi w<<order[i];
+	w<<e;
+}
+
+void move(char turn) {
+	if (turn == 'W') {
+		For (i, 0, N-1) {
+			if (order[i] == 'W') {
+				if (order[i+1] == ' ') {
+					swap(order[i], order[i+1]);
+					moves.pb(i);
+					return;
+				}
+				if (i != N-2 && order[i+2] == ' ' && order[i+1] != 'W') {
+					swap(order[i], order[i+2]);
+					moves.pb(i);
+					return;
+				}
+			}
+		}
+	}
+	else {
+		for (int i=N-1; i>=1; i--) {
+			if (order[i] == 'B') {
+				if (order[i-1] == ' ') {
+					swap(order[i], order[i-1]);
+					moves.pb(i);
+					return;
+				}
+				if (i != 1 && order[i-2] == ' ' && order[i-1] != 'B') {
+					swap(order[i], order[i-2]);
+					moves.pb(i);
+					return;
+				}
+			}
+		}
+	}
+}
+
+bool can(char turn) {
+	if (turn == 'W') {
+		For (i, 0, N-1) {
+			if (order[i] == 'W') {
+				if (order[i+1] == ' ') {
+					swap(order[i], order[i+1]);
+					moves.pb(i);
+					return true;
+				}
+				if (i != N-2 && order[i+2] == ' ' && order[i+1] != 'W') {
+					swap(order[i], order[i+2]);
+					moves.pb(i);
+					return true;
+				}
+			}
+		}
+	}
+	else {
+		for (int i=N-1; i>=1; i--) {
+			if (order[i] == 'B') {
+				if (order[i-1] == ' ') {
+					swap(order[i], order[i-1]);
+					moves.pb(i);
+					return true;
+				}
+				if (i != 1 && order[i-2] == ' ' && order[i-1] != 'B') {
+					swap(order[i], order[i-2]);
+					moves.pb(i);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
+
+
+int main() {
+	ifstream cin ("shuttle.in");
+	ofstream cout ("shuttle.out");
+	
+	cin >> M;
+	N = 2*M + 1;
+	ffj order[j] = 'W';
+	order[M] = ' ';
+	For (j, M+1, N) order[j] = 'B';
+	//print();
+	
+	char turn = 'W';
+	For (num, 1, M+1) {
+		For (i, 0, num) {
+			move(turn);
+		}
+		
+		//print();
+		if (turn == 'W') turn = 'B';
+		else turn = 'W';
+	}
+	
+	while (true) {
+		while (can(turn)) {}
+		if (turn == 'W') turn = 'B';
+		else turn = 'W';
+		
+		bool ex = true;
+		ffj if (order[j] != 'B') ex = false;
+		For (j, M+1, N) if (order[j] != 'W') ex = false;
+		
+		
+		if (ex) break;
+	}
+	
+	int line = 0;
+	For (i, 0, moves.size()) {
+		if (line == 19) {
+			w<< moves[i]+1 << e;
+			line = 0;
+		}
+		else {
+			if (i == moves.size()-1) {
+				w<< moves[i] + 1;
+			}
+			else {
+				w<< moves[i] + 1<< " ";
+				line++;
+			}
+		}
+	}
+	if (line != 0) w<<e;
+	
+	
+	
+	return 0;
+}

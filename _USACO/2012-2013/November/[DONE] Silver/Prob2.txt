@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+ll N, A, B;
+char grid[30][30];
+bool visited[30][30];
+priority_queue< pair<ll, pair<ll, ll> > > next1; //(moves, (x, y) )
+ll out = 0;
+
+int main() {
+	//freopen ("test.in","r",stdin);
+	ifstream cin ("distant.in");
+	ofstream cout ("distant.out");
+	
+	cin >> N >> A >> B;
+	ffa {
+		cin >> grid[i][j];
+	}
+	
+	ffa {
+		For (c, 0, N) For (d, 0, N) visited[c][d] = false;
+		next1.push(mp(0, mp(i, j)));
+		while (!next1.empty()) {
+			ll moves = next1.top().a;
+			ll x = next1.top().b.a;
+			ll y = next1.top().b.b;
+			next1.pop();
+			if (!visited[x][y]) {
+				//w<< x s y<<e;
+				visited[x][y] = true;
+				out = max(out, -moves);
+				
+				if (x > 0) {
+					if (grid[x][y] == grid[x-1][y]) {
+						next1.push(mp(moves-A, mp(x-1, y)));
+					}
+					else {
+						next1.push(mp(moves-B, mp(x-1, y)));
+					}
+				}
+				if (x < N-1) {
+					if (grid[x][y] == grid[x+1][y]) {
+						next1.push(mp(moves-A, mp(x+1, y)));
+					}
+					else {
+						next1.push(mp(moves-B, mp(x+1, y)));
+					}
+				}
+				if (y > 0) {
+					if (grid[x][y] == grid[x][y-1]) {
+						next1.push(mp(moves-A, mp(x, y-1)));
+					}
+					else {
+						next1.push(mp(moves-B, mp(x, y-1)));
+					}
+				}
+				if (y < N-1) {
+					if (grid[x][y] == grid[x][y+1]) {
+						next1.push(mp(moves-A, mp(x, y+1)));
+					}
+					else {
+						next1.push(mp(moves-B, mp(x, y+1)));
+					}
+				}
+			}
+		}
+		while (!next1.empty()) next1.pop();
+	}
+	
+	w << out << e;
+	
+	
+	return 0;
+}
+

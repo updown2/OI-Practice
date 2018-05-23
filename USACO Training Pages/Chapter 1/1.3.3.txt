@@ -1,0 +1,111 @@
+/*
+ID: riya.ar1
+PROG: crypt1
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("crypt1.out");
+    ifstream fin ("crypt1.in");
+
+    //Declair Variables and Read Input
+    int N;
+    fin >> N;  //CHANGE
+    int nums[N];
+    int values[5];
+    for (int i=0; i<5; i++) { values[i] = 0; }
+    for (int i=0; i < N; i++) {
+    	fin >> nums[i];  //CHANGE
+    }
+    int out = 0;
+    int num1, num2, num3, num4, num5;
+    bool add;
+
+    //Algo
+    for (int i=0; i< pow(N, 5); i++) {
+    	//Loop through each number
+    	//cout << values[0] << values[1] << values[2] << values[3] << values[4] << endl;
+
+    	num1 = 0; num2 = 0; num3 = 0; num4 = 0; num5 = 0;
+    	for (int a=0; a<3; a++) {
+    		num1 = num1*10;
+    		num1 += nums[values[a]];
+    	}
+	    for (int a=3; a<5; a++) {
+	    	num2 = num2*10;
+    		num2 += nums[values[a]];
+	    }
+		num3 = num1*nums[values[4]]; num4 = num1*nums[values[3]]; num5 = num1*num2;
+		std::string str3 = std::to_string(num3); std::string str4 = std::to_string(num4); std::string str5 = std::to_string(num5);
+		add = true;
+		if (str3.length() == 3 && str4.length() == 3) {
+    		for (int f=0; f < str3.length(); f++) {
+    			bool small = false;
+    			for (int g=0; g < N; g++) {
+    		  		std::string check = std::to_string(nums[g]);
+    				string check2(1, str3[f]);
+    				if (check2 == check) {
+    					small = true;
+    				}
+    			}
+    			
+    		    if (small == false) {
+    			    add = false;
+    		    }
+            }
+    		for (int f=0; f < str4.length(); f++) {
+    			bool small = false;
+    			for (int g=0; g < N; g++) {
+    			    std::string check = std::to_string(nums[g]);
+    		    	string check2(1, str4[f]);
+    		    	if (check2 == check) {
+    				    small = true;
+    				}
+    		    }
+    		    
+    			if (small == false) {
+    		    	add = false;
+    			}
+            }
+    		for (int f=0; f < str5.length(); f++) {
+    			bool small = false;
+    		    for (int g=0; g < N; g++) {
+    				std::string check = std::to_string(nums[g]);
+    		    	string check2(1, str5[f]);
+    				if (check2 == check) {
+    		    		small = true;
+    				}
+    			}
+    			
+    			if (small == false) {
+    		    	add = false;
+    			}
+            }
+    		if (add == true) {
+    			out += 1;
+    			//cout << num1 << " " << num2 << endl;
+    	    }
+		}
+	    
+	    //Inc. values
+	    for (int a=4; a >= 0; a--) {
+	    	if (values[a] == N-1) {
+	    	    values[a] = 0;
+	    	}
+	    	else {
+	    		values[a] ++;
+	    		break;
+	    	}
+	    }
+    }
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

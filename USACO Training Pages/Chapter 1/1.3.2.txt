@@ -1,0 +1,61 @@
+/*
+ID: riya.ar1
+PROG: barn1
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("barn1.out");
+    ifstream fin ("barn1.in");
+    
+    //Declair Variables and Read Input
+    int max_boards, S, C;
+    fin >> max_boards >> S >> C;  //CHANGE
+    int stalls[C]; int blocked[S+1];
+    for (int i=0; i < S+1; i++) {
+    	blocked[i] = 1;
+    }
+    for (int i=0; i < C; i++) {
+    	fin >> stalls[i];
+    }
+    int covered = S; int boards = 1;
+    int max, start, end;
+    
+    //Sort
+    for(register int i = 0; i < C - 1; i++) {
+	    for(register int j = i + 1; j < C; j++) {
+	        if(stalls[j] < stalls[i]) {
+	            swap(stalls[i], stalls[j]);
+	        }
+	    }
+	}
+    
+    //Algo
+    while (boards < max_boards) { 
+    	max = 1;
+    	for (int i=1; i < C; i++) {
+    		if ((blocked[stalls[i]-1] == 1) && (stalls[i]-stalls[i-1] > max)) {
+    			//cout << i << " " << stalls[i] << " " << stalls[i-1] << endl;
+    			max = stalls[i] - stalls[i-1];
+    			start = stalls[i-1];
+    			end = stalls[i];
+    		}
+    	}
+    	max -= 1;
+    	for (int i=start+1; i < end; i++) {
+    		blocked[i] = 0;
+    	}
+    	covered -= max;
+    	boards ++;
+    	//cout << max;
+    }
+    
+    //Output Answer
+    fout << covered-((stalls[0]-1) + (S - stalls[C-1]))<< endl;  //CHANGE
+    return 0;
+}

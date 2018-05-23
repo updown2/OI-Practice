@@ -1,0 +1,55 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("angry.out");
+    ifstream fin ("angry.in");
+
+    //Declare Variables and Read Input
+    int N, K;
+	int bales[50000];
+    fin >> N >> K;
+	for (int i=0; i<N; i++) {
+		fin >> bales[i];
+	}
+	
+	sort(bales, bales+N);
+	
+	for (int i=0; i<N; i++) {
+		cout << i <<" " << bales[i] <<endl;
+	}
+	cout << endl;
+	int i;
+	int max_ = ceil(bales[N-1]-bales[0])/(K*2);
+	cout << K << " " << max_ << endl;
+	for (i=0; i<N; i++) {
+		int b=0;
+		int reach;
+		for (int j=0; j<K; j++) {
+			reach = min(bales[b] + i*2, bales[N-1]);
+			cout << "Radius: " << i << ", b: " << b << ", reach: " << reach << endl;
+			for (b=b; b<N; b++) {
+				if (bales[b] >= reach) {
+					if (bales[b] == reach && j != K-1) {
+						b++;
+					}
+					break;
+				}
+			}
+		}
+		b = min(b, N-1);
+		cout << "Check: " << i << ", bales[b]: " << bales[b] << ", b: " << reach << endl;
+		if (bales[b] >= bales[N-1]) {
+			break;
+		}
+	}
+
+    //Output Answer
+    fout << i << endl;  //CHANGE
+    return 0;
+}

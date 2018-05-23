@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define For(i, a, b) for (int i=a; i<b; i++)
+#define ffi For (i, 0, N)
+#define ffj For (j, 0, N)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+#define s <<" "<<
+
+const int MAXN = 100000, MOD = 1000000007;
+long long N, loc[MAXN], low[MAXN], high[MAXN], save[MAXN], out, len[MAXN+1];
+
+
+int cnt(int x) {
+	if (x <= 0) return 0;
+	return len[x];
+}
+
+int query(int ind, int sm, int bi) {
+//w<< "DAASDA" s ind s sm s bi<<e;
+	if (bi > sm) {
+		int ret = len[bi-sm];
+		if (ind == 0) return ret;
+		
+		if (save[ind-1] != 0) {
+			//Case 1 and 5
+			if (low[ind-1] >= bi || high[ind-1] <= sm) {}
+			//Case 3
+			else if (low[ind-1] >= sm && high[ind-1] <= bi) ret = (ret + save[ind-1]) % MOD;
+			//Case 2
+			else if (sm < high[ind-1]) ret = (ret + query(ind-1, low[ind-1], bi))%MOD;
+			//Case 4
+			else ret = ((ret + save[ind-1])%MOD - query(ind-1, low[ind-1], sm)+MOD)%MOD;
+			
+		}
+		//w<< ind s sm s bi s ret<<e;
+		return ret;
+	}
+	
+	else return 0;
+}
+
+int main () {
+	//ifstream cin("test.in");
+	ifstream cin("sprinklers.in");ofstream cout("sprinklers.out");
+	
+    ios_base::sync_with_stdio(0); cin.tie(0);
+	
+	len[1] = 1;
+	For (i, 2, MAXN+1) len[i] = ((1 + 2*len[i-1]) % MOD - len[i-2]+MOD) % MOD;
+	
+	cin >> N;
+	ffi {
+		int a, b; cin >> a >> b;
+		loc[b] = a;
+	}
+	low[0] = loc[0];
+	For (i, 1, N) low[i] = min(low[i-1], loc[i]);
+	high[N-1] = loc[N-1];
+	for (int i=N-2; i>=0; i--) high[i] = max(high[i+1], loc[i]);
+	N--;
+	ffi high[i] = high[i+1];
+	//ffi w<< low[i] s high[i]<<e;
+	
+	save[0] = cnt(high[0]-low[0]);
+	For (i, 1, N) {
+		if (high[i] > low[i]) {
+			save[i] = len[high[i]-low[i]];
+			if (save[i-1] != 0) {
+				//Case 1 and 5
+				if (low[i-1] >= high[i] || high[i-1] <= low[i]) {}
+				//Case 3
+				else if (low[i-1] >= low[i] && high[i-1] <= high[i]) save[i] = (save[i] + save[i-1])%MOD;
+				//Case 2
+				else if (low[i] < high[i-1]) save[i] = (save[i] + query(i-1, low[i-1], high[i]))%MOD;
+				
+				//Case 4
+				else save[i] = ((save[i] + save[i-1])%MOD - query(i-1, low[i-1], low[i]) + MOD)%MOD;
+				
+			}
+		}
+	}
+	ffi {
+		//w<< i s save[i]<<e;
+		out = (out + save[i])%MOD;
+	}
+	w<< out<<e;
+}

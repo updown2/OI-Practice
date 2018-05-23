@@ -1,0 +1,59 @@
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("trapped.out");
+    ifstream fin ("trapped.in");
+
+    //Declare Variables and Read Input
+    int num;
+    fin >> num;  //CHANGE
+    int bales[num][2];
+    for (int i=0; i<num; i++) {
+    	fin >> bales[i][1] >> bales[i][0];  //CHANGE
+    }
+    int y=0;
+    
+    //Sort Input
+    for(register int i = 0; i < num - 1; i++) {
+	    for(register int j = i + 1; j < num; j++) {
+	        if(bales[j][0] < bales[i][0]) {
+	            swap(bales[i], bales[j]);
+	        }
+	    }
+	}
+	
+	//Algo
+	for (int k=0; k<num - 1; k++) {
+	    int l = k;
+	    int r = k+1;
+	    bool progress = true;
+	    int l2[2];
+	    l2[0] = bales[l][0]; l2[1] = bales[l][1];
+	    int r2[2];
+	    r2[0] = bales[r][0]; r2[1] = bales[r][1];
+	    int stake = r2[0] - l2[0];
+	    while ((l >= 0) && (r <= num - 1) && (progress)) {
+	        l2[0] = bales[l][0]; l2[1] = bales[l][1];
+	        r2[0] = bales[r][0]; r2[1] = bales[r][1];
+	        progress = false;
+	        if (r2[0] - l2[0] > l2[1]) {
+	            l = l - 1;
+	            progress = true;
+	        }
+	        if (r2[0] - l2[0] > r2[1]) {
+	        	r += 1;
+	            progress = true;
+	        }
+	    }
+	    if (progress == false) {
+	    	y += stake;
+	    }
+	
+	    //Output Answer
+	    fout << y << endl;  //CHANGE
+	    return 0;
+	}
+}

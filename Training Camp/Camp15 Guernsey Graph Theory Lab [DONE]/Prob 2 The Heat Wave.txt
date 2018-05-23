@@ -1,0 +1,84 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+#define anc ancestor
+const int MAXN=15000, INF=1000000000000000, MOD=1000000007;
+///500,000,000
+int N, M, Q, anc[MAXN][20], cost[MAXN][20], dep[MAXN];
+bool vis[MAXN];
+priority_queue<pair<int, pair<int, int> > > next1; /// (-cost, (loc, par))
+vector<pair<int, int> > inp[MAXN];
+
+int LCA(int A, int B) {
+	if (dep[A] > dep[B]) swap(A, B);
+	int d = dep[B] - dep[A];
+	For (i, 0, 18) {
+		if (d&(1<<i) ) B = ancestor[B][i];
+	}
+	if (A == B) return A;
+
+	for (int i=17; i>= 0; i--) {
+		if (ancestor[A][i] != ancestor[B][i]) {
+			A = ancestor[A][i];
+			B = ancestor[B][i];
+		}
+	}
+	return anc[A][0];
+}
+
+main() {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> M >> Q;
+    ffj {
+        int a, b, c; cin >> a >> b >> c; a--; b--;
+        inp[a].pb(mp(b, c)), inp[b].pb(mp(a, c));
+    }
+    next1.push(mp(0, mp(0, 0)));
+    dep[0] = -1;
+    while (!next1.empty()) {
+        int c = -next1.top().a, loc = next1.top().b.a, par = next1.top().b.b;
+        next1.pop();
+        if (vis[loc]) continue;
+        vis[loc] = true;
+        anc[loc][0] = par, cost[loc][0] = c;
+        dep[loc] = dep[par]+1;
+        for (pair<int, int> i: inp[loc]) next1.push(mp(-i.b, mp(i.a, loc)));
+    }
+    //ffi {for (auto j: adj[i]) w<< j.a+1 << " "; w<<e;}
+    For (k, 0, 19) ffi {
+        anc[i][k+1] = anc[anc[i][k]][k];
+        cost[i][k+1] = max(cost[i][k], cost[anc[i][k]][k]);
+    }
+
+    //ffi {For (k, 0, 3) w<< anc[i][k]+1 << " "; w<<e;}
+
+    For (q, 0, Q) {
+        int a, b; cin >> a >> b; a--; b--;
+        int c = LCA(a, b);
+        int out = 0;
+        int x = dep[a] - dep[c];
+        For (i, 0, 29) if (x&(1<<i) ) {
+            out = max(out, cost[a][i]);
+            a = ancestor[a][i];
+        }
+        x = dep[b] - dep[c];
+        For (i, 0, 29) if (x&(1<<i) ) {
+            out = max(out, cost[b][i]);
+            b = ancestor[b][i];
+        }
+        w<< out<<e;
+    }
+}

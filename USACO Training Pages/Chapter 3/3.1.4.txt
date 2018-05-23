@@ -1,0 +1,129 @@
+/*
+ID: riya.ar1
+PROG: contact
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, (1<<13))
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//DataStruct
+struct loc {
+	unsigned value;
+	int count;
+};
+
+//Global Variables
+int A, B, N, M;
+string inp = "";
+loc save[1<<13];
+
+void inc(int len, int start) {
+	int curr = 0;
+	For (i, start, start+len) {
+		if (inp[i] == '1') {
+			curr |= (1<<(start+len-i-1));
+		}
+	}
+	
+	
+	curr |= (1<<len);
+	save[curr].count ++;
+	
+}
+bool acompare(loc a, loc b) {
+	if (a.count == b.count) {
+		return a.value < b.value;
+	}
+	return a.count > b.count;
+}
+string print(int j) {
+	bool found = false;
+	string out = "";
+	for (int i=13; i>=0; i--) {
+		if (found) {
+			if (j&(1<<i)) {
+				out += "1";
+			}
+			else out += "0";
+		}
+		if (j&(1<<i)) {
+			if (!found) found = true;
+		}
+	}
+	//For (i, 0, (out.length()/2) ) swap(out[i], out[out.length()-1-i]);
+	return out;
+	//w<<j;
+}
+
+int main() {
+	ifstream cin ("contact.in");
+	ofstream cout ("contact.out");
+	
+	cin >> A >> B >> M;
+	
+	while (cin) {
+		string a;
+		cin >> a;
+		inp += a;
+	}
+	N = inp.length();
+	
+	ffj {
+		save[j].value = j;
+		save[j].count = 0;
+	}
+	
+	For (len, A, B+1) {
+		For (i, 0, N-len+1) {
+			inc(len, i);
+		}
+	}
+	
+	sort (save, save+(1<<13), acompare);
+	
+	//ffj {if (save[j].count > 0) w<< save[j].value s save[j].count<<e;}
+	
+	int tot = 0;
+	int curr = 0;
+	ffj {
+		if (save[j].count == 0) break;
+		if (j != 0 && (save[j].count == save[j-1].count) ) {
+			if (curr == 6) {
+				w<<e;
+				curr=0;
+			}
+			if (curr != 0) w<< " ";
+			
+			w<<print(save[j].value);
+			curr++;
+			
+		}
+		else {
+			if (tot == M) break;
+			if (j != 0) {
+				w << e;
+			}
+			w << save[j].count << e;
+			w<<print(save[j].value);
+			tot++;
+			curr = 1;
+		}
+		
+	}
+	w<<e;
+	
+	
+	return 0;
+}

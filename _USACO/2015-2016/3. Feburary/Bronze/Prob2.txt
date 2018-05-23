@@ -1,0 +1,33 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+//500,000,000 operations
+//Global Variables
+ll N;
+ll cows[1000];
+ll out = 1000000000;
+
+int main() {
+	ifstream cin ("cbarn.in");
+	ofstream cout ("cbarn.out");
+	
+	cin >> N;
+	For (i, 0, N) cin >> cows[i];
+	
+	
+	For (i, 0, N) {
+		ll current = 0;
+		For (k, 0, N) {
+			ll j = k;
+			if (j<i) j+= N;
+			current += abs(i-j)*cows[k];
+		}
+		out = min(out, current);
+		//cout << i << " " << current << endl;
+	}
+	cout << out << endl;
+	
+	return 0;
+}
+

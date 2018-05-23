@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100000, INF=1000000000000000000;
+///500,000,000
+int N, lef[MAXN], rig[MAXN], rloc[MAXN], tree[4*MAXN+1];
+set<int>::iterator it;
+
+int query(int ind, int L, int R, int oL, int oR) {
+    if (oL <= L && R <= oR) return tree[ind];
+    if (oR < L || R < oL) return 0;
+    return max(query(ind*2, L, (L+R)/2, oL, oR), query(ind*2+1, (L+R)/2+1, R, oL, oR));
+}
+void update(int ind, int L, int R, int x, int val) {
+    if (R < x || x < L) return;
+    if (L == R) {tree[ind] = max(tree[ind], val); return;}
+    update(ind*2, L, (L+R)/2, x, val), update(ind*2+1, (L+R)/2+1, R, x, val);
+    tree[ind] = max(tree[ind*2], tree[ind*2+1]);
+}
+
+main() {
+    ifstream cin("nocross.in");
+    ofstream cout("nocross.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi {cin >> lef[i]; lef[i]--;}
+    ffi {cin >> rig[i]; rig[i]--; rloc[rig[i]] = i;}
+    ffi {
+        set<int> loc; ///negative
+        For (j, max((ll)0, lef[i]-4), min(N, lef[i]+5)) loc.insert(-rloc[j]);
+        for (it = loc.begin(); it != loc.end(); it++) {
+            int x = -(*it);
+            update(1, 0, N-1, x, query(1, 0, N-1, 0, x-1)+1);
+        }
+    }
+    w<< query(1, 0, N-1, 0, N-1)<<e;
+}

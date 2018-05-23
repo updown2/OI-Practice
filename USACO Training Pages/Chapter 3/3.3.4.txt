@@ -1,0 +1,93 @@
+/*
+ID: riya.ar1
+PROG: range
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+int sum[250][250];
+
+
+int main() {
+	ifstream cin ("range.in");
+	ofstream cout ("range.out");
+	
+	cin >> N;
+	
+	ffi() {
+		ffj () {
+			char a; cin >> a;
+			if (a == '1') sum[i][j] = 1;
+			else sum[i][j] = 0;
+		}
+	}
+	
+	For (i, 1, N) {
+		sum[0][i] += sum[0][i-1];
+		sum[i][0] += sum[i-1][0];
+	}
+	
+	For (i, 1, N) {
+		For (j, 1, N) {
+			sum[i][j] += sum[i-1][j]+sum[i][j-1]-sum[i-1][j-1];
+		}
+	}
+	
+	/*ffi() {
+		ffj() {
+			w<<sum[i][j] << " ";
+		}
+		w<<e;
+	}*/
+	
+	int num = 1;
+	for (int size=2; num!=0; size++) {
+		num = 0;
+		
+		int a = size-1;
+		For (i, a, N) {
+			For (j, a, N) {
+				int area;
+				if (i == a && j == a) {
+					area = sum[i][j];
+				}
+				else if (i == a) {
+					area = sum[i][j]-sum[i][j-size];
+				}
+				else if (j == a) {
+					area = sum[i][j]-sum[i-size][j];
+				}
+				else {
+					area = sum[i][j]-sum[i-size][j]-sum[i][j-size]+sum[i-size][j-size];
+				}
+				
+				if (area == size*size) {
+					num++;
+				}
+			}
+		}
+		
+		
+		
+		if (num != 0) {
+			w<< size s num<<e;
+		}
+	}
+	
+	
+	return 0;
+}

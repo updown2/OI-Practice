@@ -1,0 +1,104 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//#define int ll
+const int MAXN=100002, INF=100000000;
+///500,000,000
+int N, inp[MAXN], loc[MAXN], on[4*MAXN+1], out, lazy[4*MAXN+1];
+
+
+void push(int index, int L, int R) {
+	on[index] += lazy[index];
+	if (L != R) {
+		lazy[index*2] += lazy[index];
+		lazy[index*2+1] += lazy[index];
+	}
+	lazy[index] = 0;
+}
+
+int q2 (int index, int L, int R, int oL, int oR) {
+	push(index, L, R);
+	if ( (oR < L) || (oL > R) ) return INF;
+	if ( (R <= oR) && (L >= oL) ) return on[index];
+	return min(q2(index*2, L, (L+R)/2, oL, oR), q2(index*2+1, 1+(L+R)/2, R, oL, oR ));
+}
+
+void update_range (int index, int L, int R, int a, int b, int v) {
+    push(index, L, R);
+	if (b<L || a>R) {
+        //w<< "have" s L s R s "=" s on[index]<<e;
+        return;
+	}
+	if (a<=L && R<= b) {
+		lazy[index] += v;
+		push(index, L, R);
+		//w<< "setting" s L s R s "to" s on[index]<<e;
+        //ffi w<< q2(1, 1, N, i, i)<< " "; w<<e;
+		return;
+	}
+    update_range(index*2, L, (L+R)/2, a, b, v), update_range(index*2+1, 1+(L+R)/2, R, a, b, v);
+    on[index] = min(on[index*2], on[index*2+1]);
+    //w<< "setting" s L s R s on[index] s "to min" s on[index*2] s on[index*2+1]<<e;
+}
+void print(int index, int L, int R) {
+    push(index, L, R);
+    w<< L s R s ":" s on[index]<<e;
+    if (L != R) print(index*2, L, (L+R)/2), print(index*2+1, (L+R)/2+1, R);
+}
+
+main() {
+	//ifstream cin("test.in");
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N;
+	if (N == 1) {w<< 0<<e; return 0;}
+	For (i, 1, N+1) cin >> inp[i]; inp[N+1] = N+1;
+	For (i, 0, N+2) loc[inp[i]] = i;
+
+	/// Set up
+	update_range(1, 1, N, loc[1], N, 1);
+	ffi {
+        int lef = min(loc[i], loc[i+1]), rig = max(loc[i], loc[i+1]);
+        update_range(1, 1, N, lef, rig-1, 1);
+	}
+	//print(1, 1, N);
+	//ffi w<< q2(1, 1, N, i, i)<< " "; w<<e;
+	For (i, 1, N) {
+        int a=i, b, c;
+        if (i == 1) b = c = N-1;
+        else c = b = N;
+        while (a != b) {
+            int mid = (a+b+1)/2;
+            if (q2(1, 1, N, mid, c) > 2) b = mid-1;
+            else a = mid;
+        }
+        int ind = a;
+        out = max(out, ind-i+1);
+        //w<< ind s ind-i+1 s ":" s q2(1, 1, N, a, c) <<e;
+        int x = inp[i];
+        /// update
+        if (loc[x-1] > loc[x]) {
+            update_range(1, 1, N, loc[x], loc[x-1]-1, -1);
+            update_range(1, 1, N, loc[x-1], N, 1);
+        }
+        else update_range(1, 1, N, loc[x], N, -1);
+        if (loc[x+1] > loc[x]) {
+            update_range(1, 1, N, loc[x], loc[x+1]-1, -1);
+            update_range(1, 1, N, loc[x+1], N, 1);
+        }
+        else update_range(1, 1, N, loc[x], N, -1);
+        //if (i %1000 == 0) printf("p3\n");
+        //ffi w<< q2(1, 1, N, i, i)<< " "; w<<e;
+	}
+	w<< out<<e;
+}

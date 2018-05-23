@@ -1,0 +1,135 @@
+/*
+ID: riya.ar1
+PROG: rect1
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+int N, M;
+struct Rect {
+	int llx, lly, urx, ury, color;
+	Rect(int a, int b, int c, int d, int co) {
+		llx = a; lly = b; urx = c; ury = d; color = co;
+	}
+};
+vector<Rect> have;
+
+bool intersect(int aa, int bb) {
+	Rect a = have[aa]; Rect b = have[bb];
+	return !(a.urx <= b.llx || a.ury <= b.lly || b.urx <= a.llx || b.ury <= a.lly);
+}
+bool fix(int aa, int bb) {
+	Rect a = have[aa]; Rect b = have[bb];
+	//returns true if a needs to be deleted
+	if (b.llx <= a.llx && b.lly <= a.lly && b.urx >= a.urx && b.ury >= a.ury) return true;
+	//Split into 4
+	if ( (a.llx <= b.llx && a.lly <= b.lly) || (a.urx >= b.urx && a.ury >= b.ury) ) {
+		int bllx = max(b.llx, a.llx);
+		int blly = max(b.lly, a.lly);
+		int burx = min(b.urx, a.urx);
+		int bury = min(b.ury, a.ury);
+		
+		have.pb(Rect(a.llx, blly, bllx, bury, a.color));
+		have.pb(Rect(burx, blly, a.urx, bury, a.color));
+		have.pb(Rect(a.llx, a.lly, a.urx, blly, a.color));
+		have[aa].lly = bury;
+		return false;
+	}
+	//Change coordinate cases && 1 split case(x2)
+	if (b.llx <= a.llx && b.urx >= a.urx) {
+		if (b.lly > a.lly && b.ury < a.ury) {//Split
+			have.pb(Rect(a.llx, b.ury, a.urx, a.ury, a.color));
+			have[aa].ury = b.lly;
+		}
+		else if (b.lly > a.lly) have[aa].ury = b.lly;
+		else have[aa].lly = b.ury;
+		return false;
+	}
+	if (b.lly <= a.lly && b.ury >= a.ury) {
+		if (b.llx > a.llx && b.urx < a.urx) {//Split
+			have.pb(Rect(b.urx, a.lly, a.urx, a.ury, a.color));
+			have[aa].urx = b.llx;
+		}
+		else if (b.llx > a.llx) have[aa].urx = b.llx;
+		else have[aa].llx = b.urx;
+		return false;
+	}
+	//Split into 2
+	if (b.llx <= a.llx) {
+		if (b.lly <= a.lly) {
+			have.pb(Rect(a.llx, b.ury, b.urx, a.ury, a.color));
+			have[aa].llx = b.urx;
+		}
+		else {
+			have.pb(Rect(b.urx, b.lly, a.urx, a.ury, a.color));
+			have[aa].ury = b.lly;
+		}
+		return false;
+	}
+	if (b.lly <= a.lly) {
+		have.pb(Rect(b.llx, b.ury, a.urx, a.ury, a.color));
+		have[aa].urx = b.llx;
+	}
+	else {
+		have.pb(Rect(a.llx, b.lly, b.llx, a.ury, a.color));
+		have[aa].ury = b.lly;
+	}
+	
+	return false;
+}
+
+void update(int ind) {
+	vector<int> del;
+	For (i, 0, ind) {
+		if (!intersect(i, ind)) continue;
+		if (fix(i, ind)) del.pb(i);
+	}
+	for (int i=del.size()-1; i>=0; i--) {
+		have.erase(have.begin()+del[i]);
+	}
+}
+int out[1001];
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("rect1.in");
+	ofstream cout ("rect1.out");
+	int a, b;
+	cin >> a >> b >> N;
+	have.pb(Rect(0, 0, a, b, 1));
+	For (i, 0, 1001) out[i] = 0;
+	ffi {
+		/*M = have.size();
+		w<< M<<e;
+		ffj {
+			w<< have[j].color s ":" s (have[j].urx-have[j].llx)*(have[j].ury-have[j].lly)<<e;
+		}*/
+		
+		int c, d, co; cin >> a >> b >> c >> d >> co;
+		have.pb(Rect(a, b, c, d, co));
+		update(have.size()-1);
+	}
+	M = have.size();
+	//w<<M<<e;
+	ffj {
+		//w<< have[j].color s ":" s (have[j].urx-have[j].llx)*(have[j].ury-have[j].lly)<<e;
+		out[have[j].color] += (have[j].urx-have[j].llx)*(have[j].ury-have[j].lly);
+	}
+	For (i, 0, 1001) {
+		if (out[i] != 0) w<< i s out[i]<<e;
+	}
+	
+	return 0;
+}

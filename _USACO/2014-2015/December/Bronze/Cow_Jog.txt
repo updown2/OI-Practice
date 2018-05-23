@@ -1,0 +1,32 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("cowjog.out");
+    ifstream fin ("cowjog.in");
+
+    //Declair Variables and Read Input
+    int N;
+    fin >> N;  //CHANGE
+    int input[N][2];
+    for (int i=0; i<N; i++) {
+    	fin >> input[i][0] >> input[i][1];
+    }
+	
+	//Algo
+	int out = 1;
+    int current = input[N-1][1];
+    for (int i=N-2; i>=0; i--) {
+    	if (input[i][1] <= current) {
+    		out +=1;
+    		current = input[i][1];
+    	}
+    }
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

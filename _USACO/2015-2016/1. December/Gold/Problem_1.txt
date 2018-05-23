@@ -1,0 +1,102 @@
+#include<iostream>
+#include<list>
+#include<string>
+#include<cstring>
+#include<sstream>
+#include<cctype>
+#include<string.h>
+#include<algorithm>
+#include<stack>
+#include<fstream>
+#include<cstdlib>
+#include<vector>
+#include<map>
+#include<set>
+#include<utility>
+#include<iomanip>
+#include<queue>
+#include<math.h>
+
+using namespace std;
+
+#define For(i, a, b) for(int i=a; i<b; i++)
+typedef long long int ll;
+//100,000,000 operations
+
+int main() {
+	ifstream cin ("cardgame.in");
+	ofstream cout ("cardgame.out");
+	
+	int N;
+	cin >> N;
+	
+	int first[25000];
+	int second[25000];
+	bool l[100000];
+	
+	For (i, 0, 2*N) {
+		l[i] = true;
+	}
+	int a;
+	For (i, 0, N/2) {
+		cin >> a;
+		first[i] = a-1;
+		l[a-1] = false;
+	}
+	For (i, 0, N/2) {
+		cin >> a;
+		second[i] = a-1;
+		l[a-1] = false;
+	}
+	
+	int use[50000];
+	int at = 0;
+	For (i, 0, 2*N) {
+		if (l[i] == true) {
+			use[at] = i;
+			at++;
+		}
+	}
+	
+	int out = 0;
+	sort(first, first+(N/2));
+	sort(second, second+(N/2));
+	/*
+	For (i, 0, N/2) {
+		cout << first[i] << " ";
+	}
+	cout << endl;
+	For (i, 0, N/2) {
+		cout << second[i] << " ";
+	}
+	cout << endl;
+	For (i, 0, N) {
+		cout << use[i] << " ";
+	}
+	cout << endl << endl;*/
+	
+	
+	at = N-1;
+	for (int i=(N/2)-1; i>=0; i--) {
+		//cout << at << " " << use[at] << ", i: " << i << " " << first[i] << endl;
+		if (use[at] > first[i]) {
+			out ++;
+			at--;
+		}
+	}
+	//cout << out << endl << endl;
+	
+	at = 0;
+	for (int i=0; i<(N/2); i++) {
+		//cout << at << " " << use[at] << ", i: " << i << " " << second[i] << endl;
+		if (use[at] < second[i]) {
+			out ++;
+			at++;
+		}
+	}
+	
+	
+	cout << out << endl;
+	
+	return 0;
+}

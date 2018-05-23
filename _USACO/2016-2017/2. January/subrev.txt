@@ -1,0 +1,55 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//#define int ll
+const int MAXN=51;//, INF=1000000000000000000;
+///500,000,000
+int N, a[MAXN], dp[MAXN][MAXN][MAXN][MAXN];
+
+int sm(int ind1, int ind2) {return min(a[ind1], a[ind2]);}
+int bi(int ind1, int ind2) {return max(a[ind1], a[ind2]);}
+
+bool rg(int ind, int k, int m) {return k <= a[ind] && a[ind] <= m;}
+
+int get(int i, int j, int k, int m) {
+    if (dp[i][j][k][m] != -1) return dp[i][j][k][m];
+    if (k > m) return 0;
+    else if (i == j && a[i] >= k && a[i] <= m) dp[i][j][k][m] = 1;
+    else if (i == j) return 0;
+    else if (j == i+1 && k<=sm(i, j) && bi(i, j) <= m) dp[i][j][k][m] = 2;
+    else if (j == i+1 && ( (k<=a[i]&&a[i]<=m) || (k<=a[j]&&a[j]<=m) ))dp[i][j][k][m] = 1;
+    else if (j == i+1) return 0;
+    if (dp[i][j][k][m] != -1) return dp[i][j][k][m];
+
+    int ret = max(get(i+1, j, k, m), get(i, j-1, k, m));
+    if (rg(i, k, m)) ret = max(ret, 1+get(i+1, j, a[i], m));
+    if (rg(j, k, m)) ret = max(ret, 1+get(i, j-1, k, a[j]));
+    if (rg(j, k, m)) ret = max(ret, 1+get(i+1, j-1, a[j], m));
+    if (rg(i, k, m)) ret = max(ret, 1+get(i+1, j-1, k, a[i]));
+    if (k <= sm(i, j) && bi(i, j) <= m) ret = max(ret, 2+get(i+1, j-1, sm(i, j), bi(i, j)));
+
+    dp[i][j][k][m] = ret;
+    //printf("dp[%d][%d][%d][%d] = %d\n", i+1, j+1, k, m, dp[i][j][k][m]);
+    return dp[i][j][k][m];
+}
+
+
+main() {
+    ifstream cin("subrev.in");
+    ofstream cout("subrev.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N; ffi cin >> a[i];
+    ffa For (k, 0, 51) For (m, 0, 51) dp[i][j][k][m] = -1;
+    w<< get(0, N-1, 1, 50) <<e;
+}

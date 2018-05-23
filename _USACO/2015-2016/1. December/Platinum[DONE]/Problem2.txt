@@ -1,0 +1,100 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 1, 2*N+1)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+ll N;
+
+bool Ehas[100001];
+set<int> have;
+set<int>::iterator it;
+int at = 0;
+
+int nn[50001];
+int forw[50002];
+int backward[50002];
+
+
+int main() {
+	ifstream cin ("cardgame.in");
+	ofstream cout ("cardgame.out");
+	
+	cin >> N;
+	
+	ffj Ehas[j] = false;
+	ffi {
+		int a;
+		cin >> a;
+		nn[i] = a;
+		Ehas[a] = true;
+	}
+	
+	ffj {
+		if (!Ehas[j]) {
+			have.insert(j);
+		}
+	}
+	
+	forw[0] = 0;
+	forw[N+1] = 0;
+	ffi {
+		it = have.upper_bound(nn[i]);
+		if (it != have.end()) {
+			forw[i] = 1+forw[i-1];
+			have.erase(it);
+		}
+		else {
+			forw[i] = forw[i-1];
+		}
+		//w<<forw[i]<<e;
+	}
+	
+	while (!have.empty()) have.erase(have.begin());
+	ffj {
+		if (!Ehas[j]) {
+			have.insert(j);
+		}
+	}
+	
+	backward[0] = 0;
+	backward[N+1] = 0;
+	for (int i=N; i>=1; i--) {
+		it = have.lower_bound(nn[i]);
+		if (it != have.begin()) {
+			it--;
+			backward[i] = 1+backward[i+1];
+			have.erase(it);
+		}
+		else {
+			backward[i] = backward[i+1];
+		}
+		
+	}
+	
+	/*w<<e;
+	ffi {
+		w<<backward[i]<<e;
+
+	}*/
+	
+	int out = 0;
+	For (i, 0, N+1) {
+		out = max(out, forw[i] + backward[i+1]);
+	}
+	
+	w<<out<<e;
+	
+	return 0;
+}
+

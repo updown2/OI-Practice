@@ -1,0 +1,35 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+//500,000,000 operations
+//Global Variables
+int X, Y, M;
+bool dp[2000];
+
+int main() {
+	ifstream cin ("pails.in");
+	ofstream cout ("pails.out");
+	
+	cin >> X >> Y >> M;
+	For (i, 0, 2000) dp[i] = false;
+	dp[0] = true;
+	
+	For (i, 0, M) {
+		if (dp[i]) {
+			dp[i+X] = true;
+			dp[i+Y] = true;
+		}
+	}
+	ll out;
+	for (int i=M; i>=0; i--) {
+		if (dp[i]) {
+			out = i;
+			break;
+		}
+	}
+	cout << out << endl;
+	
+	return 0;
+}
+

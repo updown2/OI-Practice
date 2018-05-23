@@ -1,0 +1,103 @@
+/*
+ID: riya.ar1
+PROG: ratios
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, 3)
+#define ffj For(j, 0, 3)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int g[3];
+int inp[3][3];
+int mul = 100000000;
+int x = 100000000;
+int y = 100000000;
+int z = 100000000;
+
+void update(int a, int b, int c) {
+	if (a == 0 && b == 0 && c == 0) {
+		if (g[0] == 0 && g[1] == 0 && g[2] == 0) {
+			x = 0;
+			y = 0;
+			z = 0;
+			mul = 0;
+		}
+		return;
+	}
+	if (g[0] == 0 && g[1] == 0 && g[2] == 0) return;
+	
+	int cx = inp[0][0]*a + inp[1][0]*b + inp[2][0]*c;
+	int cy = inp[0][1]*a + inp[1][1]*b + inp[2][1]*c;
+	int cz = inp[0][2]*a + inp[1][2]*b + inp[2][2]*c;
+	
+	if (g[0] == 0 && cx != 0) return;
+	if (g[1] == 0 && cy != 0) return;
+	if (g[2] == 0 && cz != 0) return;
+	
+	
+	else if ( (g[0] != 0 && cx % g[0] != 0) || (g[1] != 0 && cy % g[1] != 0) || (g[2] != 0 && cz % g[2] != 0) )  return;
+	
+	int div = g[0];
+	int top = cx;
+	if (g[0] == 0) {
+		div = g[1];
+		top = cy;
+		if (g[1] == 0) {
+			div = g[2];
+			top = cz;
+		}
+	}
+	
+	int tim = top/div;
+	if ( (tim*g[0] != cx) || (tim*g[1] != cy) || (tim*g[2] != cz) ) return;
+	
+	if (cx + cy + cz >= x+y+z) return;
+	
+	x = a;
+	y = b;
+	z = c;
+	mul = tim;
+}
+
+
+int main() {
+	ifstream cin ("ratios.in");
+	ofstream cout ("ratios.out");
+	
+	ffi cin >> g[i];
+	ffi ffj cin >> inp[i][j];
+	
+	For (a, 0, 100) {  //# of the first mixture
+		For (b, 0, 100) {
+			For (c, 0, 100) {
+				update(a, b, c);
+			}
+		}
+	}
+	
+	if (x+y+z == 300000000) {
+		w<<"NONE"<<e;
+		return 0;
+	}
+	
+	w<< x s y s z s mul<<e;
+	
+	return 0;
+}
+
+
+
+
+
+

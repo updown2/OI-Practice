@@ -1,0 +1,91 @@
+/*
+ID: riya.ar1
+PROG: tour
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, M;
+map<string, int> link;
+bool adj[100][100];
+int dp[100][100]; //dp[start][end after reaching east] = max cities
+
+int main() {
+	//freopen ("test.in","r",stdin);
+	ifstream cin ("tour.in");
+	ofstream cout ("tour.out");
+
+	cin >> N >> M;
+	
+	ffi {
+		string a; cin >> a;
+		link[a] = i;
+	}
+	
+
+	ffj {
+		string a, b; cin >> a >> b;
+		int c, d;
+		c = link[a]; d = link[b];
+		adj[c][d] = true;
+		adj[d][c] = true;
+		//w<< c s d<<e;
+	}
+	
+	ffi {
+		For (j, 0, N) {
+			dp[i][j] = 0;
+		}
+	}
+	dp[0][0] = 1;
+	For (i, 1, N) {
+		if (adj[0][i]) {
+			dp[i][0] = dp[0][i] = 2;
+			For (j, 1, N) {
+				if (j != i && adj[j][0]) {
+					dp[i][j] = dp[j][i] = 3;
+				}
+			}
+		}
+	}
+
+	ffi For (j, 0, N){
+		//if (dp[i][j] != 0) w<< i s j s ":" s dp[i][j]<<e;
+		if (i != j && dp[i][j] > 0) {
+			For (k, min(max(i, j)+1, N-1), N) {
+				if (adj[i][k]) {
+					 dp[k][j] = max(dp[k][j], dp[i][j]+1);
+				}
+				if (adj[j][k]) {
+					dp[i][k] = max(dp[i][k], dp[i][j]+1);
+				}
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	
+	if (dp[N-1][N-1] == 0) dp[N-1][N-1] = 2;
+	w<< dp[N-1][N-1] - 1<<e;
+	
+	
+	return 0;
+}
+

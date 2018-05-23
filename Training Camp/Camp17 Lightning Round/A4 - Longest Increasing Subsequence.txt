@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+ll N;
+ll inp[100000];
+ll len[100001]; //len[length] = min biggest element value
+ll out = 0;
+ll big;
+ll small;
+ 
+ll sear(ll val) {
+    ll small = 0;
+    ll big = N;
+    while (small != big) {
+        ll mid = (small+big+1)/2;
+        if (len[mid] < val) small = mid;
+        else big = mid-1;
+    }
+    return small+1;
+}
+ 
+ 
+int main() {
+	//ifstream cin ("test.in");
+ 
+	cin >> N;
+	cin >> inp[0];
+	big = small = inp[0];
+	For (i, 1, N) {
+        cin >> inp[i];
+        big = max(big, inp[i]);
+        small = min(small, inp[i]);
+    }
+    For (i, 0, N+1) len[i] = big+1;
+    len[0] = small-1;
+ 
+	ffi {
+	//For (j, 0, N) w<< len[j]<< " "; w<<e;
+		ll use = sear(inp[i]);
+		out = max(out, use);
+		len[use] = min(len[use], inp[i]);
+	}
+	w<<out<<e;
+	return 0;
+}

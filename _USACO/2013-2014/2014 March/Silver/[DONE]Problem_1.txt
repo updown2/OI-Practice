@@ -1,0 +1,66 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+ll N, C;
+ll cost[2000][2000];
+ll inp[2000][2];
+ll out = 0;
+bool visited[2000];
+priority_queue<pair<ll, ll> > next1;
+
+int main() {
+	ifstream cin ("irrigation.in");
+	ofstream cout ("irrigation.out");
+	
+	cin>> N >> C;
+	C*=-1;
+	
+	ffi visited[i] = false;
+	ffi {
+		cin >> inp[i][0] >> inp[i][1];
+	}
+	ffi {
+		ffj {
+			cost[i][j] = (inp[i][0]-inp[j][0])*(inp[i][0]-inp[j][0])+(inp[i][1]-inp[j][1])*(inp[i][1]-inp[j][1]);
+			cost[i][j] *= -1;
+			//w<<cost[i][j] << " ";
+		}
+		//w<<e;
+	}
+	
+	
+	next1.push(mp(0, 0) );
+	while (!next1.empty()) {
+		ll pay = next1.top().a;
+		ll at = next1.top().b;
+		next1.pop();
+		if (!visited[at]) {
+			visited[at] = true;
+			out += pay;
+			
+			ffi {
+				if (!visited[i] && cost[at][i]<=C) {
+					next1.push(mp(cost[at][i], i));
+				}
+			}
+		}
+	}
+	ffi if (!visited[i]) out = 1;
+	w<< out*(-1) <<e;
+	
+	return 0;
+}
+

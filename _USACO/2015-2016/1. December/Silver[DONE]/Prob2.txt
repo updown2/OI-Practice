@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+//500,000,000 operations
+
+//Global Variables
+int N;
+bool not_bessie[100000];
+vector<int> bes;
+vector<int> opp;
+
+int main() {
+	ifstream cin ("highcard.in");
+	ofstream cout ("highcard.out");
+	
+	cin >> N;
+	ffi {not_bessie[2*i]=false;not_bessie[2*i+1]=false;}
+	ffi {
+		int a;
+		cin >> a;
+		a--;
+		not_bessie[a] = true;
+	}
+	For (i, 0, 2*N) {
+		if (!not_bessie[i]) bes.pb(i);
+		else opp.pb(i);
+	}
+	
+	int out = 0;
+	int at = 0;
+	ffi {
+		
+		while (at < N && bes[at] < opp[i]) at++;
+		if (at == N) break;
+		out++;
+		at++;
+	}
+	w<<out<<e;
+	return 0;
+}
+

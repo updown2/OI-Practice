@@ -1,0 +1,85 @@
+/*
+ID: riya.ar1
+PROG: zerosum
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w fout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+int N;
+//" ", "+", "-"
+ofstream fout ("zerosum.out");
+void print(string a) {
+	
+	For (i, 0, N-1) {
+		w<<(i+1) << a[i];
+	}
+	w<< N<<e;
+}
+
+
+void check(string a) {
+	int sum = 0;
+	int t = 1;
+	int curr = 1;
+	For (i, 0, N-1) {
+		int num = i+2;
+		if (a[i] == ' ') {
+			curr *= 10;
+			curr += num;
+		}
+		else {
+			sum += curr*t;
+			curr = 0;
+			if (a[i] == '+') {
+				t = 1;
+				curr = num;
+			}
+			else {
+				t = -1;
+				curr = num;
+			}
+		}
+	}
+	sum += curr*t;
+	if (sum == 0) {
+		print(a);
+	}
+}
+
+void make(string a) {
+	if (a.length() == N-1) {
+		check(a);
+		return;
+	}
+	string b = a+ " ";
+	make(b);
+	b = a+ "+";
+	make(b);
+	b = a+ "-";
+	make(b);
+}
+
+int main() {
+	ifstream cin ("zerosum.in");
+	
+	
+	cin >> N;
+	make("");
+	
+	
+	return 0;
+}

@@ -1,0 +1,143 @@
+/*
+ID: riya.ar1
+PROG: frameup
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define p prllf
+#define r scanf
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, M;
+int T = 26;
+int grid[30][30];
+int other[30][30];
+int high[26], low[26], rig[26], lef[26];
+set<char> letters;
+
+bool see(int at) {
+	int sr = high[at]; int sc = lef[at];
+	For (i, lef[at], rig[at]+1) {
+		if (other[high[at]][i] != at && other[high[at]][i] != -1) return false;
+		other[high[at]][i] = -1;
+		
+		if (other[low[at]][i] != at && other[low[at]][i] != -1) return false;
+		other[low[at]][i] = -1;
+	}
+	For (i, high[at], low[at]+1) {
+		if (other[i][lef[at]] != at &&other[i][lef[at]] != -1) return false;
+		other[i][lef[at]] = -1;
+		
+		if (other[i][rig[at]] != at &&other[i][rig[at]] != -1) return false;
+		other[i][rig[at]] = -1;
+	}
+	
+	return true;
+}
+void replace(int at) {
+	ffi {
+		ffj {
+			if (grid[i][j] == at) {
+				other[i][j] = at;
+			}
+		}
+	}
+}
+bool have(int at) {
+	ffi ffj if(grid[i][j] == at) return true;
+	return false;
+}
+
+set<string> out;
+set<string>::iterator it;
+void search(string in) {
+	if (in.length() == letters.size()) {
+		string in2;
+		for (int i= in.length()-1; i>=0; i--) {
+			in2 += in[i];
+		}
+		out.insert(in2);
+		return;
+	}
+	For (i, 0, T) {
+		bool good = have(i);
+		For (j, 0, in.length()) {
+			if (in[j] == ('A'+i) ) good = false;
+		}
+		
+		if (good) {
+			if (see(i) ) {
+				search(in+((char)(i+'A')));
+			}
+			replace(i);
+		}
+	}
+	
+}
+
+
+int main() {
+	//freopen ("test.in", "r", stdin);
+	ifstream cin ("frameup.in");
+	ofstream cout ("frameup.out");
+	
+	cin >> N >> M;
+	char a;
+	ffi {
+		ffj {
+			cin >> a;
+			if (a == '.') grid[i][j] = -1;
+			else {
+				grid[i][j] = (a - 'A');
+				letters.insert(a);
+			}
+		}
+	}
+	T++;
+	
+	ffi ffj other[i][j] = grid[i][j];
+	For (i, 0, T) {
+		high[i] = N;
+		low[i] = 0;
+		rig[i] = 0;
+		lef[i] = M;
+	}
+	ffi {
+		ffj {
+			if (grid[i][j] != -1) {
+				int k = grid[i][j];
+				high[k] = min(high[k], i);
+				low[k] = max(low[k], i);
+				rig[k] = max(rig[k], j);
+				lef[k] = min(lef[k], j);
+			}
+		}
+	}
+	
+	
+	//For (i, 0, T) w<< high[i] s low[i] s rig[i] s lef[i] << e;
+	
+	search("");
+	
+	for (it = out.begin(); it!= out.end(); it++) {
+		w<< (*it)<<e;
+	}
+	
+	
+	
+	return 0;
+	
+}
+

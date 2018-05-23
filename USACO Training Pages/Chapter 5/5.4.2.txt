@@ -1,0 +1,141 @@
+/*
+ID: riya.ar1
+PROG: charrec
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+char letters[27][20][20];
+char inp[1201][20];
+int dp[1201];
+string option[1201];
+
+void read_input() {
+	ifstream font ("font.in");
+	//ifstream cin ("test.in");
+	ifstream cin ("charrec.in");
+	font >> N;
+	For (i, 0, 27) For (j, 0, 20) {
+		For (k, 0, 20) font >> letters[i][j][k];
+	}
+	cin >> N;
+	ffi For (j, 0, 20) cin >> inp[i+1][j];
+}
+void solve19(int at) {
+	if (at + 19 + 19 > N && at + 19 != N) return;
+	int wrong = 1000000000;
+	char letter = '0';
+	For (i, 0, 27) {
+		
+		For (skip, 0, 20) {
+			int curr = 0;
+			For (j, 0, skip) For (k, 0, 20) {
+				if (letters[i][j][k] != inp[at+j+1][k]) curr++;
+			}
+			For (j, skip+1, 20) For (k, 0, 20) {
+				if (letters[i][j][k] != inp[at+j][k]) curr++;
+			}
+			//w<< i s skip s curr<<e;
+			if (curr < wrong) {
+				wrong = curr;
+				letter = 'a'+i-1;
+				if (i == 0) letter = ' ';
+			}
+		}
+	}
+	
+	if (wrong > 120) letter = '?';
+	//w<< wrong<<e;
+	if (wrong+dp[at] < dp[at+19]) {
+		dp[at+19] = wrong+dp[at];
+		option[at+19] = option[at]+letter;
+	}
+}
+void solve20(int at) {
+	if (at + 20 + 19 > N && at + 20 != N) return;
+	int wrong = 1000000000;
+	char letter = '0';
+	For (i, 0, 27) {
+		int curr = 0;
+		For (j, 0, 20) For (k, 0, 20) {
+			if (letters[i][j][k] != inp[at+j+1][k]) curr++;
+		}
+		if (curr < wrong) {
+			wrong = curr;
+			letter = 'a'+i-1;
+			if (i == 0) letter = ' ';
+		}
+		//w<< i s curr<<e;
+	}
+	if (wrong > 120) letter = '?';
+	if (wrong+dp[at] < dp[at+20]) {
+		dp[at+20] = wrong+dp[at];
+		option[at+20] = option[at]+letter;
+	}
+}
+void solve21(int at) {
+	if (at + 21 + 19 > N && at + 21 != N) return;
+	int wrong = 1000000000;
+	char letter = '0';
+	For (i, 0, 27) {
+		
+		For (skip, 0, 21) {
+			int curr = 0;
+			For (j, 0, skip) For (k, 0, 20) {
+				if (letters[i][j][k] != inp[at+j+1][k]) curr++;
+			}
+			For (j, skip+1, 21) For (k, 0, 20) {
+				if (letters[i][j-1][k] != inp[at+j+1][k]) curr++;
+			}
+			if (curr < wrong) {
+				wrong = curr;
+				letter = 'a'+i-1;
+				if (i == 0) letter = ' ';
+			}
+		}
+	}
+	//if (at == 0) w<< wrong<<e;
+	if (wrong > 120) letter = '?';
+	if (wrong+dp[at] < dp[at+21]) {
+		dp[at+21] = wrong+dp[at];
+		option[at+21] = option[at]+letter;
+	}
+}
+
+int main() {
+	ofstream cout ("charrec.out");
+	read_input();
+	For (i, 0, N+1) {
+		dp[i] = 1000000000;
+		option[i] = "";
+	}
+	
+	dp[0] = 0;
+	ffi {
+		if (dp[i] != 1000000000) {
+			//w<< i s dp[i] s option[i]<<e;
+			solve19(i);
+			solve20(i);
+			solve21(i);
+		}
+	}
+	
+	w<< option[N]<<e;
+	return 0;
+}
+

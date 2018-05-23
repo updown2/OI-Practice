@@ -1,0 +1,162 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
+#include <cstdio>
+
+using namespace std;
+
+typedef long long ll;
+
+string spots2[50000];
+string spots[50000];
+
+ll max (ll a, ll b) {
+	if (a > b) {
+		return a;
+	}
+	return b;
+}
+ll min (ll a, ll b) {
+	if (a < b) {
+		return a;
+	}
+	return b;
+}
+
+//MergeSort Functions
+void merge(ll*,ll*,ll,ll,ll);
+void mergesort(ll *a, ll*b, ll low, ll high) {
+	ll pivot;
+	if(low<high) {
+	    pivot=(low+high)/2;
+    	mergesort(a,b,low,pivot);
+    	mergesort(a,b,pivot+1,high);
+    	merge(a,b,low,pivot,high);
+	}
+}
+void merge(ll *a, ll *b, ll low, ll pivot, ll high) {
+	ll h,i,j,k;
+	h=low;
+	i=low;
+	j=pivot+1;
+
+	while((h<=pivot)&&(j<=high)) {
+	    if(a[h]<=a[j]) {
+	        b[i]=a[h];
+	        spots[i] = spots2[h];
+    	    h++;
+    	}
+    	else {
+        	b[i]=a[j];
+        	spots[i] = spots2[j];
+        	j++;
+    	}
+    	i++;
+	}
+	if(h>pivot) {
+	    for(k=j; k<=high; k++) {
+	        b[i]=a[k];
+	        spots[i] = spots2[k];
+    	    i++;
+    	}
+	}
+	else {
+	    for(k=h; k<=pivot; k++) {
+	        b[i]=a[k];
+	        spots[i] = spots2[k];
+    	    i++;
+    	}
+	}
+	for(k=low; k<=high; k++) {
+		a[k]=b[k];
+		spots[k] = spots2[k];
+	}
+}
+
+int main() {
+    ofstream fout ("learning.out");
+    ifstream fin ("learning.in");
+
+    //Declair Variables and Read Input
+    ll N, A, B;
+    ll out = 0;
+    fin >> N >> A >> B;  //CHANGE
+    ll weights2[N];
+    ll weights[N];
+    for (ll i=0; i<N; i++) {
+    	fin >> spots2[i] >> weights2[i];  //CHANGE
+    	if (spots2[i].compare("S") == 0 && weights2[i]>=A && weights2[i] <=B) {
+			out += 1;
+			cout << i << " = S: +1" << endl;
+		}
+    }
+    
+    //Sort Input
+	mergesort(weights2,weights,0,N-1);
+	
+	//Algo
+	if (spots[0].compare("S") == 0 && weights[0] > A) {
+		out += weights[0] - A;
+	}
+	cout << "OUT: " << out << endl;
+	for (ll i=0; i<N-(1); i++) {
+		ll use = (weights[i+1] - weights[i])/2 +1;
+		if (weights[i] >= A && weights[i+1] <= B) {
+			cout << "in range: " << i << endl;
+			if (spots[i].compare("S") == 0 && spots[i+1].compare("S") == 0) {
+				out += weights[i+1] - weights[i] -1;
+				cout << "and; adding " << weights[i+1] - weights[i] -1 << endl;
+				cout << "OUT: " << out << endl;
+			}
+			else if (spots[i].compare("S") == 0 || spots[i+1].compare("S") == 0) {
+				out += (weights[i+1] - weights[i])/2;
+				cout << "or; adding " << (weights[i+1] - weights[i])/2 << endl;
+				cout << "OUT: " << out << endl;
+			}
+		}  //DONE
+		else if (weights[i] <=B && weights[i] >=A) {
+			if (spots[i].compare("S") == 0 && spots[i+1].compare("S") == 0) {
+				out += B - weights[i];  //Simplified equation
+				cout << "Case 1:over B; adding " << B - weights[i] << endl;
+				cout << "OUT: " << out << endl;
+			}  //DONE
+			else if (spots[i+1].compare("S") == 0) {
+				out += max(0, B-(weights[i+1]-use));
+				cout << "Case2:over B; adding " << max(0, B-(weights[i+1]-use)) << endl;
+				cout << "OUT: " << out << endl;
+			}
+			else if (spots[i].compare("S") == 0) {
+				out += min(B-weights[i], use);
+				cout << "Case 3:over B; adding " << B - weights[i] << endl;
+				cout << "OUT: " << out << endl;
+			}
+		}
+		
+		else if (weights[i] <=A && weights[i+1] >=A) {
+			if (spots[i].compare("S") == 0 && spots[i+1].compare("S") == 0) {
+				out += weights[i+1] - A;
+				cout << "Case 1:under A; adding " << weights[i+1] - A << endl;
+				cout << "OUT: " << out << endl;
+			}  //DONE
+			else if (spots[i+1].compare("S") == 0) {
+				out += min(weights[i+1]-A, use);  //Simplified equation
+				cout << "Case2:under A; adding " << min(weights[i+1]-A, use) << endl;
+				cout << "OUT: " << out << endl;
+			}
+			else if (spots[i].compare("S") == 0) {
+				out += max(0, use - (A-weights[i]));  //CHANGE
+				cout << "Case 3:under A; adding " << max(0, use - (A-weights[i])) << endl;
+				cout << "OUT: " << out << endl;
+			}
+		}
+	}
+	
+	if (spots[N-1].compare("S") == 0 && weights[N-1] < B) {
+		out += B-weights[N-1];
+	}
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

@@ -1,0 +1,156 @@
+#include<iostream>
+#include<list>
+#include<string>
+#include<cstring>
+#include<sstream>
+#include<cctype>
+#include<string.h>
+#include<algorithm>
+#include<stack>
+#include<fstream>
+#include<cstdlib>
+#include<vector>
+#include<map>
+#include<set>
+#include<utility>
+#include<iomanip>
+#include<queue>
+#include<math.h>
+
+
+using namespace std;
+
+
+typedef long long int ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+//100,000,000 operations
+
+ll N;
+ll locx[50000][2];
+ll locy[50000][2];
+
+ll min_y_left[50000];
+ll max_y_left[50000];
+ll min_y_right[50000];
+ll max_y_right[50000];
+
+ll min_x_left[50000];
+ll max_x_left[50000];
+ll min_x_right[50000];
+ll max_x_right[50000];
+
+
+
+ll split_x(ll pos) {
+	ll max_x = locx[pos][0];
+	ll min_x = locx[0][0];
+	ll min_y = min_y_left[pos];
+	ll max_y = max_y_left[pos];
+	ll out = (max_x - min_x) * (max_y - min_y);
+	
+	max_x = locx[N-1][0];
+	min_x = locx[pos+1][0];
+	min_y = min_y_right[pos+1];
+	max_y = max_y_right[pos+1];
+	
+	out += (max_x - min_x) * (max_y - min_y);
+	
+	return out;
+}
+ll split_y(ll pos) {
+	ll max_y = locy[pos][1];
+	ll min_y = locy[0][1];
+	ll min_x = min_x_left[pos];
+	ll max_x = max_x_left[pos];
+	ll out = (max_x - min_x) * (max_y - min_y);
+	
+	max_y = locy[N-1][1];
+	min_y = locy[pos+1][1];
+	min_x = min_x_right[pos+1];
+	max_x = max_x_right[pos+1];
+	
+	out += (max_x - min_x) * (max_y - min_y);
+	
+	return out;
+}
+
+
+int compare_first(const void * a, const void * b)
+{
+	const ll * ia = (const ll *)a;
+	const ll * ib = (const ll *)b;
+	
+	return ia[0] - ib[0];
+}
+
+int compare_second(const void * a, const void * b)
+{
+	const ll * ia = (const ll *)a;
+	const ll * ib = (const ll *)b;
+	
+	return ia[1] - ib[1];
+}
+
+int main() {
+	ifstream cin ("split.in");
+	ofstream fout ("split.out");
+	
+	//Variables + Input
+	
+	cin >> N;
+	
+	For (i, 0, N) {
+		cin >> locx[i][0] >> locx[i][1];
+		locy[i][0] = locx[i][0];
+		locy[i][1] = locx[i][1];
+	}
+	
+	
+	qsort(locx, N, 2*sizeof(ll), compare_first);
+	qsort(locy, N, 2*sizeof(ll), compare_second);
+	
+	
+	ll out = 0;
+	
+	ll whole = ( locx[N-1][0] - locx[0][0] ) * ( locy[N-1][1] - locy[0][1] );
+	
+	//min_y_left/right pass
+	min_y_left[0] = locx[0][1];
+	max_y_left[0] = locx[0][1];
+	For (i, 1, N) {
+		min_y_left[i] = min( locx[i][1], min_y_left[i-1] );
+		max_y_left[i] = max( locx[i][1], max_y_left[i-1] );
+	}
+	min_y_right[N-1] = locx[N-1][1];
+	max_y_right[N-1] = locx[N-1][1];
+	for (ll i=N-2; i>=0; i--) {
+		min_y_right[i] = min( locx[i][1], min_y_right[i+1] );
+		max_y_right[i] = max( locx[i][1], max_y_right[i+1] );
+	}
+	
+	min_x_left[0] = locy[0][0];
+	max_x_left[0] = locy[0][0];
+	For (i, 1, N) {
+		min_x_left[i] = min( locy[i][0], min_x_left[i-1] );
+		max_x_left[i] = max( locy[i][0], max_x_left[i-1] );
+	}
+	min_x_right[N-1] = locy[N-1][0];
+	max_x_right[N-1] = locy[N-1][0];
+	for (ll i=N-2; i>=0; i--) {
+		min_x_right[i] = min( locy[i][0], min_x_right[i+1] );
+		max_x_right[i] = max( locy[i][0], max_x_right[i+1] );
+	}
+	
+	
+	
+	//For each x split
+	For (i, 0, N-1) {
+		out = max(out, whole - split_x(i) );
+		out = max(out, whole - split_y(i) );
+	}
+	
+	fout << out << endl;
+	
+	return 0;
+}
+

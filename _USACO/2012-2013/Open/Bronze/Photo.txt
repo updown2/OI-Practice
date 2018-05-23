@@ -1,0 +1,45 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+typedef long long ll;
+
+using namespace std;
+int start[16];
+int on[16];
+int N;
+
+bool same() {
+	for (int i=0; i<N; i++) {
+		if (on[i] != start[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int toggle(int i) {
+	if (i == 1) {
+		return 0;
+	}
+	return 1;
+}
+
+int main() {
+    ofstream fout ("photo.out");
+    ifstream fin ("photo.in");
+
+    //Declare Variables and Read Input
+    ll N, I;
+    fin >> N >> I;  //CHANGE
+    /*
+    for (int i=0; i<N; i++) {
+    	fin >> on[i];  //CHANGE
+    	start[i] = on[i];
+    }*/
+    
+    //Algo
+
+    //Output Answer
+    fout << I << endl;  //CHANGE
+    return 0;
+}

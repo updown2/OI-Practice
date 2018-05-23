@@ -1,0 +1,160 @@
+/*
+ID: riya.ar1
+PROG: picture
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+int height[10000];
+int len[10000];
+int num_len[10000];
+int curr_active = 0;
+bool on[5000];
+int rect[5000][4];
+struct Event {
+	int x, y, index;
+	bool start_p;
+	bool active;
+};
+bool acompare(Event a, Event b) { return a.x < b.x; }
+bool bcompare(Event a, Event b) { return a.y < b.y; }
+Event rr[10000];
+Event r_use[10000];
+
+int calc_h() {
+	int at = 0;
+	For (i, 0, 2*N) {
+		if (on [rr[i].index] == true) {
+			r_use[at] = rr[i];
+			//cout << rr[i].y << " " << rr[i].start_p << endl;
+			at++;
+		}
+	}
+	sort(r_use, r_use+at, bcompare);
+	
+	int out = 0;
+	int a = 0;
+	For (i, 0, at-1) {
+		if (a == 0) out++;
+		if (r_use[i].start_p) {
+			a++;
+		}
+		else {
+			a--;
+		}
+	}
+	return out*2;
+}
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("picture.in");
+	ofstream cout ("picture.out");
+	
+	cin >> N;
+	
+	For (i, 0, N) {
+		cin >> rect[i][0] >> rect[i][1] >> rect[i][2] >> rect[i][3];
+		rr[2*i].x = rect[i][0];
+		rr[2*i].y = rect[i][1];
+		rr[2*i].index = i;
+		rr[2*i].start_p = true;
+		
+		rr[2*i+1].x = rect[i][2];
+		rr[2*i+1].y = rect[i][3];
+		rr[2*i+1].index = i;
+		rr[2*i+1].start_p = false;
+	}
+	
+	sort(rr, rr+2*N, acompare);
+	
+	For (i, 0, N) {
+		on[i] = false;
+	}
+	
+	curr_active = 1;
+	on [rr[0].index] = true;
+	For (i, 1, 2*N) {
+		num_len[i] = calc_h();
+		if (curr_active> 0) {
+			len[i] = rr[i].x - rr[i-1].x;
+		}
+		if (rr[i].start_p == false) {
+			on [rr[i].index] = false;
+			curr_active --;
+		}
+		else {
+			on [rr[i].index] = true;
+			curr_active ++;
+		}
+	}
+	
+	int out = 0;
+	For (i, 1, 2*N) {
+		out += len[i]*num_len[i];
+	}
+	
+	//swap x and y
+	For (i, 0, N) {
+		swap(rect[i][0], rect[i][1]);
+		swap(rect[i][2], rect[i][3]);
+		
+		rr[2*i].x = rect[i][0];
+		rr[2*i].y = rect[i][1];
+		rr[2*i].index = i;
+		rr[2*i].start_p = true;
+		
+		rr[2*i+1].x = rect[i][2];
+		rr[2*i+1].y = rect[i][3];
+		rr[2*i+1].index = i;
+		rr[2*i+1].start_p = false;
+	}
+	
+	sort(rr, rr+2*N, acompare);
+	
+	For (i, 0, N) {
+		on[i] = false;
+	}
+	
+	curr_active = 1;
+	on [rr[0].index] = true;
+	For (i, 1, 2*N) {
+		num_len[i] = calc_h();
+		if (curr_active> 0) {
+			len[i] = rr[i].x - rr[i-1].x;
+		}
+		if (rr[i].start_p == false) {
+			on [rr[i].index] = false;
+			curr_active --;
+		}
+		else {
+			on [rr[i].index] = true;
+			curr_active ++;
+		}
+	}
+	
+	For (i, 1, 2*N) {
+		out += len[i]*num_len[i];
+	}
+	
+	cout << out << endl;
+	
+	
+	return 0;
+}
+

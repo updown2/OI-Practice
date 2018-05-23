@@ -1,0 +1,106 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//Global Variables
+int N;
+int out = 0;
+int l = 0;
+int r = 0;
+int map[5][5];
+
+//Useful Functions
+void DFS(int row, int column);
+
+void DFS(int row, int column) {
+	bool go;
+	if (r == l && l >0) {
+		if (r+l > out) {
+			out = r + l;
+		}
+		go = false;
+	}
+	else if (r == 0 && map[row][column] == 1) {
+		l ++;
+		go = true;
+	}
+	else if (map[row][column] == -1) {
+		r ++;
+		go = true;
+	}
+	else {
+		go = false;
+	}
+	
+	if (go) {
+		int save = map[row][column];
+		map[row][column] = 0;
+		//Check up, down, left, right
+		if (row > 0) {
+			cout << "at: " << row << " " << column << ", calling DFS for " << row-1 << " " << column << endl;
+			DFS(row-1, column);
+		}
+		if (row < N-1) {
+			cout << "at: " << row << " " << column << ", calling DFS for " << row+1 << " " << column << endl;
+			DFS(row+1, column);
+		}
+		if (column > 0) {
+			cout << "at: " << row << " " << column << ", calling DFS for " << row << " " << column-1 << endl;
+			DFS(row, column-1);
+		}
+		if (column < N-1) {
+			cout << "at: " << row << " " << column << ", calling DFS for " << row << " " << column+1 << endl;
+			DFS(row, column+1);
+			
+		}/*
+		for (int i=0; i<N; i++) {
+			for (int j=0; j<N; j++) {
+				cout << map[i][j] << " ";
+			}
+			cout << endl;
+		}
+		cout << endl;*/
+		map[row][column] = save;
+		if (map[row][column] == 1) {
+			l --;
+		}
+		else if (map[row][column] == -1) {
+			r --;
+		}
+		
+	}
+	
+}
+
+int main() {
+    ofstream fout ("hshoe.out");
+    ifstream fin ("hshoe.in");
+
+    //Declare Variables and Read Input
+    fin >> N;
+	string in;
+	for (int i=0; i<N; i++) {
+		fin >> in;
+		for (int j=0; j<N; j++) {
+        	string check2(1, in[j]);
+			if (check2 == "(") {
+				map[i][j] = 1;
+			}
+			else {
+				map[i][j] = -1;
+			}
+		}
+	}
+	
+	//Algo
+	if (map[0][0] ==1) {
+		DFS(0, 0);
+	}
+	
+	
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

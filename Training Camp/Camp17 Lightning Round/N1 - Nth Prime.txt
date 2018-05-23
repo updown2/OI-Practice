@@ -1,0 +1,41 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, 10000000)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+ll N;
+bool prime[10000000];
+ 
+void clean(ll a) {
+    for (ll i=a+a; i<10000000; i+= a) prime[i] = false;
+}
+ 
+int main() {
+	//ifstream cin ("test.in");
+    cin >> N;
+    ffi prime[i] = true;
+    prime[0] = prime[1] = false;
+    ffi {
+        if (prime[i]) clean(i);
+    }
+    ll coun = 0;
+    ffi {
+        if (prime[i]) coun++;
+        if (coun == N) {
+            w<< i<<e;
+            return 0;
+        }
+    }
+	return 0;
+}

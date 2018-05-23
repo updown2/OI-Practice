@@ -1,0 +1,100 @@
+/*
+ ID: riya.ar1
+ PROG: preface
+ LANG: C++11
+ */
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+//500,000,000 operations
+
+//Global Variables
+int N;
+map<char, int> nums;
+
+int main() {
+	ifstream cin ("preface.in");
+	ofstream cout ("preface.out");
+	
+	nums['I'] = 0;
+	nums['V'] = 0;
+	nums['X'] = 0;
+	nums['L'] = 0;
+	nums['C'] = 0;
+	nums['D'] = 0;
+	nums['M'] = 0;
+	
+	
+	cin >> N;
+	For (i, 1, N+1) {
+		stringstream ss;
+		ss << i;
+		string a = ss.str();
+		reverse(a.begin(), a.end());
+		//w<<a<<e;
+		For (j, 0, a.length()) {
+			if (j == 0) {
+				if (a[j] == '1') nums['I'] ++;
+				if (a[j] == '2') nums['I'] +=2;
+				if (a[j] == '3') nums['I'] +=3;
+				if (a[j] == '4') {nums['I'] ++; nums['V']++;}
+				if (a[j] == '5') nums['V'] ++;
+				if (a[j] == '6') {nums['I'] ++; nums['V']++;}
+				if (a[j] == '7') {nums['I'] +=2; nums['V']++;}
+				if (a[j] == '8') {nums['I'] +=3; nums['V']++;}
+				if (a[j] == '9') {nums['I'] ++; nums['X']++;}
+			}
+			if (j == 1) {
+				if (a[j] == '1') nums['X'] ++;
+				if (a[j] == '2') nums['X'] +=2;
+				if (a[j] == '3') nums['X'] +=3;
+				if (a[j] == '4') {nums['X'] ++; nums['L']++;}
+				if (a[j] == '5') nums['L'] ++;
+				if (a[j] == '6') {nums['X'] ++; nums['L']++;}
+				if (a[j] == '7') {nums['X'] +=2; nums['L']++;}
+				if (a[j] == '8') {nums['X'] +=3; nums['L']++;}
+				if (a[j] == '9') {nums['X'] ++; nums['C']++;}
+			}
+			if (j == 2) {
+				if (a[j] == '1') nums['C'] ++;
+				if (a[j] == '2') nums['C'] +=2;
+				if (a[j] == '3') nums['C'] +=3;
+				if (a[j] == '4') {nums['C'] ++; nums['D']++;}
+				if (a[j] == '5') nums['D'] ++;
+				if (a[j] == '6') {nums['C'] ++; nums['D']++;}
+				if (a[j] == '7') {nums['C'] +=2; nums['D']++;}
+				if (a[j] == '8') {nums['C'] +=3; nums['D']++;}
+				if (a[j] == '9') {nums['C'] ++; nums['M']++;}
+			}
+			if (j == 3) {
+				if (a[j] == '1') nums['M'] ++;
+				if (a[j] == '2') nums['M'] +=2;
+				if (a[j] == '3') nums['M'] +=3;
+			}
+		}
+	}
+	if (nums['I'] > 0) w<< 'I' s nums['I']<<e;
+	else return 0;
+	if (nums['V'] > 0) w<< 'V' s nums['V']<<e;
+	else return 0;
+	if (nums['X'] > 0) w<< 'X' s nums['X']<<e;
+	else return 0;
+	if (nums['L'] > 0) w<< 'L' s nums['L']<<e;
+	else return 0;
+	if (nums['C'] > 0) w<< 'C' s nums['C']<<e;
+	else return 0;
+	if (nums['D'] > 0) w<< 'D' s nums['D']<<e;
+	else return 0;
+	if (nums['M'] > 0) w<< 'M' s nums['M']<<e;
+	else return 0;
+	
+	return 0;
+}
+

@@ -1,0 +1,132 @@
+/*
+ID: riya.ar1
+PROG: race3
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+bool visited[10001];
+int course[10001];
+vector <int> adj[10001];
+int outA1 = 0;
+set<int> outA2;
+int outB1 = 0;
+set<int> outB2;
+set<int>::iterator it;
+
+void dfs(int at) {
+	if (visited[at]) return;
+	visited[at] = true;
+	For (i, 0, adj[at].size()) {
+		dfs(adj[at][i]);
+	}
+}
+void dfs1(int at) {
+	if (course[at] != -1) return;
+	course[at] = 1;
+	For (i, 0, adj[at].size()) {
+		dfs1(adj[at][i]);
+	}
+}
+void dfs2(int at) {
+	if (course[at] == 3) return;
+	if (course[at] == 1) {course[at] = 3; return;}
+	if (course[at] == 2) return;
+	
+	course[at] = 2;
+	For (i, 0, adj[at].size()) {
+		dfs2(adj[at][i]);
+	}
+}
+
+int main() {
+	ifstream cin ("race3.in");
+	ofstream cout ("race3.out");
+	
+	N = 52;
+	
+	vector<int> use;
+	For (i, 0, N+1) adj[i] = use;
+	
+	string in;
+	getline(cin, in);
+	N = 0;
+	while (in.length() != 2) {
+		int a;
+		stringstream ss(in);
+		ss >> a;
+		while (a != -2) {
+			adj[N].pb(a);
+			ss >> a;
+		}
+		
+		getline(cin, in);
+		N++;
+	}
+	
+	/*w<<N<<e;
+	ffi {
+		w<< i << ": ";
+		For (j, 0, adj[i].size()) {
+			w<< adj[i][j]<< " ";
+		}
+		w<<e;
+	}w<<e;*/
+	
+	//Check needed points
+	For (i, 1, N) {
+		For (j, 0, N+1) visited[j] = false;
+		visited[i] = true;
+		dfs(0);
+		if (!visited[N]) {
+			outA1++;
+			outA2.insert(i);
+		}
+	}
+	w<<outA1;
+	for (it = outA2.begin(); it != outA2.end(); it++) {
+		w << " " << *it;
+	}w<<e;
+	
+	//check cycles from needed points
+	For (i, 1, N) {
+		//w<< i s ": ";
+		For (j, 0, N+1) course[j] = -1;
+		course[i] = 0;
+		dfs1(0);
+		dfs2(i);
+		bool good = true;
+		For (j, 0, N+1) {
+			//w<< course[j] << " ";
+			if (course[j] == 3) {
+				good = false;
+			}
+		}//w<<e;
+		if (good) {
+			outB1++;
+			outB2.insert(i);
+		}
+	}
+	w<<outB1;
+	for (it = outB2.begin(); it != outB2.end(); it++) {
+		w << " " << *it;
+	}w<<e;
+	
+	return 0;
+}
+
+

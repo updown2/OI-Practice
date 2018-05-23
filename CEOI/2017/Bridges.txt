@@ -1,0 +1,198 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 0, K)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100001, INF=1000000000000000000;
+///500,000,000
+int N, H[MAXN], pre[MAXN], dp[MAXN], BIG=1000000;
+bool print = false;
+set<pair<int, int> > hull; ///((start, j)
+set<pair<int, int> > hulladd; ///(slope, ind)
+set<pair<int, int> >::iterator it, it2;
+struct Line { ///Ax+B
+    int A, B, l, r;
+    Line() {A=0; B=0;}
+    Line(int j) {
+        A = -2*H[j];
+        B = dp[j]-pre[j]+H[j]*H[j];
+        //w<< j s ":" s A s B<<e;
+    }
+}val[MAXN];
+
+int getit(int X) {
+    it = hull.lower_bound(mp(X, INF));
+    it--;
+    //w<< "Putting at" s (*it).a.a s (*it).a.b s "," s (*it).b<<e;
+    int j = (*it).b;
+    //w<< "Putting X in line " s j<<e;
+    return val[j].A*X+val[j].B;
+}
+
+bool below(int ind1, int ind2, int X) {///Is ind1 below ind2 at location
+    //w<< "Comparing" s ind1 s ind2 s "at location" s X<<e;//<< val[ind1].A*X+val[ind1].B s val[ind2].A*X+val[ind2].B <<e;
+    return val[ind1].A*X+val[ind1].B <= val[ind2].A*X+val[ind2].B;
+}
+
+void put(int ind) {
+    val[ind] = Line(ind);
+    if (hull.empty()) {
+        hull.insert(mp(0, ind));
+        hulladd.insert(mp(-val[ind].A, ind));
+        ///range: 0-10^6
+        val[ind].l = 0;
+        val[ind].r = BIG;
+        return;
+    }
+
+    hulladd.insert(mp(-val[ind].A, ind));
+    if (print) w<< "inserted" s ind<<e;
+    ///Remove index if necessary
+    bool bad = true;
+    it = hulladd.find(mp(-val[ind].A, ind));
+    it++;
+    if (it != hulladd.end() && below((*it).b, ind, val[(*it).b].l)) {}
+    else bad = false;
+    it = hulladd.find(mp(-val[ind].A, ind));
+    if (it != hulladd.begin()) {
+        it--;
+        if (below((*it).b, ind, val[(*it).b].r)) {}
+        else bad = false;
+    }
+    if (bad) {
+        hulladd.erase(mp(-val[ind].A, ind));
+        return;
+    }
+    if (print) w<< "didn't remove it"<<e;
+
+    ///Update to include index
+    //int lef = INF;
+    //int rig = 0;
+    ///Delete segments completely
+    it = hulladd.find(mp(-val[ind].A, ind));
+    while (it != hulladd.begin()) {
+        it--;
+        if (below(ind, (*it).b, val[(*it).b].l)) {
+            hulladd.erase(it);
+            hull.erase(mp(val[(*it).b].l, (*it).b));
+            //lef = min(lef, (*it).a);
+            if (print) w<< "ERASED1" s (*it).b<<e;
+        }
+        else break;
+        it = hulladd.find(mp(-val[ind].A, ind));
+    }
+
+    it = hulladd.find(mp(-val[ind].A, ind));
+    it++;
+    while (it != hulladd.end()) {
+        if (print) w<< "step 2: testing:" s ind s (*it).b<<e;
+        if (below(ind, (*it).b, val[(*it).b].r)) {
+            hulladd.erase(it);
+            hull.erase(mp(val[(*it).b].l, (*it).b));
+            //rig = max(rig, val[(*it).b].r);
+            if (print) w<< "ERASED2" s (*it).b<<e;
+        }
+        else break;
+        it = hulladd.find(mp(-val[ind].A, ind));
+        it++;
+    }
+    //if (print) {w<< "HULLADD"<<e;for (it2 = hulladd.begin(); it2 != hulladd.end(); it2++) w<< (*it2).a s (*it2).b<<e;w<< "end hulladd"<<e;}
+
+    ///Delete some segments partially
+    it = hulladd.find(mp(-val[ind].A, ind));
+    int X, X2;
+    ///Beginning segment
+    if (it != hulladd.begin()) {
+        it --;
+        int j = (*it).b; int st = val[j].l, en = val[j].r;
+
+        hulladd.erase(it);
+        hull.erase(mp(st, j));
+        X = (int) (ceil((val[j].B-val[ind].B)/(double)(val[ind].A-val[j].A)));
+        if (val[ind].A == val[j].A) {
+            ///Parallel Lines
+            X=en+1;
+        }
+        if (print) w<< st s X s en<<e;
+        if (X > en) {
+            hull.insert(mp(st, j));
+            hulladd.insert(mp(-val[j].A, j));
+            X = en+1;
+        }
+        else if (X < st) X=st;
+        else {
+            hull.insert(mp(st, j));
+            hulladd.insert(mp(-val[j].A, j));
+            val[j].l = st;
+            val[j].r = X-1;
+        }
+    }
+    else X = 0;
+
+
+    it = hulladd.find(mp(-val[ind].A, ind));
+    it++;
+    if (it != hulladd.end()) {
+        int j = (*it).b, st = val[j].l, en = val[j].r;
+        hulladd.erase(it);
+        hull.erase(mp(st, j));
+        X2 = (int) (ceil((val[j].B-val[ind].B)/(double)(val[ind].A-val[j].A)));
+        if (X2 < st) {
+            hull.insert(mp(X2, j));
+            hulladd.insert(mp(-val[j].A, j));
+            X2 = st;
+        }
+        if (X2 > en) X2=en+1;
+        else {
+            hull.insert(mp(X2, j));
+            hulladd.insert(mp(-val[j].A, j));
+            val[j].l = X2;
+            val[j].r = en;
+        }
+    }
+    else X2=BIG+1;
+
+
+    if (print) w<< "X, X2:" s X s X2<<e;
+    if (X != X2) {
+        hull.insert(mp(X, ind));
+        val[ind].l = X;
+        val[ind].r = X2-1;
+    }
+    else hulladd.erase(mp(-val[ind].A, ind));
+}
+
+main() {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi cin >> H[i];
+    ffi {cin >> pre[i]; pre[i] += pre[i-1]; dp[i] = INF;}
+    dp[1] = 0;
+    put(1);
+
+    int var = -1;
+    For (i, 2, N+1) {
+        //if (i == var) print = true;
+        if (i == var+1) print = false;
+        //w<< "GOING" s i<<e;
+        dp[i] = pre[i-1]+H[i]*H[i]+getit(H[i]);
+        put(i);
+        if (i == var) {w<< "added" s i<<e; for (it = hull.begin(); it != hull.end(); it++) {int st = (*it).a, j = (*it).b, en = val[j].r;w<< st s en s ":" s j<<e;}w<<e;}
+        if (i == var) {w<< "HULL ADD"<<e;for (it = hulladd.begin(); it != hulladd.end(); it++) {int j = (*it).b, st = val[j].l, en = val[j].r;w<< st s en s ":" s j<<e;}w<<e;}
+
+
+        //w<< i s dp[i]<<e;
+    }
+    w<< dp[N]<<e;
+}

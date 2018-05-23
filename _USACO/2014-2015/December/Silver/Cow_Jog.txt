@@ -1,0 +1,43 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+typedef long long ll;
+
+//Useful Functions
+ll min(ll a, ll b) {
+	if (a < b) {
+		return a;
+	}
+	return b;
+}
+
+int main() {
+    ofstream fout ("cowjog.out");
+    ifstream fin ("cowjog.in");
+
+    //Declair Variables and Read Input
+    ll N, T;
+    ll out = 1;
+    fin >> N >> T;  //CHANGE
+    ll pos_speed[N][2];
+    for (ll i=0; i<N; i++) {
+    	fin >> pos_speed[i][0] >> pos_speed[i][1];  //CHANGE
+    }
+    
+    //Algo
+    ll current = pos_speed[N-1][0] + pos_speed[N-1][1]*T;
+    for (ll i=N-2; i>=0; i--) {
+    	pos_speed[i][0] += pos_speed[i][1]*T;
+    	if (pos_speed[i][0] < current) {
+    		out ++;
+    		current = pos_speed[i][0];
+    	}
+    }
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

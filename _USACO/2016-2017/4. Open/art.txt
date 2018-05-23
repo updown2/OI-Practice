@@ -1,0 +1,65 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffk For(k, 1, N*N+1)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+struct Rect {
+	int l, r, t, b;
+	Rect() {l = 1000001; r = 0; t = 1000001; b = 0;}
+	Rect(int a, int g, int d, int f) {l = a; r = g; t = d; b = f;}
+	void make(int a, int g, int d, int f) {l = a; r = g; t = d; b = f;}
+};
+int N;
+int inp[1000][1000];
+bool good[1000001];
+set<int> found;
+set<int>::iterator it;
+Rect paint[1000001];
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("art.in");
+	ofstream cout ("art.out");
+	cin >> N;
+	ffk good[k] = true;
+	ffa {
+		int color;
+		cin >> color;
+		inp[i][j] = color;
+		if (color != 0) {
+			found.insert(color);
+			paint[color].l = min(paint[color].l, i);
+			paint[color].r = max(paint[color].r, i);
+			paint[color].t = min(paint[color].t, j);
+			paint[color].b = max(paint[color].b, j);
+		}
+	}
+	if (found.size() == 1) {w<< N*N-1<<e; return 0;}
+	for (it = found.begin(); it != found.end(); it++) {
+		int color = (*it);
+		For (i, paint[color].l, paint[color].r+1) {
+			For (j, paint[color].t, paint[color].b+1) {
+				if (inp[i][j] != color) good[inp[i][j]] = false;
+			}
+		}
+	}
+	int out = 0;
+	ffk {
+		if (good[k]) out++;
+	}
+	w<<out<<e;
+	
+	
+	return 0;
+}

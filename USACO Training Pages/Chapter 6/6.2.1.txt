@@ -1,0 +1,89 @@
+/*
+ID: riya.ar1
+PROG: calfflac
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+string inp;
+int N, M;
+string in2;
+int ind[20000];
+int dp[20000];
+int out, start, end1;
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("calfflac.in");
+	ofstream cout ("calfflac.out");
+	getline(cin, inp);
+	while (!cin.eof()) {
+		string a; getline(cin, a);
+		inp += '\n'+ a;
+	}
+	N = inp.length();
+	M = 0;
+	ffi {
+		if ( (inp[i] >= 65 && inp[i] <= 90) || (inp[i] >= 97 && inp[i] <= 122) ) {
+			char use = toupper(inp[i]);
+			in2 += use;
+			ind[M] = i;
+			M++;
+		}
+	}
+	//w<< inp << e<< in2<<e;
+	//Init dp array
+	ffj dp[j] = j;
+	
+	//Fill array
+	For (j, 0, 10000) {
+	For (i, 1, M-1) {
+		if (dp[i] != M-1 && in2[dp[i]+1] == in2[i-1]) dp[i-1] = dp[i]+1;
+		//w<< i s dp[i]<<e;
+	}
+	}
+	//Check for consecutives
+	For (j, 1, M-1) {
+		if (in2[j] == in2[j+1] && dp[j] < j+1) dp[j] = j+1;
+	}
+	//Update array
+	For (j, 0, 10000) {
+	For (i, 1, M-1) {
+		if (dp[i] != M-1 && in2[dp[i]+1] == in2[i-1]) dp[i-1] = dp[i]+1;
+		//w<< i s dp[i]<<e;
+	}
+	}
+	out = 0;
+	ffj {
+		//w<< j s dp[j]<<e;
+		out = max(out, dp[j]-j);
+	}
+	w<< out+1<<e;
+	ffj {
+		if (dp[j]-j == out) {
+			start = j;
+			end1 = dp[j];
+			break;
+		}
+	}
+	For (i, ind[start], ind[end1]+1) {
+		w<<inp[i];
+	}
+	w<<e;
+	
+	return 0;
+}
+

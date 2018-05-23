@@ -1,0 +1,88 @@
+/*
+ ID: riya.ar1
+ PROG: prefix
+ LANG: C++11
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+string prim[200];
+bool dp[200001];
+string act;
+int N, M;
+
+bool same(string a, int b) {
+	//w<< a s b s ":"<<e;
+	For (i, b+1, b+a.length()+1) {
+		//w<< act[i] s a[i-b-1] <<e;
+		if (act[i-1] != a[i-b-1]) return false;
+	}
+	return true;
+}
+
+int main() {
+	ifstream cin ("prefix.in");
+	ofstream cout ("prefix.out");
+
+	string a; cin >> a;
+	M = 0;
+	while (a != ".") {
+		prim[M] = a;
+		M++;
+		cin >> a;
+	}
+	
+	string line;
+	while (getline(cin, line)) {
+		act += line;
+	}
+	
+	int cut = act.length();
+	For (i, 0, act.length()) {
+		if (act[i] == '.') {
+			cut = i;
+			break;
+		}
+	}
+	act = act.substr (0,cut);
+	//w<<act<<e;
+	
+	N = act.length();
+	For (i, 1, N+1) dp[i] = false;
+	dp[0] = true;
+	
+	ffi {
+		//w<< "i; " s i s ", " s dp[i]<<e;
+		if (dp[i]) {
+			ffj {
+				if (same(prim[j], i)) {
+					dp[i+prim[j].length()] = true;
+				}
+			}
+		}
+	}
+	
+	for (int i=N; i>=0; i--) {
+		if (dp[i]) {
+			w<<i<<e;
+			return 0;
+		}
+	}
+	
+	
+	return 0;
+}

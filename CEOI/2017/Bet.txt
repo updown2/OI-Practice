@@ -1,0 +1,64 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//#define int ll
+const int MAXN=100000, INF=100000000;
+///500,000,000
+int N;
+double a[MAXN], b[MAXN];
+
+bool works(double gain) {
+    int ap = 0, bp = 0;
+	double ag = 0, bg = 0;
+	while (true) {
+		// Base cases
+		if (ag >= gain && bg >= gain) return true;
+		if ( (ag < gain && ap == N) || (bg < gain && bp == N) ) return false;
+		
+		if (ag < gain) {
+			ag += a[ap];
+			ap ++;
+			bg -= 1;
+		}
+		if (bg < gain) {
+			bg += b[bp];
+			bp ++;
+			ag -= 1;
+		}
+	}
+	
+	
+}
+
+
+int main () {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi {
+		cin >> a[i] >> b[i];
+		a[i] -= 1;
+		b[i] -= 1;
+	}
+    sort(a, a+N, greater<double>());
+    sort(b, b+N, greater<double>());
+    
+	double st = 0, en = INF;
+    while (abs(st - en) > .00005) {
+        double mid = (st+en)/2;
+        if (!works(mid)) en = mid;
+        else st = mid;
+    }
+    printf("%.4lf\n", st);
+}

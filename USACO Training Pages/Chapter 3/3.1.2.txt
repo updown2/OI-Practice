@@ -1,0 +1,55 @@
+    /*
+    ID: riya.ar1
+    PROG: inflate
+    LANG: C++11
+    */
+    #include <bits/stdc++.h>
+    using namespace std;
+    typedef long long ll;
+    #define For(i, a, b) for(int i=a; i<b; i++)
+    #define ffi For(i, 0, N)
+    #define ffj For(j, 0, M+1)
+    #define s <<" "<<
+    #define w cout
+    #define e endl
+    #define pb push_back
+    #define mp make_pair
+    #define a first
+    #define b second
+    //500,000,000 operations
+     
+    //Global Variables
+    int N, M;
+    int inp[10000][2];
+    int dp[10001];
+    int out = 0;
+     
+    int main() {
+    	ifstream cin ("inflate.in");
+    	ofstream cout ("inflate.out");
+     
+    	cin >> M >> N;
+    	ffi {
+    		cin >> inp[i][0] >> inp[i][1];
+    	}
+     
+    	ffj dp[j] = -1;
+     
+    	dp[0] = 0;
+    	ffj {
+     
+    		out = max(out, dp[j]);
+    		if (dp[j] != -1) {
+    			//w<< j s dp[j]<<e;
+    			ffi {
+    				if (j+inp[i][1] <=M) {
+    					dp[j+inp[i][1]] = max(dp[j+inp[i][1]], dp[j] + inp[i][0]);
+    				}
+    			}
+    		}
+    	}
+     
+    	w<<out<<e;
+     
+    	return 0;
+    }

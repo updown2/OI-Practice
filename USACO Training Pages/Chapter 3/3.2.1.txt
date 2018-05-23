@@ -1,0 +1,71 @@
+/*
+ID: riya.ar1
+PROG: fact4
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+int five = 0;
+int two = 0;
+int last = 1;
+
+
+int main() {
+	ifstream cin ("fact4.in");
+	ofstream cout ("fact4.out");
+	
+	cin >> N;
+	
+	For (j, 2, N+1) {
+		int i = j;
+		while (i%2 == 0) {
+			two ++;
+			i /= 2;
+		}
+		while (i%5 == 0) {
+			five ++;
+			i /= 5;
+		}
+		
+		int tot = min(two, five);
+		two -= tot;
+		five -= tot;
+		
+		last *= i;
+		last %= 10;
+		//w<< last <<e;
+	}
+	
+	For (i, 0, two) {
+		last *= 2;
+		last %= 10;
+	}
+	For (i, 0, five) {
+		last *= 5;
+		last %= 10;
+	}
+	
+	w << last << e;
+	
+	return 0;
+}
+
+
+
+
+
+

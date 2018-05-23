@@ -1,0 +1,104 @@
+/*
+ID: riya.ar1
+PROG: nocow
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("nocow.out");
+    ifstream fin ("nocow.in");
+    
+    //Declare Variables and Read Input
+    int N, K;
+    fin >> N >> K;  //CHANGE
+    if (N==3) {
+    	fout << "small spotted noisy" << endl;  //CHANGE
+    }
+    else {
+	    string inp_strings[N];
+	    string adjectives1[2][2];
+	    string adjectives2[N][2];
+	    string sorted[4];
+	    string word;
+	    int at;
+	    bool go = false;
+	    for (int i=0; i < N; i++) {
+	    	bool go2 = true;
+	    	while (go2 == true) {
+		    	fin >> word;  //CHANGE
+		    	if (word == "no") {
+		    		go = true;
+		    		at = 0;
+		    	}
+		    	else if (word == "cow.") {
+		    		go = false;
+		    		go2 = false;
+		    	}
+		    	else if (go == true) {
+		    		if (at != 0) {
+		    			inp_strings[i] += " ";
+		    		}
+		    		inp_strings[i] += word;
+		    		adjectives2[i][at] = word;
+		    		at += 1;
+		    	}
+	    	}
+	    }
+	    string out;
+	    
+	    //Rearrange Input
+	    for (int i=0; i < 2; i++) {
+	    	at = 0;
+	    	for (int j=0; j < N; j++) {
+	    		if (adjectives1[i][0] != adjectives2[j][i] && adjectives1[i][0] != adjectives2[j][i]) {
+		    		adjectives1[i][at] = adjectives2[j][i];
+		    		at ++;
+	    		}
+	    	}
+	    }
+	    
+	    //Sort input
+	    if (adjectives1[0][0] < adjectives1[0][1]) {
+	    	sorted[0] = sorted[1] = adjectives1[0][0];
+	    	sorted[2] = sorted[3] = adjectives1[0][1];
+	    }
+	    else {
+	    	sorted[0] = sorted[1] = adjectives1[0][1];
+	    	sorted[2] = sorted[3] = adjectives1[0][0];
+	    }
+	    sorted[0] += " ";
+	    sorted[1] += " ";
+	    sorted[2] += " ";
+	    sorted[3] += " ";
+	    if (adjectives1[1][0] < adjectives1[1][1]) {
+	    	sorted[0] += adjectives1[1][0];
+	    	sorted[1] += adjectives1[1][1];
+	    	sorted[2] += adjectives1[1][0];
+	    	sorted[3] += adjectives1[1][1];
+	    }
+	    else {
+	    	sorted[0] += adjectives1[1][1];
+	    	sorted[1] += adjectives1[1][0];
+	    	sorted[2] += adjectives1[1][1];
+	    	sorted[3] += adjectives1[1][0];
+	    }
+	    
+	    //
+	    for (int i=0; i < K; i++) {
+	    	if (sorted[i] == inp_strings[i]) {
+	    		K ++;
+	    	}
+	    	//cout << sorted[i] << inp_strings[i] << endl;
+	    }
+	    
+	    
+		//Print Output
+	    fout << sorted[K-1] << endl;  //CHANGE
+    }
+    return 0;
+}

@@ -1,0 +1,149 @@
+/*
+ID: riya.ar1
+PROG: milk3
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//Global Variables
+int A_MAX, B_MAX, C_MAX;
+int a, b, c;
+int out[21];
+int que[100][3];
+int q_read = 0;
+int q_add = 0;
+
+//Useful Functions
+bool in_q() {
+	for (int i=0; i<q_add; i++) {
+		if (que[i][0] == a && que[i][1] == b && que[i][2] == c) {
+			return true;
+		}
+	}
+	return false;
+}
+void a_b() {
+	while (b < B_MAX && a > 0) {
+		b++;
+		a--;
+	}
+}
+void a_c() {
+	while (c < C_MAX && a > 0) {
+		c++;
+		a--;
+	}
+}
+void b_c() {
+	while (c < C_MAX && b > 0) {
+		c++;
+		b--;
+	}
+}
+void b_a() {
+	while (a < A_MAX && b > 0) {
+		a++;
+		b--;
+	}
+}
+void c_a() {
+	while (a < A_MAX && c > 0) {
+		a++;
+		c--;
+	}
+}
+void c_b() {
+	while (b < B_MAX && c > 0) {
+		b++;
+		c--;
+	}
+}
+void que_add() {
+	que[q_add][0] = a; que[q_add][1] = b; que[q_add][2] = c;
+	q_add ++;
+}
+void set() {
+	a = que[q_read][0]; b = que[q_read][1]; c = que[q_read][2];
+}
+
+int main() {
+    ofstream fout ("milk3.out");
+    ifstream fin ("milk3.in");
+
+    //Read Input
+    fin >> A_MAX >> B_MAX >> C_MAX;  //CHANGE
+    
+    //Algo
+    
+    //Init Search
+    que[q_add][0] = 0; que[q_add][1] = 0; que[q_add][2] = C_MAX;
+    q_add++;
+    
+    //Search
+    while (q_add > q_read) {
+    	set();
+    	a_b();
+    	if (in_q() == false) {
+    		que_add();
+    		if (a==0) {
+    			out[c] = 1;
+    		}
+    	}
+    	set();
+    	a_c();
+    	if (in_q() == false) {
+    		que_add();
+    		if (a==0) {
+    			out[c] = 1;
+    		}
+    	}
+    	set();
+    	b_a();
+    	if (in_q() == false) {
+    		que_add();
+    		if (a==0) {
+    			out[c] = 1;
+    		}
+    	}
+    	set();
+    	b_c();
+    	if (in_q() == false) {
+    		que_add();
+    		if (a==0) {
+    			out[c] = 1;
+    		}
+    	}
+    	set();
+    	c_a();
+    	if (in_q() == false) {
+    		que_add();
+    		if (a==0) {
+    			out[c] = 1;
+    		}
+    	}
+    	set();
+    	c_b();
+    	if (in_q() == false) {
+    		que_add();
+    		if (a==0) {
+    			out[c] = 1;
+    		}
+    	}
+    	q_read++;
+    }
+
+    //Output Answer
+    for (int i=0; i < C_MAX+1; i++) {
+		if (i == C_MAX) {
+		    fout << i << endl;  //CHANGE
+		}
+	    else if (out[i] == 1) {
+	   		fout << i << " ";  //CHANGE
+	   	}
+	}
+    return 0;
+}

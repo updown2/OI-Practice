@@ -1,0 +1,74 @@
+#include<iostream>
+#include<list>
+#include<string>
+#include<cstring>
+#include<sstream>
+#include<cctype>
+#include<string.h>
+#include<algorithm>
+#include<stack>
+#include<fstream>
+#include<cstdlib>
+#include<vector>
+#include<map>
+#include<set>
+#include<utility>
+#include<iomanip>
+#include<queue>
+#include<math.h>
+
+
+using namespace std;
+
+
+typedef long long int ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+//100,000,000 operations
+
+int T, A, B;
+
+set<int> myset;
+set<int>::iterator it;
+
+bool go(int k) {
+	it = myset.find(k);
+	if (it != myset.end()) {
+		return false;
+	}
+	return true;
+}
+
+int m(int sum, bool halved) {
+	int out = sum;
+	
+	if (halved == false && go(sum/2)) {
+		myset.insert(sum/2);
+		out = max(out, m(sum/2, true) );
+	}
+	
+	if (sum+A <= T && go(sum+A)) {
+		myset.insert(sum+A);
+		out = max(out, m(sum+A, halved));
+	}
+	if (sum+B <= T && go(sum+B)) {
+		myset.insert(sum+B);
+		out = max(out, m(sum+B, halved));
+	}
+	
+	return out;
+}
+
+int main() {
+	ifstream cin ("feast.in");
+	ofstream cout ("feast.out");
+	
+	cin >> T >> A >> B;
+	
+	myset.insert(0);
+	
+	cout << m(0, false) << endl;
+	
+	
+	return 0;
+}
+

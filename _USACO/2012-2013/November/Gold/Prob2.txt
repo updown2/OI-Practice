@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, M;
+int inp[10][50000];
+int pre[10][50000];
+vector<int> start;
+vector<int> ending;
+
+int main() {
+	//freopen ("test.in","r",stdin);
+	ifstream cin ("cbs.in");
+	ofstream cout ("cbs.out");
+	
+	cin >> N >> M;
+	
+	ffa {
+		char a;
+		cin >> a;
+		if (a == '(') inp[i][j] = 1;
+		else inp[i][j] = -1;
+		
+		pre[i][j] = inp[i][j];
+		if (j != 0) {
+			pre[i][j] += pre[i][j-1];
+		}
+	}
+	For (j, 0, M) {
+		bool st = true;
+		bool en = true;
+		For (i, 0, N) {
+			if (inp[i][j] == 1) en = false;
+			else st = false;
+		}
+		if (st) start.pb(j);
+		if (en) ending.pb(j);
+	}
+	
+	//For (i, 0, start.size()) w<<start[i]<< " ";w<<e;
+	//For (i, 0, ending.size()) w<<ending[i]<< " ";w<<e;
+	
+	int out = 0;
+	For (i, 0, start.size()) {
+		For (j, 0, ending.size()) {
+			bool good = true;
+			For (k, 0, N) {
+				if (pre[k][ending[j]] - pre[k][start[j]] != -1) good = false;
+			}
+			if (good) out++;
+		}
+	}
+	
+	w<<out<<e;
+	
+	
+	return 0;
+}
+

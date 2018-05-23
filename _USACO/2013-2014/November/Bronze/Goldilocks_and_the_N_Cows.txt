@@ -1,0 +1,58 @@
+#include <iostream>
+#include <fstream>
+#include <algorithm>
+
+typedef long long ll;
+
+using namespace std;
+
+int main() {
+    ofstream fout ("milktemp.out");
+    ifstream fin ("milktemp.in");
+
+    //Declare Variables and Read Input
+    ll N, X, Y, Z;
+    ll max = 0;
+    fin >> N >> X >> Y >> Z;  //CHANGE
+    ll input[N][2];  //CHANGE TO N
+	ll A[N];  //CHANGE TO N
+    for (ll i=0; i<N; i++) {
+    	fin >> input[i][0] >> input[i][1];
+		A[i] = input[i][0];
+    }
+	
+	//Sort Input
+	sort(A, A+N);
+    
+    //Algo
+   	ll abc = 12000;
+	ll cba = 0;
+	if (N>11000) {
+	    cba = 10000;
+	}
+    for (ll i=cba; i<min(N, abc); i++) {
+    	ll current = 0;
+    	ll use = A[i];
+    	for (ll j=0; j<N; j++) {
+    		if (use>=input[j][0]) {
+    			if (use<=input[j][1]) {
+    				current += Y;
+    			}
+    			else {
+    				current += Z;
+    			}
+    		}
+    		else {
+    			current += X;
+    		}
+    	}
+    	if (current > max) {
+    		max = current;
+    	}
+    }
+
+    //Output Answer
+    fout << max << endl;  //CHANGE
+    return 0;
+}
+

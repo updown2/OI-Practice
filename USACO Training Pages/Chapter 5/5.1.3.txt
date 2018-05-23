@@ -1,0 +1,52 @@
+/*
+ID: riya.ar1
+PROG: theme
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+int notes[5000];
+int out = 0;
+int len;
+
+int main() {
+	ifstream cin ("theme.in");
+	ofstream cout ("theme.out");
+	
+	cin >> N;
+	ffi cin >> notes[i];
+	
+	
+	ffi {
+		len = 1;
+		for (int j=N-i-2; j>=0; j--) {
+			if (notes[j+1]-notes[j] == notes[i+j+1]-notes[j+i]) {
+				len++;
+				len = min(len, i);
+				out = max(out, len);
+			}
+			else len = 1;
+		}
+	}
+	
+	if (out < 5) out = 0;
+	w<< out << e;
+	
+	
+	return 0;
+}
+

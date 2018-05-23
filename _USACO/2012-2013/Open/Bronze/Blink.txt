@@ -1,0 +1,73 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+typedef long long ll;
+
+using namespace std;
+int start[16];
+int on[16];
+int N;
+
+bool same() {
+	for (int i=0; i<N; i++) {
+		if (on[i] != start[i]) {
+			return false;
+		}
+	}
+	return true;
+}
+
+int toggle(int i) {
+	if (i == 1) {
+		return 0;
+	}
+	return 1;
+}
+
+int main() {
+    ofstream fout ("blink.out");
+    ifstream fin ("blink.in");
+
+    //Declare Variables and Read Input
+    ll T;
+    fin >> N >> T;  //CHANGE
+    
+    for (int i=0; i<N; i++) {
+    	fin >> on[i];  //CHANGE
+    	start[i] = on[i];
+    }
+    
+    //Algo
+    for (int i=1; i<T+1; i++) {
+    	bool zero = true;
+    	int save = on[N-1];
+    	for (int j=N-1; j>=1; j--) {
+    		if (on[j-1] == 1) {
+    			on[j] = toggle(on[j]);
+    			zero = false;
+    		}
+    	}
+    	if (save == 1) {
+    		on[0] = toggle(on[0]);
+    		zero = false;
+    	}
+    	if (zero) {
+    		break;
+    	}
+	else if (i == N*N*N*N) {
+	    	for (int i=0; i<N; i++) {
+		    	start[i] = on[i];
+		    }
+    	}
+    	else if (same()) {
+    		T = i+(T%i);
+    	}
+	
+    }
+
+    //Output Answer
+    for (int i=0; i<N; i++) {
+    	fout << on[i] << endl;  //CHANGE
+    }
+    return 0;
+}

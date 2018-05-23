@@ -1,0 +1,114 @@
+/*
+ID: riya.ar1
+PROG: wormhole
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <unordered_map>
+#include <ctime>
+
+using namespace std;
+
+//Global Variables
+int N;
+int out;
+int rows[12][2];
+int next_on_right[12];
+
+void check(int pairings[]) {
+	//Step 1: Create a Hashtable
+	unordered_map<int, int> pairs;
+	for (int i=0; i< N; i+=2) {
+		pairs.emplace(pairings[i], pairings[i+1]);
+		pairs.emplace(pairings[i+1], pairings[i]);
+	}
+	
+	//Step 2: Loop through each wormhole as a starting position
+	for (int i=0; i<N; i++) {
+		int at = i;
+		int j=0;
+		while (j<12 && at >= 0) {
+			at = next_on_right[pairs[at]];
+			j ++;
+		}
+		if (at >=0) {
+			out ++;
+			break;
+		}
+	}
+}
+void choice(int K, int nums[], int so_far[]) {
+	int len = N-K;
+	int ret[len+2];
+	int nums3[K-2];
+	for (int i=0; i<len; i++) {
+		ret[i] = so_far[i];
+	}
+	if (K==2) {
+		ret[len] = nums[0];
+		ret[len+1] = nums[1];
+		check(ret);
+	}
+	else {
+		ret[len] = nums[0];
+		for (int i=1; i<K; i++) {
+			ret[len+1] = nums[i];
+			swap(nums[1], nums[i]);
+			for (int j=0; j<K-2; j++) {
+				nums3[j] = nums[j+2];
+			}
+			choice(K-2, nums3, ret);
+		}
+	}
+}
+
+int main() {
+    ofstream fout ("wormhole.out");
+    ifstream fin ("wormhole.in");
+
+    //Declare Variables and Read Input
+    fin >> N;  //CHANGE
+    int use[N];
+    for (int i=0; i<N; i++) {
+    	use[i] = i;
+    	fin >> rows[i][0] >> rows[i][1];  //CHANGE
+    }
+    int put[] = {};
+    
+    //Sort rows by x-coordinate
+    for(register int i = 0; i < N - 1; i++) {
+	    for(register int j = i + 1; j < N; j++) {
+	        if(rows[j][0] < rows[i][0]) {
+	            swap(rows[i], rows[j]);
+	        }
+	    }
+	}
+	
+	
+	
+	//Set next_on_right
+	for (int i=0; i<N; i++) {
+		bool left = true;
+		for (int k=i+1; k<N; k++) {
+			cout << i << " " << k << endl;
+			if (rows[i][1] == rows[k][1]) {
+				left = false;
+				next_on_right[i] = k;
+				break;
+			}
+		}
+		if (left == true) {
+			next_on_right[i] = -1;
+		}
+	}
+	
+    //Algo
+    choice(N, use, put);
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

@@ -1,0 +1,59 @@
+/*
+ID: riya.ar1
+PROG: ariprog
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//Global Variables
+int N, M;
+
+int main() {
+    ofstream fout ("ariprog.out");
+    ifstream fin ("ariprog.in");
+
+    //Read Input
+    fin >> N >> M;  //CHANGE
+    M += 1;
+    bool nums[500000];
+    
+    for (int i=0; i<2*M*M; i++) {
+    	nums[i] = false;
+    }  //Removable
+    
+    for (int i=0; i<M; i++) {
+    	for (int j=i; j<M; j++) {
+    		nums[(i*i)+(j*j)] = true;
+    	}
+    }
+    int max_start = 30000;
+    int max_dif = 5000;
+    
+    //Algo
+    bool out = false;
+    for (int i=1; i<max_dif; i++) {  //difference between numbers
+    	for (int j=0; j<max_start; j++) {  //starting number
+    		bool print = true;
+    		int at = j;
+    		for (int k=0; k<N; k++) {
+    			if (nums[at] == false || at >= 2*M*M) {
+    				print = false;
+    				break;
+    			}
+    			at += i;
+    		}
+    		if (print) {
+    			out = true;
+    			fout << j << " " << i << endl;  //CHANGE
+    		}
+    	}
+    }
+    if (out == false) {
+    	fout << "NONE" << endl;
+    }
+    return 0;
+}

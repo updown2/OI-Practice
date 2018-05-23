@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+//500,000,000 operations
+
+//Global Variables
+int N, Q;
+int p1[100001];
+int p2[100001];
+int p3[100001];
+
+int main() {
+	ifstream cin ("bcount.in");
+	ofstream cout ("bcount.out");
+	
+	cin >> N >> Q;
+	
+	p1[0]=0;
+	p2[0]=0;
+	p3[0]=0;
+	ffi {
+		int a;
+		cin >> a;
+		
+		p1[i+1]=p1[i];
+		p2[i+1]=p2[i];
+		p3[i+1]=p3[i];
+		if (a==1) p1[i+1]++;
+		if (a==2) p2[i+1]++;
+		if (a==3) p3[i+1]++;
+	}
+	
+	For (i, 0, Q) {
+		int a, b;
+		cin >> a >> b;
+		w<<p1[b]-p1[a-1] s p2[b]-p2[a-1] s p3[b]-p3[a-1]<<e;
+	}
+	
+	
+	return 0;
+}
+

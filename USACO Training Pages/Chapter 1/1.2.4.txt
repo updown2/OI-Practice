@@ -1,0 +1,181 @@
+/*
+ID: riya.ar1
+PROG: palsquare
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+//Global Variables
+int base;
+
+//useful functions
+string reverseChar(string str) {
+	string out;
+	for (int i=str.length()-1; i > -1; i--) {
+		out += str[i];
+	}
+	return out;
+}
+string base_b(int num) {
+	string out;
+	bool t = true;
+	if (num < base) {
+		t = false;
+		if (num < 10) {
+			std::string str = std::to_string(num);
+			out = str;
+		}
+		if (num == 10) {
+			out = "A";
+		}
+		if (num == 11) {
+			out = "B";
+		}
+		if (num == 12) {
+			out = "C";
+		}
+		if (num == 13) {
+			out = "D";
+		}
+		if (num == 14) {
+			out = "E";
+		}
+		if (num == 15) {
+			out = "F";
+		}
+		if (num == 16) {
+			out = "G";
+		}
+		if (num == 17) {
+			out = "H";
+		}
+		if (num == 18) {
+			out = "I";
+		}
+		if (num == 19) {
+			out = "J";
+		}
+		if (num == 20) {
+			out = "K";
+		}
+	}
+	if (t == true) {
+		int minus;
+		while (num >= base) {
+			minus = num % base;
+			std::string str = std::to_string(minus);
+			if (minus > 9) {
+				if (minus == 10) {
+					str = "A";
+				}
+				if (minus == 11) {
+					str = "B";
+				}
+				if (minus == 12) {
+					str = "C";
+				}
+				if (minus == 13) {
+					str = "D";
+				}
+				if (minus == 14) {
+					str = "E";
+				}
+				if (minus == 15) {
+					str = "F";
+				}
+				if (minus == 16) {
+					str = "G";
+				}
+				if (minus == 17) {
+					str = "H";
+				}
+				if (minus == 18) {
+					str = "I";
+				}
+				if (minus == 19) {
+					str = "J";
+				}
+				if (minus == 20) {
+					str = "K";
+				}
+			}
+			out += str;
+			num -= minus;
+			num = num/base;
+		}
+		std::string str = std::to_string(num);
+		if (num > 9) {
+			if (num == 10) {
+				str = "A";
+			}
+			if (num == 11) {
+				str = "B";
+			}
+			if (num == 12) {
+				str = "C";
+			}
+			if (num == 13) {
+				str = "D";
+			}
+			if (num == 14) {
+				str = "E";
+			}
+			if (num == 15) {
+				str = "F";
+			}
+			if (num == 16) {
+				str = "G";
+			}
+			if (num == 17) {
+				str = "H";
+			}
+			if (num == 18) {
+				str = "I";
+			}
+			if (num == 19) {
+				str = "J";
+			}
+			if (num == 20) {
+				str = "K";
+			}
+		}
+		out += str;
+		out = reverseChar(out);
+	}
+	
+	return out;
+}
+bool is_pal(string check) {
+	bool out = true;
+	for (int i=0; i < check.length(); i++) {
+		if (check[i] != check[check.length() - (i+1)]) {
+			out = false;
+		}
+	}
+	return out;
+}
+
+int main() {
+    ofstream fout ("palsquare.out");
+    ifstream fin ("palsquare.in");
+    
+    //Create Variables
+    string current_b;
+
+	//Read Input
+	fin >> base;  //CHANGE
+	
+	//Algo
+	for (int i=1; i < 301; i++) {
+		current_b = base_b(i*i);
+		if (is_pal(current_b) == true) {
+			fout << base_b(i) << " " << current_b << endl;  //CHANGE
+		}
+	}
+	
+
+    return 0;
+}

@@ -1,0 +1,83 @@
+/*
+ID: riya.ar1
+PROG: cowxor
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+int N;
+int pre[100001];
+int dp[100001][2];
+int works[100001];
+int out = 0;
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("cowxor.in");
+	ofstream cout ("cowxor.out");
+	cin >> N;
+	ffi {
+		cin >> pre[i];
+		pre[i] = pre[i]^pre[i-1];
+		
+	}
+	For (i, 0, N+1) {
+		dp[i][0] = i-1;
+		dp[i][1] = -1;
+		works[i] = i-1;
+		//if (i != 0) w<< i s ":" s dp[i][0] s dp[i][1]<<e;
+	}
+	//w<<e;
+	
+	for (int k=21; k>=0; k--) {
+		//w<< k <<e;
+		ffi {
+			if (dp[i][0] == -1) {dp[i][1] = -1; continue;}
+			
+			//w<< (pre[i] & (1<<k)) s (pre[dp[i][0]] & (1<<k)) <<e;
+			if ( (pre[i] & (1<<k)) != (pre[dp[i][0]] & (1<<k)) ) {
+				dp[i][1] = dp[i][0];
+				dp[i][0] = dp[dp[i][0]][1];
+			}
+			else dp[i][1] = dp[dp[i][0]][1];
+			//w<< i s ":" s dp[i][0] s dp[i][1]<<e;
+		}
+		//w<<e;
+		
+		ffi {
+			//w<< i s ":" s works[i]<<e;
+			if (works[i] == -1) continue;
+			if ((pre[i] & (1<<k)) != (pre[works[i]] & (1<<k)) || dp[works[i]][1] != -1) out |= (1<<k);
+		}
+		
+		if (out & (1<<k)) {
+			ffi {
+				if (works[i] == -1 || (pre[i] & (1<<k)) != (pre[works[i]] & (1<<k)) ) continue;
+				works[i] = dp[works[i]][1];
+				//w<< k s i s dp[works[i]][1]<<e;
+			}
+		}
+		//w<<e;
+	}
+	
+	ffi {
+		if (works[i] == -1) continue;
+		w<< out s works[i]+1 s i<<e;
+		break;
+	}
+	
+	return 0;
+}

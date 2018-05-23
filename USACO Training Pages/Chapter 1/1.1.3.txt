@@ -1,0 +1,75 @@
+/*
+ID: riya.ar1
+PROG: gift1
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("gift1.out");
+    ifstream fin ("gift1.in");
+    
+    int num_people;
+    fin >> num_people;  //CHANGE
+    string names[num_people];
+    int money[num_people];
+    
+    string current;
+    string cur_people[num_people];
+    int cur_loc[num_people];
+    int cur_money, cur_div, cur_divided, cur_mod;
+    
+    for (int i = 0; i < num_people; i++){
+    	fin >> names[i];  //CHANGE
+    	money[i] = 0;
+    }
+    
+    
+    for (int i = 0; i < num_people; i++) {
+    	fin >> current >> cur_money >> cur_div;  //CHANGE
+    	for (int j = 0; j < cur_div; j++) {
+    		fin >> cur_people[j];  //CHANGE
+    	}
+    	
+    	
+    	//set locations
+    	int ab = 1;
+    	for (int j = 0; j < num_people; j++) {
+    		string abc = names[j];
+    		if (abc == current) {
+    			cur_loc[0] = j;
+    		}
+    			for (int k = 0; k < cur_div; k++) {
+    				if (abc == cur_people[k]) {
+    					cur_loc[ab] = j;
+    					ab ++;
+    				}
+    			}
+    	}
+    	//add money
+    	if (cur_div == 0) {
+    		money[cur_loc[0]] += cur_money;
+    	}
+    	else {
+	    	cur_mod = cur_money % cur_div;
+	    	money[cur_loc[0]] += cur_mod;
+	    	money[cur_loc[0]] -= cur_money;
+	    	cur_money -= cur_mod;
+	    	cur_divided = cur_money/cur_div;
+	    	
+	    	for (int j = 0; j < cur_div; j++) {
+	    	    money[cur_loc[j+1]] += cur_divided;
+	    	}
+    	}
+    }
+	
+	for (int i = 0; i < num_people; i++) {
+		fout << names[i] << " " << money[i] << endl;  //CHANGE
+	}
+   	
+    return 0;
+}

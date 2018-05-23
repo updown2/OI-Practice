@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define pf push_front
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+///Global Variables
+///500,000,000
+int N;
+priority_queue<int> small, big;
+ 
+main() {
+    //ifstream cin("test.in");
+    cin >> N;
+    ffi {
+        int a; cin >> a; small.push(a);
+        while (small.size() > big.size()) {
+            big.push(-small.top());
+            small.pop();
+        }
+        while (small.top() > -big.top()) {
+          //      w<< small.top() s big.top()<<e;
+            big.push(-small.top()); small.pop();
+        //w<< big.top()<<e;
+            small.push(-big.top()); big.pop();
+        }
+        if (i%2 == 0) w<< -big.top()<<e;
+    }
+}

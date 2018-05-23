@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+ 
+struct Point {
+	double x, y;
+};
+ 
+Point locA[50000];
+Point hullA1[50000];
+Point hullA2[50000];
+int A1_len;
+int A2_len;
+ 
+bool ccw(Point a, Point b, Point c)
+{ return ((b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x)) >= 0; }
+ 
+ 
+bool xcompare(Point a, Point b) {
+	if (a.x<b.x) return true;
+	if (a.x == b.x && a.y < b.y) return true;
+	return false;
+ 
+}
+ 
+void compute_hull () {
+	A1_len = 0;
+	For (i, 0, N) {
+		hullA1[A1_len] = locA[i];
+		(A1_len) ++;
+		while( (A1_len)-3>= 0 && ccw( hullA1[(A1_len)-3], hullA1[(A1_len)-2], hullA1[(A1_len)-1] ) ) {
+			(A1_len) --;
+			hullA1[(A1_len)-1] = hullA1[A1_len];
+		}
+	}
+ 
+	A2_len = 0;
+	for (int i=N-1; i>=0; i--) {
+		hullA2[A2_len] = locA[i];
+		(A2_len)++;
+		while( (A2_len)-3>= 0 && ccw( hullA2[(A2_len)-3], hullA2[(A2_len)-2], hullA2[(A2_len)-1] ) ) {
+			(A2_len) --;
+			hullA2[(A2_len)-1] = hullA2[A2_len];
+		}
+	}
+}
+ 
+double slope( Point a, Point b) {
+	return (a.y-b.y)/(a.x-b.x);
+}
+ 
+ 
+ 
+int main() {
+	//ifstream cin ("test.in");
+ 
+	cin >> N;
+ 
+	For (i, 0, N) {
+		cin >> locA[i].x >> locA[i].y;
+	}
+ 
+	sort(locA, locA+N, xcompare);
+ 
+	compute_hull();
+ 
+	sort(hullA2, hullA2+A2_len, xcompare);
+ 
+	set<pair<int, int> > out;
+	For (i, 0, A1_len) out.insert(mp(hullA1[i].x, hullA1[i].y));
+	For (i, 0, A2_len) out.insert(mp(hullA2[i].x, hullA2[i].y));
+    w<< out.size()<<e;
+ 
+	return 0;
+}

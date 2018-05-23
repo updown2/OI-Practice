@@ -1,0 +1,48 @@
+#include <bits/stdc++.h>
+    using namespace std;
+    typedef long long ll;
+    #define For(i, a, b) for(int i=a; i<b; i++)
+    #define ffi For(i, 0, N)
+    #define ffj For(j, 0, N)
+    #define ffa ffi ffj
+    #define s <<" "<<
+    #define w cout
+    #define e endl
+    //Global Variables
+    ll N, inp[100000], dp[3][100000]; ///dp[len][start] = max_len
+ 
+    int main() {
+        //ifstream cin ("test.in");
+        cin >> N;
+        ffi cin >> inp[i];
+        For (i, 0, 3) ffj dp[i][j] = 100000;
+        ffi dp[0][i] = 0;
+        For (i, 0, N-1) {
+            if (inp[i] == inp[i+1]) dp[1][i] = 0;
+        }
+        For (i, 0, N) { ///len
+            //w<< "i:" s i<<e;
+            //w<< (N-1-i-300)/2 s (-300+N-i-1)/2<<e;
+            For (j, max((ll)0, (-300+N-i-1)/2-50), 1+min(N-1, (300+N-i-1)/2+50) ) { ///start
+                int x1 = j;
+                int x2 = j+i;
+                //w<< x1 s x2 s ":" s dp[0][j]<<e;
+                if (x1 != 0) dp[1][x1-1] = min(dp[1][x1-1], dp[0][x1]+1);
+                if (x2 != N-1) dp[1][x1] = min(dp[1][x1], dp[0][x1]+1);
+                if (x1 != 0 && x2 != N-1 && inp[x1-1] == inp[x2+1])
+                    dp[2][x1-1] = min(dp[2][x1-1], dp[0][x1]);
+            }
+            if (i != N-1) {
+                //swap(dp[0], dp[1]);
+                //swap(dp[1], dp[2]);
+                //memset(dp[2], 100000, sizeof(dp[2]));
+                For (j, max((ll)0, (-300+N-i-1)/2-50), 1+min(N-1, (300+N-i-1)/2+50) ) {
+                    dp[0][j] = dp[1][j];
+                    dp[1][j] = dp[2][j];
+                    dp[2][j] = 100000;
+                }
+            }
+        }
+        if (dp[0][0] > 300) w<< "many"<<e;
+        else w<< dp[0][0]<<e;
+    }

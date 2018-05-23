@@ -1,0 +1,79 @@
+/*
+ID: riya.ar1
+PROG: job
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+int N, A, B;
+int outA = 0;
+int outB = 0;
+priority_queue< pair<int, int> > as; //Time to finish next task, time for 1 task
+multiset<int> times1;
+multiset<int> times2;
+multiset<int>::iterator it1;
+multiset<int>::iterator it2;
+priority_queue<pair<int, int> > bs;
+
+int main() {
+	ifstream cin ("job.in");
+	ofstream cout ("job.out");
+	
+	cin >> N >> A >> B;
+	
+	For (i, 0, A) {
+		int tim; cin >> tim;
+		as.push( mp(-tim, -tim));
+	}
+	ffi {
+		pair<int, int> curr = as.top();
+		//w<<curr.a s curr.b<<e;
+		as.pop();
+		as.push(mp(curr.a+curr.b, curr.b));
+		times1.insert(-curr.a);
+		outA = max(outA, -curr.a);
+	}
+	
+	For (i, 0, B) {
+		int tim; cin >> tim;
+		bs.push(mp(-tim, -tim));
+	}
+	
+	ffi {
+		pair<int, int> curr = bs.top();
+		//w<<curr.a s curr.b<<e;
+		bs.pop();
+		bs.push(mp(curr.a+curr.b, curr.b));
+		times2.insert(-curr.a);
+	}
+	
+	ffi {
+		it1 = times1.begin();
+		it2 = times2.end();
+		it2--;
+		int one = *it1;
+		int two = *it2;
+		times1.erase(it1);
+		times2.erase(it2);
+		outB = max(outB, one+two);
+	}
+	
+	
+	w<<outA s outB<<e;
+	
+	return 0;
+}

@@ -1,0 +1,140 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define For(i, a, b) for (int i=a; i<b; i++)
+#define ffi For (i, 0, N)
+#define ffj For (j, 0, V+1)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+#define s <<" "<<
+#define pb push_back
+#define a first
+#define b second
+#define mp make_pair
+
+const int MAXN = 100000, MAXV = 101;
+int N, V, p[MAXN];
+long long nei[MAXN], out;
+bool visited[MAXN];
+vector<int> inp[MAXN], adj[MAXN];
+long long dp1[MAXN][MAXV][3], dp2[MAXN][MAXV][3];
+
+
+
+void get1(int at, int b) {
+	if (b < 0 || dp1[at][b][2] != -1) return;
+	
+	dp1[at][b][0] = dp1[at][b][2] = 0;
+	dp1[at][b][1] = -2;
+	
+	For (i, 0, adj[at].size()) {
+		int x = adj[at][i];
+		//get1(x, b), get1(x, b-1);
+		
+		bool worked = false;
+		//Don't put crumb at x
+		if (dp1[x][b][0] > dp1[at][b][0]) {
+			dp1[at][b][2] = dp1[at][b][0];
+			dp1[at][b][0] = dp1[x][b][0];
+			dp1[at][b][1] = x;
+			worked = true;
+		}
+		else if (dp1[x][b][0] > dp1[at][b][2]) {
+			dp1[at][b][2] = dp1[x][b][0];
+		}
+		
+		//Put crumb at x
+		if (b != 0) {
+			long long y = dp1[x][b-1][0] + nei[x] - p[at];
+			if (y > dp1[at][b][0]) {
+				if (!worked) dp1[at][b][2] = dp1[at][b][0];
+				dp1[at][b][0] = y;
+				dp1[at][b][1] = x;
+			}
+			else if (y > dp1[at][b][2] && !worked) {
+				dp1[at][b][2] = y;
+			}
+		}
+	}
+}
+
+void get2 (int at, int b) {
+	if (b < 0 || dp2[at][b][2] != -1) return;
+	
+	dp2[at][b][0] = dp2[at][b][2] = 0;
+	dp2[at][b][1] = -2;
+	if (b > 0) dp2[at][b][0] = nei[at]; 
+	
+	For (i, 0, adj[at].size()) {
+		int x = adj[at][i];
+		//get2(x, b), get2(x, b-1);
+		
+		bool worked = false;
+		//Don't put crumb on at
+		if (dp2[x][b][0] > dp2[at][b][0]) {
+			dp2[at][b][2] = dp2[at][b][0];
+			dp2[at][b][0] = dp2[x][b][0];
+			dp2[at][b][1] = x;
+			worked = true;
+		}
+		else if (dp2[x][b][0] > dp2[at][b][2]) {
+			dp2[at][b][2] = dp2[x][b][0];
+		}
+		
+		//Put crumb on at
+		if (b != 0) {
+			long long y = dp2[x][b-1][0] + nei[at] - p[x];
+			if (y > dp2[at][b][0]) {
+				if (!worked) dp2[at][b][2] = dp2[at][b][0];
+				dp2[at][b][0] = y;
+				dp2[at][b][1] = x;
+			}
+			else if (y > dp2[at][b][2] && !worked) {
+				dp2[at][b][2] = y;
+			}
+		}
+	}
+}
+
+void go(int at) {
+	visited[at] = true;
+	For (i, 0, inp[at].size()) if (!visited[inp[at][i]]) {
+		adj[at].pb(inp[at][i]);
+		go(inp[at][i]);
+	}
+	ffj get1(at, j), get2(at, j);
+}
+
+
+int main () {
+	//ifstream cin("chase.04.01.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N >> V;
+	ffi cin >> p[i];
+	For (i, 1, N) {
+		int a, b; cin >> a >> b; a--; b--; inp[a].pb(b); inp[b].pb(a);
+	}
+	ffi {
+		For (j, 0, inp[i].size()) nei[i] += p[inp[i][j]];
+		ffj For (k, 0, 3) dp1[i][j][k] = dp2[i][j][k] = -1;
+	}
+	go(0);
+	//ffi w<< nei[i]<<e;
+	ffi {
+		ffj {
+			//get1(i, j);
+			//w<< "one" s i+1 s j s ":" s dp1[i][j].a.a s "from" s dp1[i][j].a.b+1 s "," s dp1[i][j].b<<e;
+			//get2(i, V-j);
+			//w<< i+1 s V-j s ":" s dp2[i][V-j].a.a s "from" s dp2[i][V-j].a.b+1 s "," s dp2[i][V-j].b<<e;
+			if (dp1[i][j][1] == dp2[i][V-j][1]) {
+				out = max(out, max(dp1[i][j][0] + dp2[i][V-j][2], dp1[i][j][2] + dp2[i][V-j][0]));
+				if ( max(dp1[i][j][0] + dp2[i][V-j][2], dp1[i][j][2] + dp2[i][V-j][0]) == 37) {
+					//w<< "DSADSAASD" s i+1 s j s V-j<<e;
+				}
+			}
+			else out = max(out, dp1[i][j][0] + dp2[i][V-j][0]);
+		}
+	}
+	w<< out<<e;
+}
+

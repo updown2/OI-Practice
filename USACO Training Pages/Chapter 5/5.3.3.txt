@@ -1,0 +1,139 @@
+/*
+ID: riya.ar1
+PROG: schlnet
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+vector<int> adj1[100];
+vector<int> adj2[100];
+bool visited[100];
+bool top[100];
+bool htop[100];
+
+void search(int at, int parent) {
+	if (visited[at]) return;
+	visited[at] = true;
+	if (at == parent) return;
+	
+	top[at] = false;
+	htop[at] = true;
+	For (i, 0, adj1[at].size()) {
+		search(adj1[at][i], parent);
+	}
+}
+void search2(int at, int parent) {
+	if (visited[at]) return;
+	visited[at] = true;
+	if (at == parent) return;
+	
+	top[at] = false;
+	htop[at] = true;
+	For (i, 0, adj2[at].size()) {
+		search2(adj2[at][i], parent);
+	}
+}
+
+bool search3(int at, int parent) {
+	if (visited[at]) {
+		if (at == parent) return true;
+		return false;
+	}
+	visited[at] = true;
+	
+	For (i, 0, adj1[at].size()) {
+		if (search3(adj1[at][i], parent)) return true;
+	}
+	return false;
+}
+
+bool floodfill() {
+	ffi visited[i] = false;
+	
+	if (!search3(0, 0)) return false;
+	ffi if (!visited[i]) return false;
+	return true;
+}
+
+
+int main() {
+	//freopen ("test.in","r",stdin);
+	ifstream cin ("schlnet.in");
+	ofstream cout ("schlnet.out");
+	
+	cin >> N;
+	ffi {
+		//w<< i << ":";
+		int a; cin >> a; a--;
+		while (a != -1) {
+			adj1[i].pb(a);
+			adj2[a].pb(i);
+			//w s a;
+			cin >> a; a--;
+		}
+		//w<<e;
+		top[i] = false;
+		htop[i] = false;
+	}
+	
+	
+	ffi {
+		if (!htop[i]) {
+			ffj visited[j] = false;
+			top[i] = true;
+			For (j, 0, adj1[i].size()) {
+				search(adj1[i][j], i);
+			}
+		}
+	}
+	
+	int out1 = 0;
+	ffi {
+		if (top[i]) out1++;
+	}
+	//ffi w<<i s top[i] s htop[i]<<e;
+	
+	ffi {
+		top[i] = false;
+		htop[i] = false;
+	}
+	ffi {
+		if (!htop[i]) {
+			ffj visited[j] = false;
+			top[i] = true;
+			For (j, 0, adj2[i].size()) {
+				search2(adj2[i][j], i);
+			}
+		}
+	}
+	//ffi w<<i s top[i] s htop[i]<<e;
+	
+	int out2 = 0;
+	ffi {
+		if (top[i]) out2++;
+	}
+	w << out1 << e;
+	if (floodfill()) {out1 = 0; out2 = 0;}
+	w<< max(out1, out2)<<e;
+	
+	
+	
+	
+	return 0;
+}
+

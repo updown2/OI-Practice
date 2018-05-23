@@ -1,0 +1,98 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global lliables
+int N;
+ll points[300][2];
+ll out[300];
+int A1, A2, A3, B1, B2, B3, C1, C2, C3;
+bool P1, P2, P3;
+//a's, b's, c's and positive?, 1=(i-j), 2=(i-k), 3=(j, k)
+
+
+bool test (int p) {
+	bool one = (A1*points[p][0] + B1*points[p][1] + C1) > 0;
+	bool two = (A2*points[p][0] + B2*points[p][1] + C2) > 0;
+	bool three = (A3*points[p][0] + B3*points[p][1] + C3) > 0;
+	
+	return ( (P1 == one) && (P2 == two) && (P3 == three) );
+}
+
+void set_up(int i, int j, int k) {
+	A1 = points[i][1]-points[j][1];
+	B1 = points[j][0]-points[i][0];
+	C1 = points[i][0]*points[j][1] - points[j][0]*points[i][1];
+	
+	A2 = points[i][1]-points[k][1];
+	B2 = points[k][0]-points[i][0];
+	C2 = points[i][0]*points[k][1] - points[k][0]*points[i][1];
+	
+	A3 = points[j][1]-points[k][1];
+	B3 = points[k][0]-points[j][0];
+	C3 = points[j][0]*points[k][1] - points[k][0]*points[j][1];
+	
+	P1 = (A1*points[k][0] + B1*points[k][1] + C1) > 0;
+	P2 = (A2*points[j][0] + B2*points[j][1] + C2) > 0;
+	P3 = (A3*points[i][0] + B3*points[i][1] + C3) > 0;
+}
+
+int compare_first(const void * a, const void * b)
+{
+	const ll * ia = (const ll *)a;
+	const ll * ib = (const ll *)b;
+	
+	return ia[0] - ib[0];
+}
+
+int main() {
+	ifstream cin ("test2.in");
+	ofstream cout ("triangles.out");
+	
+	cin >> N;
+	
+	ffi {
+		cin >> points[i][0] >> points[i][1];
+		out[i] = 0;
+	}
+	
+	qsort(points, N, 2*sizeof(ll), compare_first);
+	
+	ffi {
+		For (j, i+1, N) {
+			For (k, j+1, N) {
+				ll in = 0;
+				set_up(i, j, k);
+				
+				For (p, i+1, k) {
+					if (p != j) {
+						if (test(p) ) in ++;
+					}
+				}
+				out[in] ++;
+			}
+		}
+	}
+	
+	
+	For (i, 0, N-2) {
+		w << out[i]<<e;
+	}
+	
+	
+	
+	
+	return 0;
+}
+

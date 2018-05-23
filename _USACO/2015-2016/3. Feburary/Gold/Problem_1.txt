@@ -1,0 +1,134 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <cmath>
+#include <algorithm>
+#include <fstream>
+#include <set>
+typedef long long ll;
+
+
+using namespace std;
+
+//Global Variables
+ll next_empty;
+ll N;
+ll input[1000000];
+ll current[1000000];
+
+bool n_empty(ll n) {
+	for (ll i=n; i<N; i++) {
+		if (current[i] == -1) {
+			next_empty = i;
+			return false;
+		}
+	}
+	for (ll i=0; i<n; i++) {
+		if (current[i] == -1) {
+			next_empty = i;
+			return false;
+		}
+	}
+}
+
+
+
+int main() {
+	ifstream cin ("cbarn.in");
+	ofstream fout ("cbarn.out");
+	
+	cin >> N;
+	ll m = 0;
+	for (int i=0; i<N; i++) {
+		cin >> input[i];
+	}
+	
+	ll save;
+	
+	ll out = N*N*N;
+	for (ll n=0; n<N; n++) {
+		ll going = 0;
+		if (input[n] != 0) {
+			//Use input[n] as your starting point
+			
+			bool go = true;
+			ll cows = 0;
+			
+			//Step 2: Loop from n -->N then 0 -->n
+			for (ll i=n; i<N; i++) {
+				cows += input[i];
+				cows --;
+				if (cows<0) {
+					go = false;
+					n = i;
+					break;
+				}
+			}
+			if (go == true) {
+				for (ll i=0; i<n; i++) {
+					cows += input[i];
+					cows --;
+					if (cows<0) {
+						go = false;
+						break;
+					}
+				}
+				if (go) {
+					save = n;
+				}
+				break;
+			}
+		}
+	}
+	
+	
+	//Step 1: Empty current
+	for (ll i=0; i<N; i++) {
+		current[i] = -1;
+	}
+	
+	ll going = 0;
+			
+			//Step 2: Loop from n -->N then 0 -->n
+			for (ll i=save; i<N; i++) {
+				for (ll j=0; j<input[i]; j++) {
+					//c();
+					n_empty(i);
+					
+					if (next_empty >= i) {
+						ll diff = next_empty - i;
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+					else {
+						ll diff = next_empty + (N-i);
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+				}
+			}
+			for (ll i=0; i<save; i++) {
+				for (ll j=0; j<input[i]; j++) {
+					//c();
+					n_empty(i);
+					
+					if (next_empty >= i) {
+						ll diff = next_empty - i;
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+					else {
+						ll diff = next_empty + (N-i);
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+				}
+			}
+	
+	
+	fout << going << endl;  //CHANGE
+	
+    return 0;
+}
+

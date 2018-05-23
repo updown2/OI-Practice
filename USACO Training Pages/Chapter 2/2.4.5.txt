@@ -1,0 +1,91 @@
+/*
+ID: riya.ar1
+PROG: fracdec
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+int N, D;
+int lastrem[100001];
+int rep;
+string out;
+bool p = false;
+bool p2 = false;
+
+int main() {
+	ifstream cin ("fracdec.in");
+	ofstream cout ("fracdec.out");
+	
+	cin >> N >> D;
+	
+	stringstream ss; ss<<(N/D);
+	out += ss.str();
+	out += ".";
+	For (i, 0, 100001) lastrem[i] = -1;
+	
+	int rem = N%D;
+	int i=out.length();
+	int start = i;
+	while (true) {
+		
+		if (rem == 0) {
+			if (i == start) {
+				out += "0";
+				w<<out<<e;
+				return 0;
+			}
+			rep = i;
+			break;
+		}
+		
+		
+		if (lastrem[rem] == -1) {
+			lastrem[rem] = i;
+		}
+		else {
+			rep = lastrem[rem];
+			p = true;
+			break;
+		}
+		
+		N = rem*10;
+		rem = N%D;
+		
+		stringstream ss; ss<<(N/D);
+		out += ss.str();
+		
+		i++;
+	}
+	
+	int j = 0;
+	For (i, 0, out.length()) {
+		if (j%76 == 0 && j != 0) w<<e;
+		if (i<rep) w<<out[i];
+		else {
+			if (p) {p = false; w<< "("; j++; p2 = true;}
+			w<< out[i];
+		}
+		j++;
+	}
+	if (p2) w<< ")";
+	w<<e;
+	
+	
+	
+	return 0;
+}
+

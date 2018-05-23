@@ -1,0 +1,83 @@
+/*
+ID: riya.ar1
+PROG: milk2
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int N;
+int times[5000][2];
+
+
+int compare_first(const void * a, const void * b)
+{
+	const int * ia = (const int *)a;
+	const int * ib = (const int *)b;
+	
+	return ia[0] - ib[0];
+}
+
+int main() {
+	ifstream cin ("milk2.in");
+	ofstream cout ("milk2.out");
+	
+	cin >> N;
+	ffi() {
+		cin >> times[i][0] >> times[i][1];
+	}
+	
+	qsort(times, N, 2*sizeof(int), compare_first);
+	
+	int last = times[0][0];
+	int curr = 0;
+	int out1 = 0;
+	int out2 = 0;
+	
+	ffi() {
+		if (times[i][1] <= last) {}
+		
+		else {
+			if (last < times[i][0]) {
+				curr = 0;
+				out2 = max(out2, times[i][0]-last);
+			}
+			else {
+				curr -= last-times[i][0];
+			}
+			curr += times[i][1]-times[i][0];
+			last = times[i][1];
+			out1 = max(out1, curr);
+		}
+		
+		
+		
+		
+		
+	}
+	
+	w << out1 s out2 <<e;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

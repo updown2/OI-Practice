@@ -1,0 +1,76 @@
+/*
+ID: riya.ar1
+PROG: heritage
+LANG: C++11
+*/
+//#include <bits/stdc++.h>
+#include <fstream>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int A = 'A';
+char in_order[26];
+char pre_order[26];
+int N;
+int at = 0;
+ofstream cout ("heritage.out");
+
+void search(int a11, int a12) {
+	if (at >= N) return;
+	char print = pre_order[at];
+	at++;
+	//w<<print s a11 s a12 << e;
+	
+	if (a12 > a11) {
+		
+		For (i, a11, a12+1) {
+			if (print == in_order[i]) {
+				if (i != a11)search(a11, i-1);
+				if (i != a12) search(i+1, a12);
+				break;
+			}
+		}
+	}
+	
+	w<<print;
+	
+}
+
+
+int main() {
+	ifstream cin ("heritage.in");
+	
+	string in;
+	cin >> in;
+	N = in.length();
+	ffi() in_order[i] = in[i];
+	cin>> in;
+	ffi() pre_order[i] = in[i];
+	
+	
+	search(0, N-1);
+	
+	w<<e;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

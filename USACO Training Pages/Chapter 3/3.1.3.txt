@@ -1,0 +1,56 @@
+/*
+ID: riya.ar1
+PROG: humble
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M+1)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+ll N, M;
+ll inp[100];
+set<ll> have;
+set<ll>::iterator it;
+ll c = 0;
+ 
+int main() {
+	ifstream cin ("humble.in");
+	ofstream cout ("humble.out");
+ 
+	cin >> N >> M;
+	ffi {
+		cin >> inp[i];
+		have.insert(inp[i]);
+	}
+ 
+	For (i, 0, N) {
+		it = have.begin();
+		while (true) {
+			int j = (*it)*inp[i];
+			//w<<j<<e;
+			if (j <= 1) break;
+			if (have.size()>M) {
+				have.erase(--have.end());
+				if (j > (*(--have.end()))) break;
+			}
+ 
+			have.insert(j);
+			++it;
+		}
+	}
+	w << *(--have.end())<<e;
+ 
+	return 0;
+}

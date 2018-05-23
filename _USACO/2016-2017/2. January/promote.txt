@@ -1,0 +1,75 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100000, INF=1000000000000000000;
+///500,000,000
+int N, P[MAXN], ind[MAXN][2];
+vector<int> adj[MAXN], ord;
+vector<int> tree[MAXN*4];
+
+void dfs (int at) {
+    ind[at][0] = ord.size();
+    ord.pb(at);
+    for (int i: adj[at]) dfs(i);
+    ind[at][1] = ord.size()-1;
+}
+
+void build(int ind, int L, int R) {
+    if (L == R) {
+        tree[ind].pb(ord[L]);
+        return;
+    }
+    int mid = (L+R)/2;
+    build(ind*2, L, mid), build(ind*2+1, mid+1, R);
+
+    for (int i: tree[ind*2]) tree[ind].pb(i);
+    for (int i: tree[ind*2+1]) tree[ind].pb(i);
+    sort(tree[ind].begin(), tree[ind].end());
+}
+int query(int ind, int L, int R, int oL, int oR, int v) {
+    if (oR < L || oL > R) return 0;
+    if (oL <= L && R <= oR) {
+        int a = 0, b = tree[ind].size()-1;
+        if (tree[ind][b] <= v) return 0;
+        while (a != b) {
+            int mid = (a+b)/2;
+            if (tree[ind][mid] > v) b=mid;
+            else a=mid+1;
+        }
+        return tree[ind].size()-a;
+    }
+    int mid = (L+R)/2;
+    return query(ind*2, L, mid, oL, oR, v)+query(ind*2+1, mid+1, R, oL, oR, v);
+}
+
+main() {
+    //ifstream cin("test.in");
+    ifstream cin("promote.in"); ofstream cout("promote.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi cin >> P[i];
+    For (i, 1, N) {
+        int a; cin >> a;
+        adj[a-1].pb(i);
+    }
+    dfs(0);
+    //ffi w<< ord[i] s ind[ord[i]][0] s ind[ord[i]][1]<<e;
+    ffi ord[i] = P[ord[i]];
+    build(1, 0, N-1);
+    //For (i, 1, 10) {w<< i<<":";for (j: tree[i]) w s (j);w<<e;}
+    ffi {
+        w<< query(1, 0, N-1, ind[i][0], ind[i][1], P[i])<<e;
+    }
+}

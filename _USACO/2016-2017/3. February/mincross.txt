@@ -1,0 +1,68 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100001, INF=1000000000000000000;
+///500,000,000
+int N, ft[MAXN], r1[MAXN], locr2[MAXN], out, P[MAXN], inp1[MAXN], inp2[MAXN];
+
+void update(int x, int v) {while(x<=N) ft[x]+=v, x+=(x&-x);}
+int query (int x) { return x>0 ? ft[x]+query(x-(x&-x)):0;}
+
+
+main() {
+    ifstream cin("mincross.in");
+    ofstream cout("mincross.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi cin >> inp1[i]; ffi cin >> inp2[i];
+
+    ffi {int a = inp1[i]; locr2[a] = i;}
+    ffi r1[i] = inp2[i];
+
+    ffi {
+        P[i] = locr2[r1[i]];
+        //w<< r1[i] s P[i]<<e;
+        out += P[i]-1-query(P[i]);
+        update(P[i], 1);
+    }
+    int curr = out;
+    //w<< "inv:" s curr<<e;
+    for (int i=N; i>= 2; i--) {
+        curr += 2*P[i]-N-1;
+        out = min(out, curr);
+        //w<< "shift" s N-i+1 s ":" s curr<<e;
+    }
+
+
+    ffi {int a = inp2[i]; locr2[a] = i;}
+    ffi r1[i] = inp1[i];
+    For (i, 0, MAXN) ft[i] = 0;
+    curr = 0;
+    ffi {
+        P[i] = locr2[r1[i]];
+        //w<< r1[i] s P[i]<<e;
+        curr += P[i]-1-query(P[i]);
+        update(P[i], 1);
+    }
+    out = min(out, curr);
+    //w<< "inv:" s curr<<e;
+    for (int i=N; i>= 2; i--) {
+        curr += 2*P[i]-N-1;
+        out = min(out, curr);
+        //w<< "shift" s N-i+1 s ":" s curr<<e;
+    }
+
+    w<< out<<e;
+}

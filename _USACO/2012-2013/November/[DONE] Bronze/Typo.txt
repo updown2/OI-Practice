@@ -1,0 +1,95 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int N;
+string in;
+int input[100000]; //1 is left; -1 is right
+int out = 0;
+bool change_left;
+
+int main() {
+    ofstream fout ("typo.out");
+    ifstream fin ("typo.in");
+
+    //Declare Variables and Read Input
+    fin >> in;  //CHANGE
+    N = in.length();
+    
+    //Algo
+    //Set change_left and input
+    int lefts = 0;
+    int rights = 0;
+    bool go = true;
+    for (int i=0; i<N; i++) {
+    	string check(1, in[i]);
+    	if (check.compare("(") == 0) {
+    		lefts ++;
+    		input[i] = 1;
+    	}
+    	else {
+    		rights ++;
+    		input[i] = -1;
+    	}
+    }
+    if (lefts+2 == rights) {
+    	change_left = false;
+    }
+    else if (lefts == rights+2) {
+    	change_left = true;
+    }
+    else {
+    	go = false;
+    }
+    
+    int sum = 0;
+    int num = 0;
+    if (go) {
+    	if (change_left) {
+    		for (int i=N-1; i>=1; i--) {
+	    		num = sum;
+	    		bool add = true;
+	    		if (sum > 0) {
+		    		add = false;
+		    		break;
+		    	}
+	    		sum += input[i];
+			   	if (input[i] == 1){
+			    	num --;
+			   	}
+			    else {
+			    	add = false;
+			    }
+			    if (add && num<=0) {
+			    	out ++;
+			    }
+			}
+    	}
+    	else {
+    		for (int i=0; i<N-1; i++) {
+	    		num = sum;
+	    		bool add = true;
+	    		if (sum < 0) {
+		    		add = false;
+		    		break;
+		    	}
+	    		sum += input[i];
+			   	if (input[i] == -1){
+			    	num ++;
+			   	}
+			    else {
+			    	add = false;
+			    }
+			    if (add && num>=0) {
+			    	out ++;
+			    }
+			}
+    	}
+	}
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

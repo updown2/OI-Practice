@@ -1,0 +1,123 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("badmilk.out");
+    ifstream fin ("badmilk.in");
+
+    //Declare Variables and Read Input
+    int P, M, D, S;
+    //#cows, #milk, loop1, loop2
+    fin >> P >> M >> D >> S;  //CHANGE
+    int N = D;
+    int p_d_t[1000][3];
+    int drank[51];
+    for (int i=0; i<M+1; i++) {
+    	drank[i] = 0;
+    }
+    for (int i=0; i<N; i++) {
+    	fin >> p_d_t[i][0] >> p_d_t[i][1] >> p_d_t[i][2];  //CHANGE
+    }
+    int sick[100][2];
+    for (int i=0; i<N; i++) {
+    	fin >> sick[i][0] >> sick[i][1];  //CHANGE
+    }
+    
+    //Sort input
+    for(register int i = 0; i < N - 1; i++) {
+	    for(register int j = i + 1; j < N; j++) {
+	        if(p_d_t[j][0] < p_d_t[i][0]) {
+	            swap(p_d_t[i][0], p_d_t[j][0]);
+				swap(p_d_t[i][1], p_d_t[j][1]);
+				swap(p_d_t[i][2], p_d_t[j][2]);
+	        }
+	        else if (p_d_t[j][0] == p_d_t[i][0]) {
+	        	if(p_d_t[j][1] < p_d_t[i][1]) {
+		            swap(p_d_t[i][0], p_d_t[j][0]);
+					swap(p_d_t[i][1], p_d_t[j][1]);
+					swap(p_d_t[i][2], p_d_t[j][2]);
+		        }
+		        else if (p_d_t[j][1] == p_d_t[i][1]) {
+		        	if(p_d_t[j][2] < p_d_t[i][2]) {
+			            swap(p_d_t[i][0], p_d_t[j][0]);
+						swap(p_d_t[i][1], p_d_t[j][1]);
+						swap(p_d_t[i][2], p_d_t[j][2]);
+			        }
+		        }
+	        }
+	    }
+	}
+	for(register int i = 0; i < S - 1; i++) {
+	    for(register int j = i + 1; j < S; j++) {
+	        if(sick[j][0] < sick[i][0]) {
+	            swap(sick[i][0], sick[j][0]);
+				swap(sick[i][1], sick[j][1]);
+	        }
+	        else if (sick[j][0] == sick[i][0]) {
+	        	if(sick[j][1] < sick[i][1]) {
+					swap(sick[i][0], sick[j][0]);
+		            swap(sick[i][1], sick[j][1]);
+		        }
+	        }
+	    }
+	}
+	
+	
+	//Count the number of people who drank each milk (set drank[])
+	int last = -1;
+	int l2 = -1;
+	for (int i=0; i<N; i++) {
+		int one = p_d_t[i][1];
+		if (p_d_t[i][0] != last || p_d_t[i][1] != l2) {
+			drank[one] ++;
+			last = p_d_t[i][0];
+			l2 = p_d_t[i][1];
+		}
+	}
+	
+	for (int i=0; i<D; i++) {
+		cout << p_d_t[i][0] << " " << p_d_t[i][1] << " " << p_d_t[i][2] << endl;
+	}
+	
+	//Algo
+	int possible[51];
+	for (int i=0; i<M+1; i++) {
+		possible[i] = 0;
+	}
+	int added = 0;
+	for (int i=0; i<S; i++) {
+		added = 0;
+		for (int j=0; j<D; j++) {
+			if (p_d_t[j][0] > sick[i][0]) {
+				break;
+			}
+			
+			else if (p_d_t[j][0] == sick[i][0] && p_d_t[j][2] < sick[i][1] && p_d_t[j][1] != added) {
+				possible[p_d_t[j][1]] ++;
+				added = p_d_t[j][1];
+				cout << p_d_t[j][1] << endl;
+			}
+			else {
+				cout << "Not adding to " << p_d_t[j][1] << " because " << p_d_t[j][0] << " " << sick[i][0] << " " << p_d_t[j][2] << " " << sick[i][1]<< endl;
+			}
+		}
+	}
+	for (int i=1; i<M+1; i++) {
+		cout << possible[i] << " " << drank[i] << endl;
+	}
+	
+	int out = S;
+	for (int i=1; i<M+1; i++) {
+		if (possible[i] == S) {
+			out = max(out, drank[i]);
+		}
+	}
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

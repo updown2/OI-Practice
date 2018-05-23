@@ -1,0 +1,89 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+//500,000,000 operations
+
+//Global Variables
+int N, M;
+bool reach[100][100];
+bool lighted[100][100];
+int connect[20000][4];
+bool visited[100][100];
+queue<int> que1;
+queue<int> que2;
+
+int main() {
+	ifstream cin ("lightson.in");
+	ofstream cout ("lightson.out");
+	
+	cin >> N >> M;
+	
+	ffi {ffj {reach[i][j] = false; lighted[i][j]=false; visited[i][j] = false;}}
+	reach[0][0]=true;
+	lighted[0][0]=true;
+	que1.push(0);
+	que2.push(0);
+	
+	For (i, 0, M) {
+		For (j, 0, 4) {
+			int a;
+			cin >> a;
+			connect[i][j] = a-1;
+		}
+	}
+	
+	while (!que1.empty()) {
+		int x = que1.front();
+		int y = que2.front();
+		que1.pop();
+		que2.pop();
+		if (!visited[x][y] && reach[x][y] && lighted[x][y]) {
+			visited[x][y] = true;
+			For (i, 0, M) {
+				if (connect[i][0]==x && connect[i][1]==y) {
+					lighted[connect[i][2]][connect[i][3]] = true;
+					que1.push(connect[i][2]);
+					que2.push(connect[i][3]);
+				}
+			}
+			if (x > 0) {
+				reach[x-1][y] = true;
+				que1.push(x-1);
+				que2.push(y);
+			}
+			if (x < N-1) {
+				reach[x+1][y] = true;
+				que1.push(x+1);
+				que2.push(y);
+			}
+			if (y > 0) {
+				reach[x][y-1] = true;
+				que1.push(x);
+				que2.push(y-1);
+			}
+			if (y < N-1) {
+				reach[x][y+1] = true;
+				que1.push(x);
+				que2.push(y+1);
+			}
+		}
+	}
+	int count = 0;
+	ffi {
+		ffj {
+			if (lighted[i][j]) count++;
+		}
+	}
+	w<<count<<e;
+	
+	
+	return 0;
+}
+

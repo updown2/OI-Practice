@@ -1,0 +1,89 @@
+/*
+ID: riya.ar1
+PROG: bigbrn
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, M;
+int dp[1000][1000];
+
+void print() {
+	ffi {
+		ffj {
+			w<< dp[i][j]<< " ";
+		}
+		w<<e;
+	}
+}
+
+bool check(int len) {
+	len--;
+	//square with both index 0
+	if (dp[len][len] == 0) return true;
+	//squares with 1 index 0
+	For (i, 1, N-len) {
+		if (dp[len][i+len]-dp[len][i-1] == 0) return true;
+		if (dp[i+len][len]-dp[i-1][len] == 0) return true;
+	}
+	For (i, 1, N-len) {
+		For (j, 1, N-len) {
+			if (dp[i+len][j+len]-dp[i-1][j+len]-dp[i+len][j-1]+dp[i-1][j-1] == 0) return true;
+		}
+	}
+	
+	return false;
+}
+
+
+int main() {
+	//freopen ("test.in","r",stdin);
+	ifstream cin ("bigbrn.in");
+	ofstream cout ("bigbrn.out");
+	
+	cin >> N >> M;
+	ffa dp[i][j] = 0;
+	For (i, 0, M) {
+		int a, b; cin >> a >> b; a--; b--;
+		dp[a][b] = 1;
+	}
+	
+	
+	For (i, 1, N) {
+		dp[0][i] += dp[0][i-1];
+		dp[i][0] += dp[i-1][0];
+	}
+	
+	For (i, 1, N) {
+		For (j, 1, N) {
+			dp[i][j] += dp[i-1][j] + dp[i][j-1]-dp[i-1][j-1];
+		}
+	}
+	
+	//print();
+	For (i, 2, N) {
+		//side length
+		if (!check(i)) {
+			w<< i-1<<e;
+			return 0;
+		}
+	}
+	
+	
+	return 0;
+}
+

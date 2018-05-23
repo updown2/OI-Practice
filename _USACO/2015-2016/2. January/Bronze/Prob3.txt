@@ -1,0 +1,59 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+//500,000,000 operations
+//Global Variables
+int N;
+int grid[2001][2001];
+ll out = 100000;
+
+int main() {
+	ifstream cin ("mowing.in");
+	ofstream cout ("mowing.out");
+	
+	For (i, 0, 2001) For (j, 0, 2001) grid[i][j] = 0;
+	
+	cin >> N;
+	int x_at = 1000;
+	int y_at = 1000;
+	ll time = 0;
+	For (i, 0, N) {
+		char a;
+		int b;
+		cin >> a >> b;
+		
+		For (j, 0, b) {
+			if (a == 'N') {
+				y_at ++;
+			}
+			if (a == 'S') {
+				y_at --;
+			}
+			if (a == 'W') {
+				x_at --;
+			}
+			if (a == 'E') {
+				x_at ++;
+			}
+			time++;
+			
+			
+			
+			if (grid[x_at][y_at] != 0) out = min(out, time-grid[x_at][y_at]);
+			grid[x_at][y_at] = time;
+		}
+		/*For (i, 990, 1010) {
+				For (j, 1000, 1015) {
+					cout << grid[i][j] << " ";
+				}
+				cout << endl;
+			}*/
+	}
+	if (out == 100000) out = -1;
+	cout << out << endl;
+	
+	
+	return 0;
+}
+

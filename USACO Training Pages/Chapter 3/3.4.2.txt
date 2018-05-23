@@ -1,0 +1,65 @@
+/*
+ID: riya.ar1
+PROG: fence9
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int N, M, P;
+
+struct Line {
+	double m1, m2, b;
+};
+
+
+int main() {
+	ifstream cin ("fence9.in");
+	ofstream cout ("fence9.out");
+	
+	cin >> N >> M >> P;
+	
+	//Points are (0, 0), (M, N), (0, P);
+	
+	Line line1;
+	line1.b = 0;
+	line1.m1 = N;
+	line1.m2 = M;
+	
+	Line line2;
+	line2.b = P;
+	line2.m1 = N-P;
+	line2.m2 = M;
+	
+	int out = 0;
+	For (i, 1, M) {
+		int small_y = floor((i*line1.m1)/line1.m2);
+		int big_y = line2.b+ ceil((i*line2.m1)/line2.m2);
+		out += (big_y - small_y)-1;
+	}
+	
+	w<<out<<e;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

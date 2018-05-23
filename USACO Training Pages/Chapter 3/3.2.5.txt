@@ -1,0 +1,180 @@
+/*
+ID: riya.ar1
+PROG: msquare
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, 8)
+#define ffj For(j, 0, 8)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int inp[8];
+set<int> visited;
+int curr[8];
+queue<string> next1;
+
+bool gone() {
+	int total = 0;
+	int tens = 1;
+	ffi {
+		total += curr[i]*tens;
+		tens *= 10;
+	}
+	
+	if (visited.find(total) != visited.end()) return true;
+	visited.insert(total);
+	return false;
+	
+}
+bool match() {
+	ffi {
+		if (curr[i] != inp[i]) return false;
+	}
+	return true;
+}
+void A() {
+	swap(curr[0], curr[7]);
+	swap(curr[1], curr[6]);
+	swap(curr[2], curr[5]);
+	swap(curr[3], curr[4]);
+}
+void B() {
+	int t = curr[3];
+	int b = curr[4];
+	curr[3] = curr[2];
+	curr[2] = curr[1];
+	curr[1] = curr[0];
+	curr[0] = t;
+	
+	curr[4] = curr[5];
+	curr[5] = curr[6];
+	curr[6] = curr[7];
+	curr[7] = b;
+}
+void C() {
+	int save = curr[1];
+	curr[1] = curr[6];
+	curr[6] = curr[5];
+	curr[5] = curr[2];
+	curr[2] = save;
+}
+
+void rev_B() {
+	int t = curr[0];
+	int b = curr[7];
+	curr[0] = curr[1];
+	curr[1] = curr[2];
+	curr[2] = curr[3];
+	curr[3] = t;
+	
+	curr[7] = curr[6];
+	curr[6] = curr[5];
+	curr[5] = curr[4];
+	curr[4] = b;
+}
+void rev_C() {
+	int save = curr[1];
+	curr[1] = curr[2];
+	curr[2] = curr[5];
+	curr[5] = curr[6];
+	curr[6] = save;
+}
+
+
+void bfs() {
+	curr[0] = 0;
+	curr[1] = 1;
+	curr[2] = 2;
+	curr[3] = 3;
+	curr[4] = 4;
+	curr[5] = 5;
+	curr[6] = 6;
+	curr[7] = 7;
+	string in = next1.front();
+	next1.pop();
+	For (i, 0, in.length()) {
+		if (in[i] == 'A') A();
+		if (in[i] == 'B') B();
+		if (in[i] == 'C') C();
+	}
+	
+	//if (gone()) return;
+	if (match()) {
+		ofstream cout ("msquare.out");
+		w<< in.length() << e << in<<e;
+		exit(0);
+	}
+	
+	in += 'A';
+	A();
+	if (!gone()) {
+		next1.push(in);
+	}
+	A();
+	
+	in[in.length()-1] = 'B';
+	B();
+	if (!gone()) {
+		next1.push(in);
+	}
+	rev_B();
+	
+	in[in.length()-1] = 'C';
+	C();
+	if (!gone()) next1.push(in);
+	rev_C();
+}
+
+
+
+int main() {
+	ifstream cin ("msquare.in");
+	//ofstream cout ("msquare.out");
+	
+	ffi {
+		cin >> inp[i];
+		inp[i] --;
+	}
+	
+	/*For (a, 0, 8) {
+		For (b, 0, 8) {
+			For (c, 0, 8) {
+				For (d, 0, 8) {
+					For (e, 0, 8) {
+						For (f, 0, 8) {
+							For (g, 0, 8) {
+								For (h, 0, 8) {
+									visited[a][b][c][d][e][f][g][h] = false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}*/
+	
+	
+	next1.push("");
+	while (!next1.empty() ) {
+		bfs();
+	}
+	
+	return 0;
+}
+
+
+
+
+
+

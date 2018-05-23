@@ -1,0 +1,107 @@
+/*
+ID: riya.ar1
+PROG: holstein
+LANG: C++11
+*/
+#include<iostream>
+#include<list>
+#include<string>
+#include<cstring>
+#include<sstream>
+#include<cctype>
+#include<string.h>
+#include<algorithm>
+#include<stack>
+#include<fstream>
+#include<cstdlib>
+#include<vector>
+#include<map>
+#include<set>
+#include<utility>
+#include<iomanip>
+#include<queue>
+#include<math.h>
+
+using namespace std;
+
+#define For(i, a, b) for(int i=a; i<b; i++)
+typedef long long int ll;
+//100,000,000 operations
+
+//Global Variables
+int V;
+int F;
+int feeds[15][25];
+int min_V[25];
+int current[15];
+int cc[25];
+int save[15];
+int out = 100;
+
+
+int backtrack(int pos) {
+	bool done = true;
+	For (i, 0, V) {
+		if (cc[i] < min_V[i]) { done = false; }
+	}
+	if (done) {
+		if (pos < out) {
+			out = pos;
+			For (i, 0, pos) {
+				save[i] = current[i];
+			}
+			return 0;
+		}
+	}
+	
+	For (i, current[pos-1]+1, F) {
+		current[pos] = i;
+		For (j, 0, V) {
+			cc[j] += feeds[i][j];
+		}
+		backtrack(pos+1);
+		For (j, 0, V) {
+			cc[j] -= feeds[i][j];
+		}
+	}
+	
+}
+
+
+int main() {
+	ifstream cin ("holstein.in");
+	ofstream cout ("holstein.out");
+	
+	//Declair Variables and Read Input
+	cin >> V;
+	For (i, 0, V) {
+		cin >> min_V[i];
+	}
+	cin >> F;
+	For (i, 0, F) {
+		For (j, 0, V) {
+			cin >> feeds[i][j];
+		}
+	}
+	
+	
+	//Algo
+	For (i, 0, F) {
+		current[0] = i;
+		For (j, 0, V) {
+			cc[j] = feeds[i][j];
+		}
+		backtrack(1);
+	}
+	
+	cout << out << " ";
+	For (i, 0, out-1) {
+		cout << save[i]+1 << " ";
+	}
+	cout << save[out-1]+1 << endl;
+	
+	
+	
+	return 0;
+}
+

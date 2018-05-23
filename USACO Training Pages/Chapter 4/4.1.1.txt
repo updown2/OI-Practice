@@ -1,0 +1,81 @@
+/*
+ID: riya.ar1
+PROG: nuggets
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int N;
+int nums[10];
+priority_queue<int> next1;
+
+
+int main() {
+	ifstream cin ("nuggets.in");
+	ofstream cout ("nuggets.out");
+	
+	cin >> N;
+	ffi() cin >> nums[i];
+	sort(nums, nums+N);
+	
+	next1.push(0);
+	int prev = -10;
+	int curr = 0;
+	int out = -1;
+	while (!next1.empty()) {
+		int at = next1.top();
+		at *= -1;
+		next1.pop();
+		//w<<at s curr<<e;
+		if (at != prev) {
+			if (at > 200000 && at-1 != prev) {
+				w<< 0 <<e;
+				return 0;
+			}
+			if (at == prev+1) {
+				curr++;
+				if (curr >= nums[0]) {
+					break;
+				}
+			}
+			else {
+				out = at-1;
+				curr = 1;
+			}
+			
+			ffi() {
+				next1.push((-1)*(at+nums[i]));
+			}
+			
+			prev = at;
+		}
+		
+	}
+	
+	if (out == -1) out = 0;
+	w<<out<<e;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

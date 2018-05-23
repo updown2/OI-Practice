@@ -1,0 +1,105 @@
+/*
+ID: riya.ar1
+PROG: fence8
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+int N, M;
+vector<int> boards;
+vector<int> rails;
+int preRails[1023];
+int cap;
+int sumBoards = 0;
+
+bool dfs(int rail, int val, int board, int canWaste){
+	if (canWaste < 0) return false;
+    if (rail == cap-1) return true;
+	
+	//w<< "DFS:" s j s canWaste<<e;
+	//w<< "Boards: "; ffi w<< boards[i]<< " "; w<<e;
+	
+	bool good = false;
+	int j = rail+1;
+	int val2 = 0;
+	int start = 0;
+	if (val == rails[j]) start = board;
+	For (i, start, N) {
+	//w<< "Boards2: "; For (k, 0, N) w<< boards[k]<< " "; w<<e;
+		if (boards[i] >= rails[j] && val2 != boards[i]) {
+			//w<< "Boards3: "; For (k, 0, N) w<< boards[k]<< " "; w<<e;
+			//w<< i s  boards[i] s rails[j]<<e;
+			val2 = boards[i];
+			boards[i] -= rails[j];
+			//int save = boards[i];
+			int add = 0;
+			if (j != cap-1 && boards[i] < rails[cap-1]) {
+				canWaste -= boards[i];
+				add = boards[i];
+				//boards[i] = 0;
+			}
+			//w<< "calling: from" s i<<e;
+			good = good || dfs(j, rails[j], i, canWaste);
+			//boards[i] = save;
+			canWaste += add;
+			boards[i] += rails[j];
+		}
+		if (good) {/*w<<"returning true"<<e;*/return true;}
+	}
+	
+	return good;
+}
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("fence8.in");
+	ofstream cout ("fence8.out");
+	cin >> N;
+	ffi {int a; cin >> a; boards.pb(a);}
+	cin >> M;
+	ffj {int a; cin >> a; rails.pb(a);}
+	sort(boards.begin(), boards.end());
+	sort(rails.begin(), rails.end());
+	while (boards.size() > 0 && boards[0] < rails[0]) boards.erase(boards.begin());
+	N = boards.size(); if (N == 0) {w<<0<<e; return 0;}
+	ffi sumBoards += boards[i];
+	int curr_sum = 0;
+	For (i, 0, rails.size()) {
+		if (curr_sum+rails[i] > sumBoards) rails.erase(rails.begin()+i, rails.end());
+		else if (rails[i] > boards[N-1]) rails.erase(rails.begin()+i, rails.end());
+		else curr_sum += rails[i];
+	}
+	M = rails.size();
+	ffj rails[j] *= -1;
+	sort(rails.begin(), rails.end());
+	ffj rails[j] *= -1;
+	ffj {
+		preRails[j] = rails[j];
+		if (j != 0) preRails[j] += preRails[j-1];
+	}
+	
+	int first = 0;
+	int last = M;
+	while (first != last) {
+		cap = (first+last+1)/2;
+		if (dfs(-1, -1, -1, sumBoards-preRails[cap-1])) first = cap;
+		else last = cap-1;
+	}
+	w<< first<<e;
+	
+	return 0;
+}
+

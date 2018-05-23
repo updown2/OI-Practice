@@ -1,0 +1,63 @@
+/*
+ID: riya.ar1
+PROG: stamps
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, 2000001)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+ll K, N;
+int dp[2000001];
+int val[50];
+
+int main() {
+	ifstream cin ("stamps.in");
+	ofstream cout ("stamps.out");
+	
+	cin >>K >> N;
+	ffi cin >> val[i];
+	
+	ffj dp[j] = 1000;
+	dp[0] = 0;
+	
+	ffj {
+		//w<<dp[j]<<e;
+		if (dp[j] < K) {
+			ffi {
+				dp[j+val[i]] = min(dp[j+val[i]], dp[j]+1);
+			}
+		}
+	}
+	
+	int curr = 0;
+	int out = 0;
+	For (i, 1, 2000001) {
+		if (dp[i] <= K) {
+			curr++;
+			out = max(out, curr);
+		}
+		else {
+			curr = 0;
+		}
+	}
+	out = max(out, curr);
+	
+	w<< out<<e;
+	
+	
+	return 0;
+}
+

@@ -1,0 +1,95 @@
+/*
+ID: riya.ar1
+PROG: fence6
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int N;
+vector<int> adj[100][2];
+int cost[100];
+bool visited[100];
+int out = 1000000000;
+
+void check(int edge) {
+	priority_queue<p< p<int, int>, int > > next1; //( (moves, location), came from)
+	next1.push(mp( mp(0, edge), adj[edge][0][0]) );
+	while (!next1.empty()) {
+		pair<pair<int, int>, int> curr = next1.top();
+		int moves = curr.a.a;
+		int loc = curr.a.b;
+		int prev = curr.b;
+		next1.pop();
+		if (!visited[loc]) {
+			visited[loc] = true;
+			
+			//w<<loc<<e;
+			int use;
+			For (i, 0, adj[loc][0].size()) {
+				if (adj[loc][0][i] == prev) use = 1;
+			}
+			For (i, 0, adj[loc][1].size()) {
+				if (adj[loc][1][i] == prev) use = 0;
+			}
+			
+			//w<< loc+1 s use s prev+1 s -moves<<e;
+			For (i, 0, adj[loc][use].size()) {
+				next1.push(mp(mp( moves-cost[adj[loc][use][i]], adj[loc][use][i]), loc));
+				//w<<"ADDING" s adj[loc][use][i]+1 s "from" s loc+1 s "costing" s moves-cost[adj[loc][use][i]]<<e;
+			}
+		}
+		else if (loc == edge) {
+			//w<< edge s -moves<<e;
+			out = min(out, -moves);
+			return;
+		}
+	}
+}
+
+int main() {
+	ifstream cin ("fence6.in");
+	ofstream cout ("fence6.out");
+	
+	cin >> N;
+	ffi() {
+		int index, a, b, c;
+		cin >> index;
+		index--;
+		cin >> cost[index] >> b >> c;
+		For (j, 0, b) {
+			cin >> a;
+			a--;
+			adj[index][0].pb(a);
+		}
+		For (j, 0, c) {
+			cin >> a;
+			a--;
+			adj[index][1].pb(a);
+		}
+	}
+
+	
+	ffi() {
+		ffj() {
+			visited[j] = false;
+		}
+		check(i);
+	}
+	w<<out <<e;
+	
+	return 0;
+}

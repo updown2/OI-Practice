@@ -1,0 +1,49 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N+1)
+#define ffj For(j, 0, N+1)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+//#define int ll
+const ll MAXN = 2010, MOD = 1000000007;
+////////////////////////////////////////////////////////
+int T, N, C[MAXN], P[MAXN][MAXN];
+ll dp[MAXN][MAXN];
+
+main() {
+	ifstream cin ("test.in");
+	ofstream fout ("test.out");
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	For (i, 2, MAXN) C[i] = i*(i-1)/2;
+	For (i, 0, MAXN) For (j, 0, MAXN) P[i][j] = (i+1)*j;
+	cin >> T;
+	fout << "{";
+	For (t, 0, T) {
+        cin >> N;
+        ffi dp[N+1][i] = dp[N][i] = 0;
+        dp[N][0] = 1;
+        int x = N;
+        if (N%2 == 1) x--;
+        for (int i=N-1; i>=0; i--) {
+            for (int j=x; j>=0; j-=2) {
+                dp[i][j] = 0;
+                if (j-2 >=0) {
+                    dp[i][j] = dp[i+2][j-2] * C[i+2];
+                }
+                if (j != 0) {
+                    dp[i][j] += dp[i+1][j] * P[i][j];
+                    //w<< "DSAA" s P[i][j]<<e;
+                }
+                dp[i][j] += dp[i][j+2] * C[j+2];
+                dp[i][j] %= MOD;
+            }
+        }
+        if (t%100 == 0) printf("%d\n", t);
+        fout<< dp[0][0]<<e;
+        if (t != T-1) fout << ",";
+	}
+	fout << "}"<<e;
+}

@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define x first
+#define y second
+#define int ll
+const int MAXN=100000;//, INF=1000000000000000000;
+///500,000,000
+int N, T, big[MAXN];
+
+main() {
+	ifstream cin ("cowjog.in");
+	ofstream cout ("cowjog.out");
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N >> T;
+	ffi big[i] = -1;
+	ffi {
+        int x0, v; cin >> x0 >> v;
+        int loc = v*T + x0;
+        int at = 0;
+        while (big[at] >= loc) at++;
+        big[at] = loc;
+	}
+	int out = 0;
+    ffi {
+        if (big[i] > -1) out++;
+        else break;
+	}
+	w<< out<<e;
+}

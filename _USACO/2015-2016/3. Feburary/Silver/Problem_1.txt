@@ -1,0 +1,110 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <cmath>
+#include <algorithm>
+#include <fstream>
+#include <set>
+
+using namespace std;
+
+//Global Variables
+int next_empty;
+int N;
+int input[1000];
+int current[1000];
+
+
+void c() {
+	for (int i=0; i<N; i++) {
+		cout << current[i] << " ";
+	}
+	cout << endl;
+}
+
+bool n_empty(int n) {
+	for (int i=n; i<N; i++) {
+		if (current[i] == -1) {
+			next_empty = i;
+			return false;
+		}
+	}
+	for (int i=0; i<n; i++) {
+		if (current[i] == -1) {
+			next_empty = i;
+			return false;
+		}
+	}
+}
+
+
+
+int main() {
+	ifstream cin ("cbarn.in");
+	ofstream fout ("cbarn.out");
+	
+	cin >> N;
+	for (int i=0; i<N; i++) {
+		cin >> input[i];
+	}
+	
+	int out = N*N*N;
+	for (int n=0; n<N; n++) {
+		int going = 0;
+		if (input[n] != 0) {
+			cout << n << " " << input[n] << endl;
+			//Use input[n] as your starting point
+			
+			//Step 1: Empty current
+			for (int i=0; i<N; i++) {
+				current[i] = -1;
+			}
+			
+			//Step 2: Loop from n -->N then 0 -->n
+			for (int i=n; i<N; i++) {
+				for (int j=0; j<input[i]; j++) {
+					//c();
+					n_empty(i);
+					
+					if (next_empty >= i) {
+						int diff = next_empty - i;
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+					else {
+						int diff = next_empty + (N-i);
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+				}
+			}
+			for (int i=0; i<n; i++) {
+				for (int j=0; j<input[i]; j++) {
+					//c();
+					n_empty(i);
+					
+					if (next_empty >= i) {
+						int diff = next_empty - i;
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+					else {
+						int diff = next_empty + (N-i);
+						current[next_empty] = diff;
+						going += diff*diff;
+					}
+				}
+			}
+			c();
+			cout << going << endl;
+			out = min(out, going);
+		}
+		
+	}
+	
+	fout << out << endl;  //CHANGE
+	
+    return 0;
+}
+

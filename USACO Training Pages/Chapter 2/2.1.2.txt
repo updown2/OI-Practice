@@ -1,0 +1,67 @@
+/*
+ID: riya.ar1
+PROG: frac1
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//Global Variables
+double divided[160*160];
+int k;
+
+//Useful Functions
+bool done(double d) {
+	for (int i=0; i<=k; i++) {
+		if (divided[i] == d) {
+			return true;
+		}
+	}
+	return false;
+}
+
+int main() {
+    ofstream fout ("frac1.out");
+    ifstream fin ("frac1.in");
+
+    //Declare Variables and Read Input
+    int N;
+    fin >> N;  //CHANGE
+    int possible[160*160][2];
+    
+    fout << "0/1" << endl;  //CHANGE
+    
+    k=0;
+    for (int i=1; i<=N; i++) {
+    	for (int j=1; j<=i; j++) {
+    		if (done(((double) j / i)) == false) {
+				possible[k][0] = j; possible[k][1] = i;
+    			divided[k] = ((double) j / i);
+    			cout << j << " " << i << " " << divided[k] << endl;
+    			k++;
+    		}
+    	}
+    }
+	
+	//Sort
+	for(register int i = 0; i < k - 1; i++) {
+	    for(register int j = i + 1; j < k; j++) {
+	        if(divided[j] < divided[i]) {
+	            swap(divided[i], divided[j]);
+				swap(possible[i][0], possible[j][0]);
+				swap(possible[i][1], possible[j][1]);
+	        }
+	    }
+	}
+	
+	//Output answer
+	for (int i=0; i<k; i++) {
+		fout << possible[i][0] << "/" << possible[i][1] << endl;
+	}
+	
+	
+    return 0;
+}

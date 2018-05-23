@@ -1,0 +1,51 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=20, INF=1000000000000000000;
+///500,000,000
+int N, H, height[MAXN], safety[MAXN], weight[MAXN], dp[1<<MAXN], h[1<<MAXN];
+bool visited[1<<MAXN];
+queue<int> next1;
+
+main() {
+	ifstream cin ("guard.in");
+	ofstream cout ("guard.out");
+	ios_base::sync_with_stdio(0); cin.tie(0);
+	cin >> N >> H;
+	ffi cin >> height[i] >> weight[i] >> safety[i];
+	For (i, 1, 1<<N) dp[i] = -1;
+	dp[0] = INF;
+	next1.push(0);
+	while (!next1.empty()) {
+        int state = next1.front();
+        next1.pop();
+        if (visited[state]) continue;
+        //w<< state<< " ";ffi w<< ( (state & (1<<i)) > 0);w s ":" s dp[state]<<e;
+        visited[state] = true;
+        ffi if (!(state & (1<<i) )) {
+            int nstate = state | (1<<i);
+            //w<< state s nstate<<e;
+            dp[nstate] = max(dp[nstate], min(safety[i], dp[state]-weight[i]));
+            h[nstate] = h[state]+height[i];
+            next1.push(nstate);
+        }
+	}
+	int out = -1;
+	For (i, 0, 1<<N) {
+        if (h[i] >= H) out = max(out, dp[i]);
+	}
+	if (out == -1) w<< "Mark is too tall"<<e;
+	else w<< out <<e;
+}

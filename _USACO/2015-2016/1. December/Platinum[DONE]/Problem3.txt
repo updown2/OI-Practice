@@ -1,0 +1,128 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+
+//500,000,000 operations
+
+//Global Variables
+ll N, Q;
+ll nums[200001];
+ll m[4*200000+1];
+ll t[4*200000+1];
+ll lazy[4*200000+1];
+
+
+void push(ll index, ll L, ll R) {
+	if (lazy[index] == 0) return;
+	
+	m[index] += lazy[index];
+	t[index] += (R-L+1)*lazy[index];
+	
+	if (L != R) {
+		lazy[index*2] += lazy[index];
+		lazy[index*2+1] += lazy[index];
+	}
+	lazy[index] = 0;
+}
+
+void build (ll index, ll L, ll R) {
+	lazy[index] = 0;
+	if (L == R) {
+		m[index] = nums[L];
+		t[index] = nums[L];
+	}
+	else {
+		build(index*2, L, (L+R)/2);
+		build(index*2+1, 1+(L+R)/2, R);
+		t[index] = t[index*2] + t[index*2+1];
+		m[index] = min(m[index*2], m[index*2+1]);
+	}
+}
+
+
+ll query_total (ll index, ll L, ll R, ll oL, ll oR) {
+	push(index, L, R);
+	if ( (oR < L) || (oL > R) ) return 0;
+	if ( (R <= oR) && (L >= oL) ) return t[index];
+	
+	return query_total(index*2, L, (L+R)/2, oL, oR) + query_total(index*2+1, 1+(L+R)/2, R, oL, oR );
+}
+ll query_min (ll index, ll L, ll R, ll oL, ll oR) {
+	push(index, L, R);
+	if ( (oR < L) || (oL > R) ) return 1000000000;
+	if ( (R <= oR) && (L >= oL) ) return m[index];
+	
+	return min(query_min(index*2, L, (L+R)/2, oL, oR), query_min(index*2+1, 1+(L+R)/2, R, oL, oR ) );
+}
+
+void update_range (ll index, ll L, ll R, ll a, ll b, ll v) {
+	push(index, L, R);
+	if (b<L || a>R) return;
+	
+	else if (a<=L && R<= b) {
+		lazy[index] = v;
+		push(index, L, R);
+	}
+	else {
+		update_range(index*2, L, (L+R)/2, a, b, v);
+		update_range(index*2+1, 1+(L+R)/2, R, a, b, v);
+		
+		t[index] = t[index*2]+t[index*2+1];
+		m[index] = min(m[index*2], m[index*2+1]);
+	}
+}
+
+
+int main() {
+	ifstream cin ("haybales.in");
+	ofstream cout ("haybales.out");
+	
+	cin >> N >> Q;
+	
+	For (i, 1, N+1) {
+		cin >> nums[i];
+	}
+	
+	build(1, 1, N);
+	
+	//For (i, 1, 4*N) w<< m[i]<< " ";
+	//w<<e<<e;
+	
+	char a;
+	ll b, c, d;
+	For (i, 0, Q) {
+		cin >> a;
+		
+		if (a == 'M') {
+			cin >> b >> c;
+			w << query_min(1, 1, N, b, c) << e;
+		}
+		
+		else if ( a == 'S') {
+			cin >> b >> c;
+			w << query_total(1, 1, N, b, c) << e;
+		}
+		
+		else {
+			cin >> b >> c >> d;
+			update_range(1, 1, N, b, c, d);
+		}
+		
+		//w<< a s b s c<<e;
+	}
+	
+	
+	return 0;
+
+}
+

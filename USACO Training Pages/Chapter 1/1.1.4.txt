@@ -1,0 +1,41 @@
+/*
+ID: riya.ar1
+PROG: friday
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("friday.out");
+    ifstream fin ("friday.in");
+ 
+	//Create Variables read input
+	int N;
+	int current = (1+13)%7;
+	int day[7] = {};
+	int months[12] = {31,28,31,30,31,30,31,31,30,31,30,31};
+    fin >> N;
+    for( int i=1900 ; i<(1900+N) ; i++ )
+    {
+        for( int j=0 ; j<12 ; j++ )
+        {
+            day[current]++;
+            if( j==1 && ( i%400==0 || ( i%4==0 && i%100!=0 ) )   )
+            {
+                current = ( current+29 ) % 7;
+            }
+            else
+            {
+                current = ( current + months[j] ) % 7;
+            }
+        }
+    }
+
+	fout<<day[0]<<" "<<day[1]<<" "<<day[2]<<" "<<day[3]<<" "<<day[4]<<" "<<day[5]<<" "<<day[6] << endl;  //CHANGE
+ 
+    return 0;
+}

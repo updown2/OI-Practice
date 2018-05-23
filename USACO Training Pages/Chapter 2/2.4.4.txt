@@ -1,0 +1,76 @@
+/*
+ID: riya.ar1
+PROG: comehome
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+int N = 60;
+int M;
+vector<int> adj[60];
+vector<int> pay[60];
+bool imp[60];
+bool visited[60];
+priority_queue<pair<int, int> > next1;
+
+int main() {
+	ifstream cin ("comehome.in");
+	ofstream cout ("comehome.out");
+	//'A' = 65
+	//'a' = 97
+	cin >> M;
+	ffi {imp[i] = false; visited[i] = false;}
+	ffj {
+		char a, b;
+		int c;
+		cin >> a >> b >> c;
+		c*=-1;
+		int use1 = a-65;
+		int use2 = b-65;
+		if (isupper(a)) imp[use1] = true;
+		if (isupper(b)) imp[use2] = true;
+		//w<<use1 s use2<<e;
+		adj[use1].pb(use2);
+		pay[use1].pb(c);
+		adj[use2].pb(use1);
+		pay[use2].pb(c);
+	}
+	imp[25]= false;
+	next1.push(mp(0,25));
+	while (!next1.empty()) {
+		int at= next1.top().b;
+		int dist = next1.top().a;
+		next1.pop();
+		if (!visited[at]) {
+			//w<< at s dist<<e;
+			visited[at] = true;
+			if (imp[at]) {
+				w<<(char)(at+65) s -dist<<e;
+				exit(0);
+			}
+			For (i, 0, adj[at].size()) {
+				if (!visited[adj[at][i]]) {
+					next1.push(mp(dist+pay[at][i], adj[at][i]));
+				}
+			}
+		}
+	}
+	
+	
+	return 0;
+}
+

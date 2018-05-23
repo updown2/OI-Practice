@@ -1,0 +1,26 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+//500,000,000 operations
+
+//Global Variables
+int b1, b2, s1, s2, g1, g2, p1, p2;
+int o1=0, o2=0, o3=0;
+
+int main() {
+	ifstream cin ("promote.in");
+	ofstream cout ("promote.out");
+	
+	cin >> b1 >> b2 >> s1 >> s2 >> g1 >> g2 >> p1 >> p2;
+	o3 = p2-p1;
+	g2 += o3;
+	o2 = g2-g1;
+	s2 += o2;
+	o1 = s2-s1;
+	cout << o1 << endl << o2 << endl << o3 << endl;
+	
+	return 0;
+
+}
+

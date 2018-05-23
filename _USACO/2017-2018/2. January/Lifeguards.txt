@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define For(i, a, b) for (int i=a; i<b; i++)
+#define ffi For (i, 0, N)
+#define ffj For (j, 0, K+1)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+#define s <<" "<<
+#define a first
+#define b second
+
+const int MAXN = 100000, MAXK = 100;
+int N, K, dp1[MAXN][MAXK];
+pair<int, int> dp2[MAXN][MAXK], inp[MAXN];
+
+int main () {
+	ifstream cin("lifeguards.in");
+	ofstream cout("lifeguards.out");
+	cin >> N >> K;
+	ffi cin >> inp[i].b >> inp[i].a;
+	sort (inp, inp+N);
+	ffi swap(inp[i].a, inp[i].b);
+	
+	dp1[0][0] = inp[0].b - inp[0].a;
+	
+	For (i, 1, N) For (j, 0, min(K+1, i+1)) {
+	
+		if (j != 0) {
+			if (dp2[i-1][j-1].a > dp1[i-1][j-1]) {
+				dp2[i][j].a = dp2[i-1][j-1].a;
+				dp2[i][j].b = dp2[i-1][j-1].b;
+			}
+			else {
+				dp2[i][j].a = dp1[i-1][j-1];
+				dp2[i][j].b = inp[i-1].b;
+			}
+		}
+		
+		dp1[i][j] = max(dp1[i-1][j] + inp[i].b - max(inp[i].a, inp[i-1].b), dp2[i-1][j].a + inp[i].b - max(inp[i].a, dp2[i-1][j].b));
+		
+		
+	}
+	//ffa w<< i s j s ":" s dp1[i][j] s dp2[i][j].a s dp2[i][j].b<<e;
+	
+	
+	w<< max(dp1[N-1][K], dp2[N-1][K].a)<<e;
+}

@@ -1,0 +1,54 @@
+/*
+ID: riya.ar1
+PROG: milk
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("milk.out");
+    ifstream fin ("milk.in");
+    
+    //Create Variables and Read Input
+    int out = 0;
+    int at = 0;
+    int total, num_farmers;
+    fin >> total >> num_farmers;  //CHANGE
+    int prices[num_farmers][2];
+    for (int i=0; i < num_farmers; i++) {
+    	fin >> prices[i][0] >> prices[i][1];  //CHANGE
+    }
+    
+    //Sort
+    for(register int i = 0; i < num_farmers - 1; i++) {
+        for(register int j = i + 1; j < num_farmers; j++) {
+            if(prices[j][0] < prices[i][0]) {
+                swap(prices[i], prices[j]);
+            }
+        }
+    }
+    
+    while (total > 0) {
+    	if (total - prices[at][1] >= 0) {
+    		//cout << "Total: " << total << endl;
+    		//cout << "prices[at][0]: " << prices[at][0] << endl;
+    		//cout << "prices[at][1]: " << prices[at][1] << endl;
+    		total -= prices[at][1];
+    		out += prices[at][1] * prices[at][0];
+
+    	}
+    	else {
+    		out += total * prices[at][0];
+    		total = 0;
+    	}
+    	at ++;
+    }
+    
+    
+    fout << out << endl;  //CHANGE
+    return 0;
+}

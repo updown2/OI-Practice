@@ -1,0 +1,124 @@
+/*
+ID: riya.ar1
+PROG: cowtour
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+double N;
+double loc[150][2];
+bool adj[150][150];
+double diam[150];
+double fieldDiam[150];
+double num_f;
+int field[150];
+double out = 100000000;
+
+double dist(int a, int b) {
+	return (sqrt((double)(loc[a][0]-loc[b][0])*(loc[a][0]-loc[b][0])+(double)(loc[a][1]-loc[b][1])*(loc[a][1]-loc[b][1])));
+}
+void fill_diam() {
+	ffi {
+		bool visited[150]; ffj visited[j] = false;
+		double curr = 0;
+		priority_queue<pair<double, double> > next1;
+		next1.push(mp(0, i));
+		while (!next1.empty()) {
+			pair<double, int> top = next1.top();
+			next1.pop();
+			if (!visited[top.b]) {
+				visited[top.b] = true;
+				//w<< top.b s top.a<<e;
+				curr = min(curr, top.a);
+				ffj {
+					double len = top.a+-1*dist(j, top.b);
+					if (adj[top.b][j]) next1.push(mp(len, j));
+				}
+			}
+		}
+		
+		diam[i] = -1*curr;
+		//w<< i s diam[i]<<e;
+	}
+}
+void search(int at) {
+	if (field[at] == -1) {
+		field[at] = num_f;
+		ffi {
+			if (adj[at][i] && field[i] == -1) {
+				search(i);
+			}
+		}
+	}
+}
+void fill_field() {
+	ffi field[i]= -1;
+	num_f = 0;
+	ffi {
+		if (field[i] == -1) {
+			search(i);
+			num_f ++;
+		}
+		//w<< i s field[i]<<e;
+	}
+}
+void fill_fieldDiam() {
+	For (i, 0, num_f) {
+		fieldDiam[i] = 0;
+	}
+	ffi {
+		fieldDiam[field[i]] = max(fieldDiam[field[i]], diam[i]);
+	}
+	//For (i, 0, num_f) w<< fieldDiam[i]<<e;
+}
+void try_joining(int a, int b) {
+	double len = max(fieldDiam[field[a]], fieldDiam[field[b]]);
+	len = max(len, diam[a]+diam[b] + dist(a, b));
+	//w<< a s b s len<<e;
+	if (len >16993 && len<16994) w<< a s b<<e;
+	out = min(out, len);
+}
+
+int main() {
+	ifstream cin ("cowtour.in");
+	ofstream cout ("cowtour.out");
+	
+	cin >> N;
+	ffi cin >> loc[i][0] >> loc[i][1];
+	ffi {
+		ffj {
+			char a; cin >> a;
+			if (a == '0') adj[i][j] = false;
+			else adj[i][j] = true;
+		}
+	}
+	
+	fill_diam();
+	fill_field();
+	fill_fieldDiam();
+	
+	ffi {
+		ffj {
+			if (field[i] != field[j]) {
+				try_joining(i, j);
+			}
+		}
+	}
+	w<< fixed<<setprecision(6)<<out<<e;
+	
+	return 0;
+}

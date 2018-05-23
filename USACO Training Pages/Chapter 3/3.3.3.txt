@@ -1,0 +1,165 @@
+/*
+ID: riya.ar1
+PROG: camelot
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int N, M;
+int kx, ky;
+int K = 0;
+int knights[780][2];
+int A = 'A';
+int save[780][30][26][2];
+
+void set_up(int kn) {
+	queue< p< p<int, int>, p<int, int> > > next1;
+	next1.push(mp(mp(0, 0), mp(knights[kn][0], knights[kn][1])));
+	while (!next1.empty()) {
+		p< p<int, int>, p<int, int> > curr;
+		curr = next1.front();
+		next1.pop();
+		int moves = curr.a.a;
+		int flag = curr.a.b;
+		int x = curr.b.a;
+		int y = curr.b.b;
+		
+		if (save[kn][x][y][flag] > moves) {
+			save[kn][x][y][flag] = moves;
+			
+			if (x >= 2) {
+				if (y >= 1) {
+					if (save[kn][x-2][y-1][flag] > moves+1) {
+						next1.push(mp(mp( moves+1, flag), mp(x-2, y-1)));
+					}
+				}
+				if (y < M-1) {
+					if (save[kn][x-2][y+1][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x-2, y+1)));
+					}
+				}
+			}
+			if (x >= 1) {
+				if (y >= 2) {
+					if (save[kn][x-1][y-2][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x-1, y-2)));
+					}
+				}
+				if (y < M-2) {
+					if (save[kn][x-1][y+2][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x-1, y+2)));
+					}
+				}
+			}
+			if (x < N-1) {
+				if (y >= 2) {
+					if (save[kn][x+1][y-2][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x+1, y-2)));
+					}
+				}
+				if (y < M-2) {
+					if (save[kn][x+1][y+2][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x+1, y+2)));
+					}
+				}
+			}
+			if (x < N-2) {
+				if (y >= 1) {
+					if (save[kn][x+2][y-1][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x+2, y-1)));
+					}
+				}
+				if (y < M-1) {
+					if (save[kn][x+2][y+1][flag] > moves+1) {
+						next1.push(mp(mp(moves+1, flag), mp(x+2, y+1)));
+					}
+				}
+			}
+			
+			
+			if (flag == 0) {
+				if (save[kn][x][y][1] > moves+max(abs(x-kx), abs(y-ky))) {
+					next1.push(mp(mp( moves+max(abs(x-kx), abs(y-ky)), 1), mp(x, y)));
+				}
+			}
+		}
+	}
+}
+
+int main() {
+	ifstream cin ("camelot.in");
+	ofstream cout ("camelot.out");
+	
+	cin >> N >> M;
+	char a; cin >> a >> kx;
+	ky = a-A;
+	kx--;
+	
+	string in; getline(cin, in);
+	
+	while (cin) {
+		a = 'z';
+			cin >> a >> knights[K][0];
+			if (a == 'z') break;
+			knights[K][1] = a-A;
+			knights[K][0]--;
+			K++;
+	}
+	if (K == 0) {
+		w<< 0 <<e;
+		return 0;
+	}
+	
+	For (a, 0, K) {
+		For (b, 0, N) {
+			For (c, 0, M) {
+				For (d, 0, 2) {
+					save[a][b][c][d] = 100000000;
+				}
+			}
+		}
+		set_up(a);
+	}
+	
+	
+	int out = 100000000;
+	For (a, 0, N) {
+		For (b, 0, M) {
+			int sum = 0;
+			int king = 100000000;
+			For (c, 0, K) {
+				king = min(king, save[c][a][b][1]-save[c][a][b][0]);
+				sum += save[c][a][b][0];
+			}
+			out = min(out, sum+king);
+			//w<<out<<e;
+		}
+	}
+	
+	
+	w<<out<<e;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

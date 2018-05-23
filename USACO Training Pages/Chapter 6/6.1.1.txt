@@ -1,0 +1,90 @@
+/*
+ID: riya.ar1
+PROG: vans
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, 8)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+bool can_go[8][8] = {{0, 0, 1, 0, 0, 0, 0, 1},
+{0, 0, 0, 0, 1, 0, 0, 0},
+{1, 0, 0, 1, 0, 1, 1, 0},	
+{0, 0, 1, 0, 0, 0, 0, 0},
+{0, 1, 0, 0, 0, 0, 0, 0},
+{0, 0, 1, 0, 0, 0, 0, 1},
+{1, 0, 0, 0, 0, 1, 1, 0},
+{0, 0, 1, 0, 0, 0, 0, 1}};
+string dp[1001][8];
+string add(string a, string b) {
+	if (a.length() > b.length()) {
+		string use = "";
+		For (i, 0, a.length()-b.length()) use += "0";
+		b = use + b;
+	}
+	else {
+		string use = "";
+		For (i, 0, b.length()-a.length()) use += "0";
+		a = use + a;
+	}
+	
+	string out = "";
+	int carry = 0;
+	for (int i=a.length()-1; i>=0; i--) {
+		int c = a[i]-'0';
+		int d = b[i]-'0';
+		int sum = c+d+carry;
+		carry = sum/10;
+		char e = '0' + (sum % 10);
+		out += e;
+	}
+	
+	if (carry != 0) {
+		char e = '0' + (carry);
+		out += e;
+	}
+	
+	For (i, 0, out.length()/2) {
+		swap(out[i], out[out.length()-1-i]);
+	}
+	return out;
+}
+
+int main() {
+	//ifstream cin ("test.in");
+	//ofstream cout ("test.out");
+	ifstream cin ("vans.in");
+	ofstream cout ("vans.out");
+	cin >> N;
+	if (N == 1) {
+		w<< 0<<e;
+		return 0;
+	}
+	ffa dp[i][j] = "0";
+	dp[0][2] = "1"; dp[0][6] = "1"; //Base Case
+	
+	ffa {
+		if (dp[i][j] == "0") continue;
+		//w<< i s j+1 s dp[i][j]<<e;
+		For (k, 0, 8) {
+			if (can_go[k][j]) dp[i+1][k] = add(dp[i+1][k], dp[i][j]);
+		}
+	}
+	string use = add(dp[N-2][2], dp[N-2][7]);
+	w<< add(use, use)<<e;
+	
+	return 0;
+}

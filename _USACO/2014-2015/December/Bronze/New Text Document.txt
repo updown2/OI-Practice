@@ -1,0 +1,35 @@
+0 = S: +1
+2 = S: +1
+4 = S: +1
+6 = S: +1
+7 = S: +1
+OUT: 25
+in range: 0
+or; addind 5
+OUT: 30
+in range: 1
+or; addind 0
+OUT: 30
+in range: 2
+or; addind 10
+OUT: 40
+in range: 3
+or; addind 4
+OUT: 44
+in range: 4
+or; addind 0
+OUT: 44
+in range: 5
+or; addind 0
+OUT: 44
+in range: 6
+and; adding 17
+OUT: 61
+in range: 7
+or; addind 2
+OUT: 63
+in range: 8
+in range: 9
+or; addind 10
+OUT: 73
+63

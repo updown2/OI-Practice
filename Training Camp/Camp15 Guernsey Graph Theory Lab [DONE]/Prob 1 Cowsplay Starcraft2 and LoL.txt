@@ -1,0 +1,105 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+const int MAXN = 100000;
+//500,000,000 operations
+int N, M, T, counter, num[MAXN], low[MAXN], parent[MAXN], A, B, N2, comp[MAXN];
+int abel[MAXN], bbel[MAXN], ans;
+bool visited[MAXN], a[MAXN], b[MAXN], a2[MAXN], b2[MAXN];
+multiset <int> adj[MAXN];
+vector <int> adj2[MAXN];
+set<pair<int, int> > out;                ///BRIDGES IN OUT
+
+void dfs(int x) {
+	if (visited[x]) return;
+	visited[x] = true;
+	//w<< x s parent<<e;
+	num[x] = low[x] = (++counter);
+	int children = 0;
+	for (int y : adj[x]) {
+		if (!visited[y]) {
+			children++;
+			parent[y] = x;
+			dfs(y);
+			low[x] = min(low[x], low[y]);
+			if (low[y] > num[x] && adj[x].count(y) < 2) out.insert(mp(min(x, y), max(x, y)) );
+		}
+		else if (parent[x] != y) {
+			low[x] = min(low[x], num[y]);
+		}
+	}
+}
+void go(int at) {
+    if (visited[at]) return;
+    comp[at] = N2;
+    if (a[at]) a2[N2] = true;
+    if (b[at]) b2[N2] = true;
+    visited[at] = true;
+    for (int i: adj[at]) if (out.find(mp(min(at, i), max(at, i))) == out.end() ) {
+        //w<< at+1 s "to" s i+1<<e;
+        go(i);
+    }
+}
+void go2(int at) {
+    //w<< at<<e;
+    if (visited[at]) return;
+
+    visited[at] = true;
+    if (a2[at]) abel[at]++;
+    if (b2[at]) bbel[at]++;
+    for (int i: adj2[at]) if (!visited[i]) {
+        go2(i);
+        abel[at] += abel[i], bbel[at] += bbel[i];
+        if (abel[i] == 0 || abel[i] == A || bbel[i] == 0 || bbel[i] == B) ans++;
+        //w<< at+1 s "to" s i+1 s ":" s abel[i] s bbel[i]<<e;
+    }
+}
+
+int main() {
+	//ifstream cin ("test.in");
+	ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> M >> A >> B;
+    ffi low[i] = 10000000;
+    For (i, 0, A) {int x; cin >> x; a[x-1] = true;}
+    For (i, 0, B) {int x; cin >> x; b[x-1] = true;}
+
+    ffj {
+        int a, b; cin >> a >> b; a--; b--;
+        //w<< a s b<<e;
+        adj[a].insert(b);
+        adj[b].insert(a);
+    }
+    ffi dfs(i);
+    //ffi w<< a[i] s b[i]<<e;
+
+    ///BRIDGES IN OUT
+    //w<< out.size()<<e; for (auto i: out) w<< (i).a+1 s (i).b+1<<e;
+    ffi visited[i] = false;
+    ffi if (!visited[i]) {
+        go(i);
+        N2++;
+    }
+    //ffi w<< i+1 s ":" s comp[i]+1<<e;
+    ffi for (int j: adj[i]) if (comp[i] != comp[j]) adj2[comp[i]].pb(comp[j]);
+    //For (i, 0, N2) {for (auto j: adj2[i]) w<< j+1 s " "; w<<e;}
+    N = N2, A=B=0;
+    ffi {
+        visited[i] = false;
+        if (a2[i]) A++;
+        if (b2[i]) B++;
+        //w<< a2[i] s b2[i]<<e;
+    }
+    go2(0);
+    w<< ans<<e;
+}

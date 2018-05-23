@@ -1,0 +1,170 @@
+/*
+ID: riya.ar1
+PROG: pprime
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("pprime.out");
+    ifstream fin ("pprime.in");
+
+    //Declair Variables and Read Input
+    int a, b;
+    fin >> a >> b;  //CHANGE
+    b+=1;
+    
+    //Algo
+    int pal;
+    //generate one digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1++) {
+		pal = d1;
+		bool out = true;
+		if (pal >= a && pal < b) {
+		  	for (int i=2; i <= sqrt (pal); i++) {
+		  		if (pal%i == 0) {
+		  			out = false;
+		  		}
+		  	}
+		  	if (out == true) {
+		  		fout << pal << endl;  //CHANGE
+		  	}
+		}
+	}
+	//generate two digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+		pal = 10*d1 + d1;
+	    bool out = true;
+	  	if (pal >= a && pal < b) {
+		  	for (int i=2; i <= sqrt (pal); i++) {
+		  		if (pal%i == 0) {
+		  			out = false;
+		  		}
+		  	}
+		  	if (out == true) {
+		  		fout << pal << endl;  //CHANGE
+		  	}
+		}
+	}
+	//generate three digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+	    for (int d2 = 0; d2 <= 9; d2++) {
+			pal = 100*d1 + 10*d2 + d1;
+		    bool out = true;
+		  	if (pal >= a && pal < b) {
+			  	for (int i=2; i <= sqrt (pal); i++) {
+			  		if (pal%i == 0) {
+			  			out = false;
+			  		}
+			  	}
+			  	if (out == true) {
+			  		fout << pal << endl;  //CHANGE
+			  	}
+			}
+	    }
+	}
+	//generate four digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+	    for (int d2 = 0; d2 <= 9; d2++) {
+			pal = 1000*d1 +100*d2 + 10*d2 + d1;
+		    bool out = true;
+		  	if (pal >= a && pal < b) {
+			  	for (int i=2; i <= sqrt (pal); i++) {
+			  		if (pal%i == 0) {
+			  			out = false;
+			  		}
+			  	}
+			  	if (out == true) {
+			  		fout << pal << endl;  //CHANGE
+			  	}
+			}
+	    }
+	}
+	//generate five digit palindrome: 
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+	    for (int d2 = 0; d2 <= 9; d2++) {
+	        for (int d3 = 0; d3 <= 9; d3++) {
+			    pal = 10000*d1 + 1000*d2 +100*d3 + 10*d2 + d1;
+			    bool out = true;
+			  	if (pal >= a && pal < b) {
+				  	for (int i=2; i <= sqrt (pal); i++) {
+				  		if (pal%i == 0) {
+				  			out = false;
+				  		}
+				  	}
+				  	if (out == true) {
+				  		fout << pal << endl;  //CHANGE
+				  	}
+				}
+			}
+	    }
+	}
+	//generate six digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+	    for (int d2 = 0; d2 <= 9; d2++) {
+	        for (int d3 = 0; d3 <= 9; d3++) {
+			    pal = 100000*d1 + 10000*d2 + 1000*d3 +100*d3 + 10*d2 + d1;
+			    bool out = true;
+			  	if (pal >= a && pal < b) {
+				  	for (int i=2; i <= sqrt (pal); i++) {
+				  		if (pal%i == 0) {
+				  			out = false;
+				  		}
+				  	}
+				  	if (out == true) {
+				  		fout << pal << endl;  //CHANGE
+				  	}
+				}
+			}
+	    }
+	}
+	//generate seven digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+	    for (int d2 = 0; d2 <= 9; d2++) {
+	        for (int d3 = 0; d3 <= 9; d3++) {
+	        	for (int d4 = 0; d4 <= 9; d4++) {
+	        		bool out = true;
+				    pal = 1000000*d1 + 100000*d2 + 10000*d3 + 1000*d4 +100*d3 + 10*d2 + d1;
+				    if (pal >= a && pal < b) {
+					  	for (int i=2; i <= sqrt (pal); i++) {
+					  		if (pal%i == 0) {
+					  			out = false;
+					  		}
+					  	}
+					  	if (out == true) {
+					  		fout << pal << endl;  //CHANGE
+					  	}
+					}
+	        	}
+			}
+	    }
+	}
+	//generate eight digit palindrome:
+	for (int d1 = 1; d1 <= 9; d1+=2) {	/* only odd; evens aren't so prime */
+	    for (int d2 = 0; d2 <= 9; d2++) {
+	        for (int d3 = 0; d3 <= 9; d3++) {
+			    for (int d4 = 0; d4 <= 9; d4++) {
+			    	bool out = true;
+				    pal = 10000000*d1 + 1000000*d2 + 100000*d3 + 10000*d4 + 1000*d4 +100*d3 + 10*d2 + d1;
+				    if (pal >= a && pal < b) {
+					  	for (int i=2; i <= sqrt (pal); i++) {
+					  		if (pal%i == 0) {
+					  			out = false;
+					  		}
+					  	}
+					  	if (out == true) {
+					  		fout << pal << endl;  //CHANGE
+					  	}
+					}
+	        	}
+			}
+	    }
+	}
+    
+    return 0;
+}

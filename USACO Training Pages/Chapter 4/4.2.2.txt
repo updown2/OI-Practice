@@ -1,0 +1,132 @@
+/*
+ID: riya.ar1
+PROG: stall4
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+int N, M;
+int res[701][701]; //(N+1) x (N+1) grid
+bool visited[701];
+vector<vector<int> > adj;
+int source, sink;
+ 
+void connect(int a, int b, int c) {
+	res[a][b] += c;
+	For (i, 0, adj[a].size()) {
+		if (adj[a][i] == b) {
+			return;
+		}
+	}
+	adj[a].push_back( b );
+	adj[b].push_back( a );
+ 
+}
+int dfs(int x, int cap=10000000/*INF*/) {
+	visited[x] = true;
+	if (x==sink) return cap; //If you are done and can only take cap things, return cap(you're all done)
+ 
+	For (i, 0, adj[x].size()) {
+		if (!visited[adj[x][i]]) {
+			if (res[x][adj[x][i]] > 0) {
+				int cur = dfs(adj[x][i], min(cap, res[x][adj[x][i]]));
+				if (cur > 0) {
+					res[x][adj[x][i]] -= cur;
+					res[adj[x][i]][x] += cur;
+					return cur;
+				}
+			}
+		}
+	}
+ 
+ 
+	return 0;
+}
+int maxflow() {
+	//Finds the max flow from source to the sink
+	int flow = 0;
+	while (true) {
+		For (i, 0, N+1) {
+			visited[i] = false;
+		}
+		int cur = dfs(source);
+		//cout << cur << endl;
+		if (cur == 0) break;
+		flow += cur;
+ 
+	}
+	return flow;
+}
+
+int main() {
+	ifstream cin ("stall4.in");
+	ofstream cout ("stall4.out");
+	
+	//M is edges, N is nodes
+	N = 403;
+	
+	int a, b;
+	cin >> a >> b; 
+	source = 402;
+	sink = 401;
+	
+	//node 402 is source
+	//nodes 1 through 200 are cows
+	//nodes 201 through 400 are stalls
+	//node 401 is sink
+ 
+	vector<int> use;
+	For (i, 0, N+1) {
+		adj.push_back(use);
+	}
+
+	
+	For (i, 0, N+1) For (j, 0, N+1) res[i][j] = 0;
+ 
+	For (i, 0, b) {
+		int num; cin >> num;
+		For (j, 0, num) {
+			int c; cin >> c;
+			//w<< i+1 s c+200 <<e;
+			connect(i+1, c+200, 1);
+		}
+	}
+	
+	For (i, 1, 201) connect(402, i, 1);
+	For (i, 201, 401) connect(i, 401, 1);
+	
+	/*For (i, 1, 6) {
+		cout << i << ": ";
+		For (j, 0, adj[i].size()) {
+			cout << adj[i][j] s res[i][adj[i][j]] << " ";
+		}cout << endl;
+	}
+	For (i, 201, 206) {
+		cout << i << ": ";
+		For (j, 0, adj[i].size()) {
+			cout << adj[i][j] s res[i][adj[i][j]] << " ";
+		}cout << endl;
+	}*/
+ 
+	cout << maxflow() << endl;
+ 
+ 
+	return 0;
+ 
+}
+
+

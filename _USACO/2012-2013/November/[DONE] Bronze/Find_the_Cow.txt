@@ -1,0 +1,34 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("cowfind.out");
+    ifstream fin ("cowfind.in");
+
+    //Declair Variables and Read Input
+    string grass;
+    int left = 0;
+    int out = 0;
+    fin >> grass;  //CHANGE
+    string current(1, grass[0]);
+    for (int i=1; i<grass.length(); i++) {
+    	string use(1, grass[i]);
+    	
+    	if (current.compare(use) == 0) {
+    		if (current.compare("(") == 0) {
+    			left ++;
+    		}
+    		else {
+    			out += left;
+    		}
+    	}
+    	current = grass[i];
+    }
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

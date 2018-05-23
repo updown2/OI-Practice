@@ -1,0 +1,93 @@
+/*
+ID: riya.ar1
+PROG: butter
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, P)
+#define ffj For(j, 0, P)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, P, C;
+int dist[800][800];
+int cows[500];
+
+int main() {
+	ifstream cin ("butter.in");
+	ofstream cout ("butter.out");
+	
+	cin >> N >> P >> C;
+	
+	ffi {
+		ffj {
+			dist[i][j] = 100000000;
+		}
+	}
+	
+	For (i, 0, N) {
+		int a; cin >> a; a--;
+		cows[i] = a;
+	}
+	
+	For (i, 0, C) {
+		int a, b, c;
+		cin >> a >> b >> c;
+
+		a--; b--;
+		
+		//w<< a s b s c<<e;
+		dist[a][b] = c;
+		dist[b][a] = c;
+	}
+	
+	ffi dist[i][i] = 0;
+	
+	
+	For (k, 0, P) {
+		ffi {
+			ffj {
+				if ( ( dist[i][k]+dist[k][j]) < dist[i][j]) {
+					dist[i][j] = dist[i][k]+dist[k][j];
+				}
+			}
+		}
+	}
+	
+	/*ffi {
+		ffj {
+			w<< i s j s dist[i][j]<<e;
+		}
+	}*/
+	
+	int out = 1000000000;
+	ffi {
+		int total = 0;
+		For (j, 0, N) {
+			total += dist[i][cows[j]];
+		}
+		//w<< total <<e;
+		out = min(out, total);
+	}
+	
+	w<<out<<e;
+	
+	
+	
+	return 0;
+}
+
+
+
+
+
+

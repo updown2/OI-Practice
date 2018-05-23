@@ -1,0 +1,143 @@
+/*
+ID: riya.ar1
+PROG: telecow
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define p prllf
+#define r scanf
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+ll N, M;
+ll res[210][210]; //(N+1) x (N+1) grid
+bool visited[701];
+vector<ll> adj[210];
+ll source, sink;
+ 
+void connect(ll a, ll b, ll c) {
+	res[a][b] += c;
+	For (i, 0, adj[a].size()) {
+		if (adj[a][i] == b) {
+			return;
+		}
+	}
+	adj[a].push_back( b );
+	adj[b].push_back( a );
+ 
+}
+ 
+ll dfs(ll x, ll cap=10000000/*INF*/) {
+	visited[x] = true;
+	if (x==sink) return cap; //If you are done and can only take cap things, return cap(you're all done)
+ 
+	For (i, 0, adj[x].size()) {
+		if (!visited[adj[x][i]]) {
+			if (res[x][adj[x][i]] > 0) {
+				ll cur = dfs(adj[x][i], min(cap, res[x][adj[x][i]]));
+				if (cur > 0) {
+					res[x][adj[x][i]] -= cur;
+					res[adj[x][i]][x] += cur;
+					return cur;
+				}
+			}
+		}
+	}
+ 
+ 
+	return 0;
+}
+ 
+ll maxflow() {
+	//Finds the max flow from source to the sink
+	ll flow = 0;
+	while (true) {
+		For (i, 0, N+1) {
+			visited[i] = false;
+		}
+		ll cur = dfs(source);
+		//cout << cur << endl;
+		if (cur == 0) break;
+		flow += cur;
+		
+	}
+	return flow;
+}
+
+void search(ll at) {
+	if (visited[at]) return;
+	visited[at] = true;
+	For (i, 0, adj[at].size()) {
+		if (res[at][adj[at][i]] > 0) {
+			search(adj[at][i]);
+		}
+	}
+}
+
+ll routes[1200][2];
+ 
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("telecow.in");
+	ofstream cout ("telecow.out");
+	
+	cin >> N >> M >> source >> sink; //M is edges, N is nodes
+	source = 2*source+1; //2*i+1 = out
+	sink = 2*sink; //2*i = in
+	
+	For (i, 1, 2*N+1) For (j, 1, 2*N+1) res[i][j] = 0;
+	For (i, 1, N+1) {
+		connect(2*i, 2*i+1, 1000+i);
+	}
+	
+	For (i, 0, M) {
+		ll a, b, c;
+		cin >> a >> b;
+		connect(2*a+1, 2*b, 10000000);
+		connect(2*b+1, 2*a, 10000000);
+		
+		routes[2*i][0] = 2*a+1; routes[2*i][1] = 2*b;
+		routes[2*i+1][0] = 2*b+1; routes[2*i+1][1] = 2*a;
+	}
+	N *= 2;
+	N++;
+	maxflow();
+	
+	For (i, 1, N+1) visited[i] = false;
+	search(source);
+	
+	vector<int> out2;
+	
+	For (i, 1, (N+1)/2) {
+		//w<< visited[2*i] s visited[2*i+1]<<e;
+		
+		if (visited[2*i] && !visited[2*i+1]) {
+			out2.pb(i);
+		}
+	}
+	int out1 = out2.size();
+	w<< out1 <<e;
+	For (i, 0, out1) {
+		w<< out2[i];
+		if (i != out1-1) w<< " ";
+		
+	}
+	w<<e;
+	
+	
+	return 0;
+	
+}
+

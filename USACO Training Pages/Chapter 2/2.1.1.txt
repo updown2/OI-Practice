@@ -1,0 +1,121 @@
+/*
+ID: riya.ar1
+PROG: castle
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+/*
+
+    1: wall to the west
+    2: wall to the north
+    4: wall to the east
+    8: wall to the south
+*/
+
+#define WESTWALL  1
+#define NORTHWALL 2
+#define EASTWALL  4
+#define SOUTHWALL 8
+
+//Global Variables
+int M, N;
+unsigned int modules[50][50];
+int rooms[50][50];
+int num_rooms = 0;
+int sizes[2500];
+
+//Useful Functions
+void DFS(int row, int column) {
+	if (rooms[row][column] == -1) {
+		sizes[num_rooms] ++;
+		rooms[row][column] = num_rooms;
+		//cout << "DFS " << row+1 << " " << column+1 << endl;
+		if (!(modules[row][column] & WESTWALL)) {
+			DFS(row, column-1);
+		}
+		if (!(modules[row][column] & NORTHWALL)) {
+			DFS(row-1, column);
+		}
+		if (!(modules[row][column] & EASTWALL)) {
+			DFS(row, column+1);
+		}
+		if (!(modules[row][column] & SOUTHWALL)) {
+			DFS(row+1, column);
+		}
+	}
+}
+
+int main() {
+	ifstream fin ("castle.in");
+	ofstream fout ("castle.out");
+	
+	//Read Input and Set Up lists
+	fin >> M >> N;
+	for (int i=0; i<N; i++) {
+		for (int j=0; j<M; j++) {
+			fin >> modules[i][j];
+			rooms[i][j] = -1;
+		}
+	}
+	
+	//Step 1
+	for (int i=0; i<N; i++) {
+		for (int j=0; j<M; j++) {
+			if (rooms[i][j] == -1) {
+				sizes[num_rooms] = 0;
+				DFS(i, j);
+				num_rooms ++;
+			}
+		}
+	}
+	
+	//Output first 2 answers
+	fout << num_rooms << endl;
+	int max = 1;
+	for (int r = 0; r<num_rooms; r++) {
+		if (sizes[r] > max) {
+			 max = sizes[r];
+		}
+	}
+	fout << max << endl;
+	
+	//Step 2
+	int loc[2];
+	string letter;
+	max = 0;
+	for (int column=0; column<M; column++) {
+		for (int row = N-1; row >=0; row--) {
+			if ((modules[row][column] & NORTHWALL) && (row > 0)) {
+				int room1 = rooms[row][column];
+				int room2 = rooms[row-1][column];
+				if ((room1 != room2) && ((sizes[room1] + sizes[room2]) > max)) {
+					max = sizes[room1] + sizes[room2];
+					loc[0] = row;
+					loc[1] = column;
+					letter = "N";
+				}
+			}
+			if ((modules[row][column] & EASTWALL) && (column < M-1)) {
+				int room1 = rooms[row][column];
+				int room2 = rooms[row][column+1];
+				if ((room1 != room2) && ((sizes[room1] + sizes[room2]) > max)) {
+					max = sizes[room1] + sizes[room2];
+					loc[0] = row;
+					loc[1] = column;
+					letter = "E";
+				}
+			}
+		}
+	}
+	
+	fout << max << endl << loc[0]+1 << " " << loc[1]+1 << " " << letter << endl;
+
+	//if (!(w & WESTWALL))
+	
+	return 0;
+}
+

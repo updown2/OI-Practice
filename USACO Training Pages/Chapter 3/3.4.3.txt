@@ -1,0 +1,75 @@
+/*
+ID: riya.ar1
+PROG: rockers
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define p pair
+//500,000,000 operations
+//Global Variables
+int N, T, M;
+int songs[20];
+int out = 0;
+
+void solve(int k) {
+	int minutes = 0;
+	int disks = 1;
+	int song = 0;
+	ffi() {
+		//w<< (k & (1<<i))<<e;
+		if (k & (1<<i)) {
+			if ( (songs[i]+minutes > T) && (disks < M)) {
+				minutes = 0;
+				disks++;
+			}
+			if (songs[i]+minutes <= T) {
+				minutes += songs[i];
+				song++;
+				
+			}
+			//w<<minutes s song s disks<<e;
+		}
+	}
+	
+	out = max(out, song);
+}
+
+
+int main() {
+	ifstream cin ("rockers.in");
+	ofstream cout ("rockers.out");
+	
+	cin >> N >> T >> M;
+	
+	ffi() {
+		cin >> songs[i];
+	}
+	
+	For (i, 0, pow(2.0, N)) {
+		solve(i);
+	}
+	
+	w<<out<<e;
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

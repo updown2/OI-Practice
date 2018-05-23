@@ -1,0 +1,123 @@
+/*
+ID: riya.ar1
+PROG: shopping
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+//#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+int N, M;
+int size[100];
+int price[100];
+int offer[100][5][2];
+map<int, int> direct;
+
+int normal[5][3];
+int use[5];
+
+int dp[15][15][15][15][15];
+
+void add (int pay) {
+	//w<< use[0] s use[1] s use[2] s use[3] s use[4]<<endl;
+	dp[use[0]][use[1]][use[2]][use[3]][use[4]] = min(pay, dp[use[0]][use[1]][use[2]][use[3]][use[4]]);
+}
+
+int main() {
+	ifstream cin ("shopping.in");
+	ofstream cout ("shopping.out");
+	
+	cin >> N;
+	ffi {
+		cin >> size[i];
+		For (j, 0, size[i]) {
+			cin >> offer[i][j][0] >> offer[i][j][1];
+		}
+		
+		cin >> price[i];
+	}
+	
+	cin >> M;
+	ffj {
+		cin >> normal[j][0] >> normal[j][1] >> normal[j][2];
+		direct[normal[j][0]] = j;
+	}
+	For (j, M, 5) {
+		normal[j][0] = normal[j][1] = normal[j][2];
+	}
+	
+	For (a, 0, 6) {
+		For (b, 0, 6) {
+			For (c, 0, 6) {
+				For (d, 0, 6) {
+					For (e, 0, 6) {
+						dp[a][b][c][d][e] = 10000000;
+					}
+				}
+			}
+		}
+	}
+	
+	
+	dp[0][0][0][0][0] = 0;
+	For (a, 0, 6) {
+		if (a > normal[0][1]) break;
+		For (b, 0, 6) {
+			if (b > normal[1][1]) break;
+			For (c, 0, 6) {
+				if (c > normal[2][1]) break;
+				For (d, 0, 6) {
+					if (d > normal[3][1]) break;
+					For (e, 0, 6) {
+						if (e > normal[4][1]) break;
+						if (dp[a][b][c][d][e] != 10000000) {
+							//w<< a s b s c s d s e s dp[a][b][c][d][e]<<endl;
+							ffi {
+								use[0] = a; use[1]=b;use[2]=c;use[3]=d;use[4]=e;
+								//add(dp[a][b][c][d][e]);
+								int tot = dp[a][b][c][d][e];
+								For (j, 0, size[i]) {
+									//w<<direct[offer[i][j][0]] s use[direct[offer[i][j][0]]]<<endl;
+									use[direct[offer[i][j][0]]] += offer[i][j][1];
+									//w<<use[direct[offer[i][j][0]]]<<endl;
+									
+								}
+								tot += price[i];
+								//w<<price[i]<<endl;
+								add(tot);
+							}
+							ffj {
+								use[0] = a; use[1]=b;use[2]=c;use[3]=d;use[4]=e;
+								int tot = dp[a][b][c][d][e];
+								use[direct[normal[j][0]]] += 1;
+								tot += normal[j][2];
+								//w<<tot<<endl;
+								add(tot);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	
+	w<<dp[normal[0][1]][normal[1][1]][normal[2][1]][normal[3][1]][normal[4][1]]<<endl;
+	
+	
+	
+	return 0;
+}
+

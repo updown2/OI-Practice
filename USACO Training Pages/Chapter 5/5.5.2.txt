@@ -1,0 +1,96 @@
+/*
+ID: riya.ar1
+PROG: hidden
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+string in;
+int suffix[100000][25];
+pair<pair<int, int>, int> c_rank[100000];
+int K = 25;
+
+void rank_in() {
+	set<char> in2;
+	set<char>::iterator it;
+	ffi {
+		in2.insert(in[i]);
+	}
+	map<char, int> rank;
+	int i=0;
+	for (it = in2.begin(); it != in2.end(); it++, i++) {
+		rank[(*it)] = i;
+	}
+	
+	ffi {
+		suffix[i][0] = rank[in[i]];
+	}
+}
+void set_suffix(int k) {
+	sort(c_rank, c_rank+N);
+	
+	suffix[c_rank[0].b][k] = 0;
+	int at = 1;
+	For (i, 1, N) {
+		if (c_rank[i].a.a == c_rank[i-1].a.a && c_rank[i].a.b == c_rank[i-1].a.b) {
+			suffix[c_rank[i].b][k] = at-1;
+		}
+		else {
+			suffix[c_rank[i].b][k] = at;
+			at++;
+		}
+	}
+}
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("hidden.in");
+	ofstream cout ("hidden.out");
+	
+	cin >> N;
+	while (cin) {
+		string a;
+		cin >> a;
+		in += a;
+	}
+	
+	rank_in();
+	
+	For (k, 1, K) {
+		ffi {
+			c_rank[i].b = i;
+			c_rank[i].a.a = suffix[i][k-1];
+			c_rank[i].a.b = suffix[ (i+(int)pow(2.0, k-1)) % N][k-1];
+		}
+		set_suffix(k);
+	}
+	int small = 1000000;
+	ffi {
+		small = min(small, suffix[i][24]);
+		//w<< suffix[i][24]<<e;
+	}
+	ffi {
+		if (suffix[i][24] == small) {
+			w<< i <<e;
+			return 0;
+		}
+	}
+	
+	return 0;
+}
+

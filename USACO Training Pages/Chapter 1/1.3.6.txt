@@ -1,0 +1,56 @@
+/*
+ID: riya.ar1
+PROG: skidesign
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("skidesign.out");
+    ifstream fin ("skidesign.in");
+
+    //Declair Variables and Read Input
+    int N;
+    fin >> N;  //CHANGE
+    int heights[N];
+    int out;
+    int min = 1000000;
+    for (int i=0; i < N; i++) {
+    	fin >> heights[i];  //CHANGE
+    }
+    
+    //Sort heights
+    for(register int i = 0; i < N - 1; i++) {
+	    for(register int j = i + 1; j < N; j++) {
+	        if(heights[j] < heights[i]) {
+	            swap(heights[i], heights[j]);
+	        }
+	    }
+	}
+	
+	int keep[2] = {heights[0], heights[N-1]};
+
+    //Algo
+    for (int i=0; i< heights[N-1]-16; i++) {
+    	out = 0;
+    	for (int j=0; j < N; j++) {
+	    	if (heights[j] < i) {
+	    		out += (i - heights[j])*(i - heights[j]);
+	    	}
+	    	else if (heights[j] > i+17) {
+	    		out += (heights[j] - (i+17))* (heights[j] - (i+17));
+	    	}
+	    }
+	    if (out < min) {
+	    	min = out;
+	    }
+    }
+    
+    //Output Answer
+    fout << min << endl;  //CHANGE
+    return 0;
+}

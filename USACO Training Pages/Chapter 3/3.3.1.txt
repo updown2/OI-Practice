@@ -1,0 +1,90 @@
+/*
+ID: riya.ar1
+PROG: fence
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 1, N)
+#define ffj() For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N = 501;
+int M; //# of fences
+multiset<int> adj[501];
+multiset<int>::iterator it;
+multiset<int>::iterator it2;
+stack<int> rem;
+stack<int> circuit;
+
+void go(int loc) {
+	//w<<loc<<e;
+	if (adj[loc].size() == 0) {
+		circuit.push(loc);
+		if (rem.size() == 0) return;
+		int a = rem.top();
+		rem.pop();
+		go(a);
+		return;
+	}
+	it = adj[loc].begin();
+	rem.push(loc);
+	adj[loc].erase(it);
+	it2 = adj[*it].find(loc);
+	adj[*it].erase(it2);
+	
+	go(*it);
+}
+
+
+int main() {
+	ifstream cin ("fence.in");
+	ofstream cout ("fence.out");
+	
+	cin >> M;
+	ffj() {
+		int a, b; cin >> a >> b;
+		adj[a].insert(b);
+		adj[b].insert(a);
+	}
+	
+	ffi() {
+		if (adj[i].size()%2 == 1) {
+			go(i);
+			while (!circuit.empty()) {
+				w<<circuit.top()<<e;
+				circuit.pop();
+			}
+			return 0;
+		}
+	}
+	
+	ffi() {
+		if (adj[i].size()>0) {
+			go(i);
+			break;
+		}
+	}
+	
+	while (!circuit.empty()) {
+		w<<circuit.top()<<e;
+		circuit.pop();
+	}
+	
+	return 0;
+}
+
+
+
+
+
+

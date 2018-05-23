@@ -1,0 +1,111 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 1, 2*N+1)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+int N;
+ 
+struct Point {
+	double x, y;
+};
+Point points[50000];
+Point points2[50000];
+int A1_len;
+int A2_len;
+Point hull1[50000];
+Point hull2[50000];
+ll out = 0;
+ 
+bool ccw(Point a, Point b, Point c)
+{ return ((b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x)) >= 0; }
+bool xcompare(Point a, Point b) {
+	if (a.x<b.x) return true;
+	if (a.x == b.x && a.y < b.y) return true;
+	return false;
+ 
+}
+void compute_hull ( const Point* i_loc, Point* o_hull1, int* len1, Point* o_hull2, int* len2 ) {
+	*len1 = 0;
+	For (i, 0, N) {
+		o_hull1[*len1] = i_loc[i];
+		(*len1) ++;
+		while( (*len1)-3>= 0 && ccw( o_hull1[(*len1)-3], o_hull1[(*len1)-2], o_hull1[(*len1)-1] ) ) {
+			(*len1) --;
+			o_hull1[(*len1)-1] = o_hull1[*len1];
+		}
+	}
+ 
+	*len2 = 0;
+	for (int i=N-1; i>=0; i--) {
+		o_hull2[*len2] = i_loc[i];
+		(*len2)++;
+		while( (*len2)-3>= 0 && ccw( o_hull2[(*len2)-3], o_hull2[(*len2)-2], o_hull2[(*len2)-1] ) ) {
+			(*len2) --;
+			o_hull2[(*len2)-1] = o_hull2[*len2];
+		}
+	}
+}
+void print( const Point* i_hull, int len1) {
+	cout << "Hull start:" << endl;
+	For (i, 0, len1) {
+		cout << i_hull[i].x << " " << i_hull[i].y << endl;
+	}
+	cout << "Hull end." << endl;
+}
+ 
+ll dist(Point a, Point b) {
+	return abs(a.x-b.x) + abs(a.y-b.y);
+}
+ 
+int main() {
+	//ifstream cin ("test.in");
+ 
+	cin >> N;
+ 
+	For (i, 0, N) {
+		cin >> points[i].x >> points[i].y;
+		points2[i].x = points[i].x;
+		points2[i].y = points[i].y;
+	}
+ 
+	sort(points, points+N, xcompare);
+ 
+	compute_hull (points, hull1, &A1_len, hull2, &A2_len);
+	//print(hull1, A1_len);
+	//print(hull2, A2_len);
+ 
+	For (i, 0, A1_len-1) {
+ 
+		For (j, i+1, A1_len-1) {
+		//w<< hull1[i].x s hull1[i].y s hull1[j].x s hull1[j].y<<e;
+            out = max(out, dist(hull1[i], hull1[j]));
+		}
+	}
+	For (i, 0, A2_len-1) {
+		//w<< hull2[i].x s hull2[i].y <<e;
+		For (j, i+1, A2_len-1) {
+            out = max(out, dist(hull2[i], hull2[j]));
+		}
+	}
+	For (i, 0, A1_len) {
+		For (j, 0, A2_len) {
+            out = max(out, dist(hull1[i], hull2[j]));
+ 
+		}
+	}
+	//w<< out s points2[2].x s points2[2].y s  points2[6].x s points2[6].y<<e;
+ 
+	cout << out << e;
+}
+ 

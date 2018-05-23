@@ -1,0 +1,39 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+//500,000,000 operations
+
+//Global Variables
+int N, K;
+int nums[1000];
+
+int main() {
+	ifstream cin ("diamond.in");
+	ofstream cout ("diamond.out");
+	
+	cin >> N >> K;
+	ffi cin >> nums[i];
+	
+	sort(nums, nums+N);
+	
+	int out = 0;
+	ffi {
+		ffj {
+			if (nums[j]-nums[i] > K) {
+				out = max(out, j-i);
+				break;
+			}
+			if (j == N-1) {
+				out = max(out, j-i+1);
+			}
+		}
+	}
+	
+	cout << out << endl;
+	
+	return 0;
+}
+

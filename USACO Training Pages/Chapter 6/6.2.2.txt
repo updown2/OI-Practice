@@ -1,0 +1,149 @@
+/*
+ID: riya.ar1
+PROG: packrec
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+struct Rect {
+	int w, h;
+	Rect() {w = 0; h = 0;}
+	Rect(int a, int b) {w = a; h = b;}
+};
+Rect o1, o2, o3, o4;
+Rect one, two, thr, fou;
+int outA = 100000;
+vector<pair<int, int> > outB;
+int height, width;
+
+void updateOut(int a) {
+	if (a >= outA) return;
+	outA = a;
+	while (!outB.empty()) outB.erase(outB.begin()+0);
+}
+void solve() {
+	int area = height*width;
+	updateOut(area);
+	if (outA == area) outB.pb(mp(height, width));
+}
+void check1() {
+	height = max(max(o1.h, o2.h), max(o3.h, o4.h)); width = o1.w+o2.w+o3.w+o4.w; solve();
+	//if (height < 16 && width < 16) w<< "Bad check 1"<<e;
+}
+void check2() {
+	height = o1.h+max(o2.h, max(o3.h, o4.h)); width = max(o1.w, o2.w+o3.w+o4.w); solve();
+	//if (height < 16 && width < 16) w<< "Bad check 2"<<e;
+}
+void check3() {
+	height = max(o3.h, o4.h+max(o1.h, o2.h)); width = o3.w+max(o4.w, o1.w+o2.w); solve();
+	//if (height < 16 && width < 16) w<< "Bad check 3"<<e;
+}
+void check5() {
+	height = max(o1.h+o2.h, max(o3.h, o4.h)); width = max(o1.w, o2.w)+o3.w+o4.w; solve();
+	//if (height < 16 && width < 16) w<< "Bad check 5"<<e;
+}
+void check6() {
+	height = max(o1.h+o2.h, o3.h+o4.h);
+	if (o1.w > o2.w && o2.h < o4.h) width = o1.w+max(o3.w, o4.w);
+	else if (o3.w > o4.w && o4.h < o2.h) width = o3.w+max(o1.w, o2.w);
+	else width = max(o1.w+o3.w, o2.w+o4.w);
+	solve();
+	//if (height < 16 && width < 16) w<< "Bad check 6"<<e;
+}
+
+void permute() {
+	o1=Rect(one.w, one.h); o2=Rect(two.w, two.h); o3=Rect(thr.w, thr.h); o4=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o1=Rect(one.w, one.h); o2=Rect(two.w, two.h); o4=Rect(thr.w, thr.h); o3=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o1=Rect(one.w, one.h); o3=Rect(two.w, two.h); o2=Rect(thr.w, thr.h); o4=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o1=Rect(one.w, one.h); o3=Rect(two.w, two.h); o4=Rect(thr.w, thr.h); o2=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o1=Rect(one.w, one.h); o4=Rect(two.w, two.h); o2=Rect(thr.w, thr.h); o3=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o1=Rect(one.w, one.h); o4=Rect(two.w, two.h); o3=Rect(thr.w, thr.h); o2=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o2=Rect(one.w, one.h); o1=Rect(two.w, two.h); o3=Rect(thr.w, thr.h); o4=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o2=Rect(one.w, one.h); o1=Rect(two.w, two.h); o4=Rect(thr.w, thr.h); o3=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o2=Rect(one.w, one.h); o3=Rect(two.w, two.h); o1=Rect(thr.w, thr.h); o4=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o2=Rect(one.w, one.h); o3=Rect(two.w, two.h); o4=Rect(thr.w, thr.h); o1=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o2=Rect(one.w, one.h); o4=Rect(two.w, two.h); o1=Rect(thr.w, thr.h); o3=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o2=Rect(one.w, one.h); o4=Rect(two.w, two.h); o3=Rect(thr.w, thr.h); o1=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o3=Rect(one.w, one.h); o1=Rect(two.w, two.h); o2=Rect(thr.w, thr.h); o4=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o3=Rect(one.w, one.h); o1=Rect(two.w, two.h); o4=Rect(thr.w, thr.h); o2=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o3=Rect(one.w, one.h); o2=Rect(two.w, two.h); o1=Rect(thr.w, thr.h); o4=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o3=Rect(one.w, one.h); o2=Rect(two.w, two.h); o4=Rect(thr.w, thr.h); o1=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o3=Rect(one.w, one.h); o4=Rect(two.w, two.h); o2=Rect(thr.w, thr.h); o1=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o3=Rect(one.w, one.h); o4=Rect(two.w, two.h); o1=Rect(thr.w, thr.h); o2=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o4=Rect(one.w, one.h); o1=Rect(two.w, two.h); o2=Rect(thr.w, thr.h); o3=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o4=Rect(one.w, one.h); o1=Rect(two.w, two.h); o3=Rect(thr.w, thr.h); o2=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o4=Rect(one.w, one.h); o2=Rect(two.w, two.h); o1=Rect(thr.w, thr.h); o3=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o4=Rect(one.w, one.h); o2=Rect(two.w, two.h); o3=Rect(thr.w, thr.h); o1=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o4=Rect(one.w, one.h); o3=Rect(two.w, two.h); o1=Rect(thr.w, thr.h); o2=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+	o4=Rect(one.w, one.h); o3=Rect(two.w, two.h); o2=Rect(thr.w, thr.h); o1=Rect(fou.w, fou.h);
+	check1(); check2(); check3(); check5(); check6();
+}
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("packrec.in");
+	ofstream cout ("packrec.out");
+	cin >> one.w >> one.h >> two.w >> two.h >> thr.w >> thr.h >> fou.w >> fou.h;
+	For (a, 0, 2) {
+		swap(one.w, one.h);
+		For (b, 0, 2) {
+			swap(two.w, two.h);
+			For (c, 0, 2) {
+				swap(thr.w, thr.h);
+				For (d, 0, 2) {
+					swap(fou.w, fou.h);
+					permute();
+				}
+			}
+		}
+	}
+	w<< outA<<e;
+	For (i, 0, outB.size()) {
+		if (outB[i].a > outB[i].b) swap(outB[i].a, outB[i].b);
+	}
+	sort(outB.begin(), outB.end());
+	For (i, 0, outB.size()) {
+		if (i == 0) w<< outB[i].a s outB[i].b <<e;
+		else if (outB[i-1].a == outB[i].a || outB[i-1].b == outB[i].b) continue;
+		else w<< outB[i].a s outB[i].b <<e;
+	}
+	
+	return 0;
+}
+

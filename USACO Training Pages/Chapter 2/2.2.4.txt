@@ -1,0 +1,103 @@
+/*
+ID: riya.ar1
+PROG: lamps
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+set<string> myset;
+set<string>::iterator it;
+
+
+//Global Variables
+int N, C;
+bool onn[101];
+bool off[101];
+
+char toggle(char a) {
+	if (a == '0') return '1';
+	return '0';
+}
+
+void check(int on) {
+	if (__builtin_popcount(on) > C) return;
+	if ( (C - __builtin_popcount(on))%2 != 0 ) return;
+	
+	string curr;
+	
+	For (i, 1, N+1) {
+		char add;
+		if (on & 1) {
+			add = '0';
+		}
+		else {
+			add = '1';
+		}
+		if ( (on & 2) && (i%2 == 1) ) add = toggle(add);
+		if ( (on & 4) && (i%2 == 0) ) add = toggle(add);
+		if ( (on & 8) && ((i-1)%3 == 0) ) add = toggle(add);
+		curr += add;
+	}
+	
+	For (i, 0, N) {
+		if ( (curr[i] == '0' && onn[i]) || (curr[i] == '1' && off[i]) ) {
+			//w<< curr s i s onn[i] s off[i]<<e;
+			//w<< (curr[i] == '0' && onn[i]) s (curr[i] == '1' && off[i]) <<e;
+			return;
+		}
+	}
+	
+	
+	myset.insert(curr);
+	
+}
+
+int main() {
+	ifstream cin ("lamps.in");
+	ofstream cout ("lamps.out");
+
+	cin >> N >> C;
+	
+	ffi {
+		onn[i] = false;
+		off[i] = false;
+	}
+	
+	int a;
+	cin >> a;
+	
+	while (a != -1) {
+		a--;
+		onn[a] = true;
+		cin >> a;
+	}
+	cin >> a;
+	while (a != -1) {
+		a--;
+		off[a] = true;
+		cin >> a;
+	}
+	
+	For (i, 0, 16) {
+		check(i);
+	}
+	
+	for (it=myset.begin(); it!=myset.end(); ++it) w << *it <<e;
+	if (myset.size() == 0) {
+		w<< "IMPOSSIBLE" <<e;
+	}
+	
+	return 0;
+}

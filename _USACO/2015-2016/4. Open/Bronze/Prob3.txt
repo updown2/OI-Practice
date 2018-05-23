@@ -1,0 +1,88 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+//500,000,000 operations
+
+//Global Variables
+int N;
+ll locx[50000][2];
+ll locy[50000][2];
+
+
+int compare_first(const void * a, const void * b)
+{
+	const ll * ia = (const ll *)a;
+	const ll * ib = (const ll *)b;
+	
+	return ia[0] - ib[0];
+}
+
+int compare_second(const void * a, const void * b)
+{
+	const ll * ia = (const ll *)a;
+	const ll * ib = (const ll *)b;
+	
+	return ia[1] - ib[1];
+}
+
+
+ll solve (int a, int b) {
+	ll min_x = 100000;
+	ll max_x = 0;
+	ll min_y = 100000;
+	ll max_y = 0;
+	ffi {
+		if ( (locx[i][0] != a)||(locx[i][1] != b) ) {
+			min_x = min(min_x, locx[i][0]);
+			max_x = max(max_x, locx[i][0]);
+			min_y = min(min_y, locx[i][1]);
+			max_y = max(max_y, locx[i][1]);
+		}
+	}
+	//cout << a << ", " << b << ": " << (max_x-min_x)*(max_y-min_y) << endl;
+	return (max_x-min_x)*(max_y-min_y);
+}
+
+int main() {
+	ifstream cin ("reduce.in");
+	ofstream cout ("reduce.out");
+	
+	
+	cin >> N;
+	ffi {
+		cin >> locx[i][0] >> locx[i][1];
+		locy[i][0] = locx[i][0];
+		locy[i][1] = locx[i][1];
+	}
+	
+	qsort(locx, N, 2*sizeof(ll), compare_first);
+	qsort(locy, N, 2*sizeof(ll), compare_second);
+	
+	/*ffi {
+		cout << locx[i][0] << " " << locx[i][1] << endl;
+	}cout << endl;
+	ffi {
+		cout << locy[i][0] << " " << locy[i][1] << endl;
+	}cout << endl;*/
+	
+	ll min_x = locx[0][0];
+	ll max_x = locx[N-1][0];
+	ll min_y = locy[0][1];
+	ll max_y = locy[N-1][1];
+	
+	ll out = (max_x-min_x)*(max_y-min_y);
+	//cout << out << endl;
+	
+	if (locx[0][0] != locx[1][0]) out = min(out, solve(locx[0][0], locx[0][1]) );
+	if (locx[N-1][0] != locx[N-2][0]) out = min(out, solve(locx[N-1][0], locx[N-1][1]) );
+	if (locy[0][1] != locy[1][1]) out = min(out, solve(locy[0][0], locy[0][1]) );
+	if (locy[N-1][1] != locy[N-2][1]) out = min(out, solve(locy[N-1][0], locy[N-1][1]) );
+	
+	cout << out << endl;
+	
+	return 0;
+}
+

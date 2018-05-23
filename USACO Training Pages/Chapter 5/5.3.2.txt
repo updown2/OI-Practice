@@ -1,0 +1,221 @@
+/*
+ID: riya.ar1
+PROG: window
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, T)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+vector<char> name;
+vector<vector<ll> > window;
+vector<ll> base;
+
+
+ll N;
+ll height[2000];
+ll len[2000];
+ll curr_active = 0;
+bool on[1000];
+ll rect[1000][4];
+struct Event {
+	ll x, y, index;
+	bool start_p;
+	bool active;
+};
+bool acompare(Event a, Event b) { return a.x < b.x; }
+bool bcompare(Event a, Event b) { return a.y < b.y; }
+Event rr[2000];
+Event r_use[2000];
+ll calc_h() {
+	ll at = 0;
+	For (i, 0, 2*N) {
+		if (on [rr[i].index] == true) {
+			r_use[at] = rr[i];
+			//cout << rr[i].y << " " << rr[i].start_p << endl;
+			at++;
+		}
+	}
+	sort(r_use, r_use+at, bcompare);
+	
+	ll out = 0;
+	ll a = 0;
+	For (i, 0, at-1) {
+		if (r_use[i].start_p) {
+			a++;
+		}
+		else {
+			a--;
+		}
+		
+		if (a> 0) {
+			out += r_use[i+1].y - r_use[i].y;
+			//cout << "   " << r_use[i].y << " " << r_use[i-1].y << " " << a << endl;
+		}
+	}
+	return out;
+}
+
+ofstream fout ("window.out");
+void solve(int loc) {
+	int total = (window[loc][2]-window[loc][0])*(window[loc][3]-window[loc][1]);
+	
+	//For (i, 0, 4) w<<window[loc][i]<< " "; w<<e;
+	N = 0;
+	For (i, loc+1, name.size()) {
+		if (window[i][0] < window[loc][2] && window[i][2] > window[loc][0] && window[i][1] < window[loc][3] && window[i][3] > window[loc][1]) {
+			
+			For (j, 0, 4) rect[N][j] = window[i][j];
+			//w<< rect[N][0] s rect[N][1] s rect[N][2] s rect[N][3]<<e;
+			
+			
+			rect[N][0] = max(window[loc][0], min(window[loc][2], rect[N][0]) );
+			rect[N][2] = max(window[loc][0], min(window[loc][2], rect[N][2]) );
+			rect[N][1] = max(window[loc][1], min(window[loc][3], rect[N][1]) );
+			rect[N][3] = max(window[loc][1], min(window[loc][3], rect[N][3]) );
+			
+			//w<< rect[N][0] s rect[N][1] s rect[N][2] s rect[N][3]<<e;
+			
+			rr[2*N].x = rect[N][0];
+			rr[2*N].y = rect[N][1];
+			rr[2*N].index = N;
+			rr[2*N].start_p = true;
+			
+			rr[2*N+1].x = rect[N][2];
+			rr[2*N+1].y = rect[N][3];
+			rr[2*N+1].index = N;
+			rr[2*N+1].start_p = false;
+			
+			N++;
+		}
+	}
+	
+	sort(rr, rr+2*N, acompare);
+	
+	For (i, 0, N) {
+		on[i] = false;
+	}
+	
+	curr_active = 1;
+	on [rr[0].index] = true;
+	For (i, 1, 2*N) {
+		height[i] = calc_h();
+		if (curr_active> 0) {
+			len[i] = rr[i].x - rr[i-1].x;
+		}
+		if (rr[i].start_p == false) {
+			on [rr[i].index] = false;
+			curr_active --;
+		}
+		else {
+			on [rr[i].index] = true;
+			curr_active ++;
+		}
+	}
+	
+	ll out = 0;
+	For (i, 1, 2*N) {
+		out += len[i]*height[i];
+		//cout << len[i] << " " << height[i] << endl;
+	}
+	//w << out<<e;
+	
+	double per = 100-(100*((double)out/total));
+	//w<< out s total<< " ";
+	
+	
+	fout<<fixed<<setprecision(3)<<per<<e;
+}
+
+int main() {
+	freopen ("window.in","r",stdin);
+	//ifstream cin ("test.in");
+	//ofstream cout ("window.out");
+	
+	For (i, 0, 4) base.pb(0);
+	
+	char a, use;
+	while (scanf("%c", &a, 1) != EOF) {
+		char id;
+		if (a == 'w') {
+			scanf("(%c,%d,%d,%d,%d)%c", &id, &base[0], &base[1], &base[2], &base[3], &use);
+			
+			if (base[0] > base[2]) swap(base[0], base[2]);
+			if (base[1] > base[3]) swap(base[1], base[3]);
+			
+			name.pb(id);
+			window.pb(base);
+		}
+		else {
+			scanf("(%c)%c", &id, &use);
+		}
+		if (a == 't') {
+			For (i, 0, name.size()) {
+				if (name[i] == id) {
+					//delete name and move add to the end
+					For (j, 0, 4) base[j] = window[i][j];
+					name.erase(name.begin()+i);
+					window.erase(window.begin()+i);
+					
+					name.pb(id);
+					window.pb(base);
+					break;
+				}
+			}
+		}
+		if (a == 'b') {
+			For (i, 0, name.size()) {
+				if (name[i] == id) {
+					//delete name and move add to the begining
+					For (j, 0, 4) base[j] = window[i][j];
+					name.erase(name.begin()+i);
+					window.erase(window.begin()+i);
+					
+					name.insert(name.begin(), id);
+					window.insert(window.begin(), base);
+					break;
+				}
+			}
+		}
+		if (a == 'd') {
+			For (i, 0, name.size()) {
+				if (name[i] == id) {
+					//delete name
+					For (j, 0, 4) base[j] = window[i][j];
+					name.erase(name.begin()+i);
+					window.erase(window.begin()+i);
+					break;
+				}
+			}
+		}
+		if (a == 's') {
+			For (i, 0, name.size()) {
+				//w<< name[i]<< ": ";For (j, 0, 4) w<< window[i][j]<< " ";w<<e;
+			}
+			For (i, 0, name.size()) {
+				if (name[i] == id) {
+					//w<< i <<e;
+					solve(i);
+					break;
+				}
+			}
+		}
+	}
+	
+	
+	
+	return 0;
+}
+

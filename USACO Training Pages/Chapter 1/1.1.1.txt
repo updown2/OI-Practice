@@ -1,0 +1,23 @@
+/*
+ID: riya.ar1
+PROG: test
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("test.out");
+    ifstream fin ("test.in");
+
+    //Declare Variables and Read Input
+    int a, b;
+    fin >> a >> b;  //CHANGE
+
+    //Output Answer
+    fout << a+b << endl;  //CHANGE
+    return 0;
+}

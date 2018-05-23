@@ -1,0 +1,51 @@
+/*
+ID: riya.ar1
+PROG: money
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N+1)
+#define ffj For(j, 0, V)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+ll V, N;
+ll coins[25];
+ll dp[10001];
+
+
+int main() {
+    ifstream cin ("money.in");
+    ofstream cout ("money.out");
+    
+    cin >> V >> N;
+    ffi dp[i] = 0;
+    dp[0] = 1;
+    ffj cin >> coins[j];
+    
+    ffj {
+        ffi {
+            //w<< dp[i]<< " ";
+            if (i+coins[j] <= N) {
+                dp[i+coins[j]] += dp[i];
+            }
+        }
+        //w<<e;
+    }
+    
+    w<<dp[N]<<e;
+    
+    return 0;
+}
+
+

@@ -1,0 +1,97 @@
+#include <iostream>
+#include <string>
+#include <sstream>
+#include <iomanip>
+#include <cmath>
+#include <algorithm>
+#include <fstream>
+#include <set>
+
+using namespace std;
+
+//Global Variables
+int que[100000][3];  //Might have to make larger
+int at_write = 1;
+int at_read = 0;
+
+int pos[3];
+
+bool add() {
+	for (int i=0; i<at_write; i++) {
+		if (pos[0] == que[i][0] && pos[1] == que[i][1]) {
+			//cout << "Not adding (" << pos[0] << ", " << pos[1] << ")" << " " << pos[2] << endl;
+			return false;
+		}
+	}
+	//cout << "Adding (" << pos[0] << ", " << pos[1] << ")" << " " << pos[2] << endl;
+	que[at_write][0] = pos[0];
+	que[at_write][1] = pos[1];
+	que[at_write][2] = pos[2];
+	at_write ++;
+	return true;
+}
+
+
+int main() {
+	ifstream cin ("pails.in");
+	ofstream fout ("pails.out");
+	
+	int X1, X2, K, M;
+	cin >> X1 >> X2 >> K >> M;
+	
+	int out = M;
+	
+	que[0][0] = que[0][1] = que[0][2] = 0;
+	
+	
+	while (at_write != at_read) {
+		int x = que[at_read][0];
+		int y = que[at_read][1];
+		int k = que[at_read][2];
+		cout << "(" << x << ", " << y << ")" << " " << k << " (" << x+y << " " << abs(M-(x+y)) << ")" << endl;
+		at_read ++;
+		if (k != K) {
+			out = min(abs(M-(x+y)), out);
+			
+			k++;
+			//6 possibilities
+			//Empty pails;
+			pos[0] = 0; pos[1] = y; pos[2] = k;
+			add();
+			pos[0] = x; pos[1] = 0; pos[2] = k;
+			add();
+			
+			//Fill pails
+			pos[0] = X1; pos[1] = y; pos[2] = k;
+			add();
+			pos[0] = x; pos[1] = X2; pos[2] = k;
+			add();
+			
+			//Pour x-->y
+			int ux = x; int uy = y;
+			while (ux > 0 && uy < X2) {
+				ux --;
+				uy ++;
+			}
+			pos[0] = ux; pos[1] = uy; pos[2] = k;
+			add();
+			
+			//Pour y-->x
+			ux = x; uy = y;
+			while (uy > 0 && ux < X1) {
+				ux ++;
+				uy --;
+			}
+			pos[0] = ux; pos[1] = uy; pos[2] = k;
+			add();
+		}
+		else {
+			out = min(abs(M-(x+y)), out);
+		}
+	}
+	
+	
+	fout << out << endl;
+	
+    return 0;
+}

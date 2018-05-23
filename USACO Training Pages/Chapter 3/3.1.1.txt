@@ -1,0 +1,58 @@
+/*
+ID: riya.ar1
+PROG: agrinet
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+int N;
+int cost[100][100];
+bool visited[100];
+int out = 0;
+
+int main() {
+	ifstream cin ("agrinet.in");
+	ofstream cout ("agrinet.out");
+	
+	cin >> N;
+	ffi {
+		ffj {
+			cin >> cost[i][j];
+			cost[i][j] *= -1;
+		}
+		visited[i] = false;
+	}
+	
+	
+	priority_queue<pair<int, int> > next1;  //<cost, node>
+	next1.push(mp(0, 0));
+	while (!next1.empty()) {
+		pair<int, int> top = next1.top();
+		next1.pop();
+		if (!visited[top.b]) {
+			visited[top.b] = true;
+			out += top.a;
+			ffi {
+				next1.push(mp(cost[top.b][i], i));
+			}
+		}
+	}
+	
+	w<<out*-1<<e;
+	
+	return 0;
+}

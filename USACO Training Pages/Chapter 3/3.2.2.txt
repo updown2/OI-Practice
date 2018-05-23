@@ -1,0 +1,77 @@
+/*
+ID: riya.ar1
+PROG: kimbits
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M+1)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+//Global Variables
+ll N, M, I;
+ll dp[40][40];
+string out = "";
+
+void rec(ll siz, ll num, ll lef) {
+	if (siz == 1) {
+		if (lef == 1) out += "0";
+		else out += "1";
+		return;
+	}
+	ll tot = 0;
+	For (i, 0, num+1) {
+		tot += dp[siz-1][i];
+	}
+	
+	//w<< siz s num s tot <<e;
+
+	if (tot < lef) {
+		out += "1";
+		rec(siz-1, num-1, lef-tot);
+	}
+	else {
+		out += "0";
+		rec(siz-1, num, lef);
+	}
+}
+
+
+int main() {
+	ifstream cin ("kimbits.in");
+	ofstream cout ("kimbits.out");
+	
+	cin >> N >> M >> I;
+	
+	For (i, 0, 40) {
+		dp[i][0] = 1;
+		dp[i][1] = i;
+	}
+	
+	For (i, 1, N+1) {
+		For (j, 0, N+1) {
+			dp[i][j] = dp[i-1][j-1]+dp[i-1][j];
+			//w<< i s j << ": " << dp[i][j]<<e;
+		}
+	}
+	
+	//w<<e;
+	
+	rec(N, M, I);
+	
+	w<< out << e;
+	
+	
+	return 0;
+}
+

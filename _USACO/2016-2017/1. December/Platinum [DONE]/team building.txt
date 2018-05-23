@@ -1,0 +1,60 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=1000, MAXK=10, INF=1000000000000000000, MOD=1000000009;
+///500,000,000
+int N, M, K, dp[MAXK][MAXN][MAXN], FJ[MAXN], FP[MAXN], pre[MAXN][MAXN];
+
+int query(int i, int j) {
+    if (i == 0 || j == 0) return 0;
+    return pre[i-1][j-1];
+}
+void make_pre(int k) {
+    ffa pre[i][j] = dp[k][i][j];
+    For (i, 1, N) pre[i][0] += pre[i-1][0], pre[i][0] %= MOD;
+    For (j, 1, M) pre[0][j] += pre[0][j-1], pre[0][j] %= MOD;
+    For (i, 1, N) For (j, 1, M) {
+        pre[i][j] += pre[i-1][j]+pre[i][j-1]-pre[i-1][j-1];
+        while (pre[i][j] < 0) pre[i][j] += MOD;
+        pre[i][j] %= MOD;
+    }
+}
+
+main() {
+    ifstream cin("team.in");
+    ofstream cout("team.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> M >> K;
+    ffi cin >> FJ[i];
+    ffj cin >> FP[j];
+    ffa if (FJ[i] > FP[j]) dp[0][i][j] = 1;
+
+    //ffi {ffj w<< dp[0][i][j] << " ";w<<e;}w<<e;
+
+    For (k, 1, K) {
+        make_pre(k-1);
+
+        //ffi {ffj w<< pre[i][j] << " ";w<<e;}w<<e;
+        ffa {
+            if (dp[k-1][i][j] != 0) dp[k][i][j] = query(i, j);
+        }
+        //ffi {ffj w<< dp[k][i][j] << " ";w<<e;}w<<e;
+    }
+
+
+    int out = 0;
+    ffa out += dp[K-1][i][j], out %= MOD;
+    w<< out<<e;
+}

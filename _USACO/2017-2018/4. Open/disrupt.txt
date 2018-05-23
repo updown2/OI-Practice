@@ -1,0 +1,167 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+//#define ffj For(j, 0, M)
+//#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=200000, INF=10000000000;
+///500,000,000
+int N, M, dep[MAXN], anc[20][MAXN], st[20][MAXN];
+int edg[MAXN][6]; ///edg[j][4]=index of edge in segtree(nums), edg[j][5]=top edge in segtree
+int siz[MAXN], tree[MAXN*4+1], lazy[MAXN*4+1], in[MAXN];
+vector<int> adj[MAXN], cost[MAXN], nums;
+pair<int, int> par[MAXN]; ///(loc, edge#)
+vector<pair<int, int> > bel[MAXN]; ///(loc, edge#)
+
+bool vis[MAXN];
+priority_queue<pair<int, pair<int, int> > > next1; ///(-cost, (loc, par))
+
+void go(int at, int cur) {
+    dep[at] = cur, siz[at] = 1;
+    for ( pair<int, int>i :bel[at]) go(i.a, cur+1), siz[at]+=siz[i.a];
+}
+int LCA(int A, int B) {
+	if (dep[A] > dep[B]) swap(A, B);
+	int d = dep[B] - dep[A];
+	For (i, 0, 20) if (d&(1<<i) ) B = anc[i][B];
+
+	if (A == B) return A;
+
+	for (int i=19; i>= 0; i--) if (anc[i][A] != anc[i][B]) {
+        A = anc[i][A];
+        B = anc[i][B];
+	}
+	return par[A].a;
+}
+void setup(int at, int top, int tnode) {
+    //w<< at+1 s top+1 s tnode+1<<e;
+    in[at] = tnode;
+    if (bel[at].size() == 0) return;
+    int node=bel[at][0].a, edge=bel[at][0].b;
+    for (pair<int, int> i:bel[at]) if (siz[i.a] > siz[node]) node=i.a,edge=i.b;
+    if (top == -1) top = edge;
+    edg[edge][4]=nums.size(), edg[edge][5] = top;
+    nums.pb(edge), setup(node, top,tnode);
+    for (pair<int, int> i:bel[at]) if (i.a != node)
+        edg[i.b][4]=nums.size(),edg[i.b][5]=i.b, nums.pb(i.b), setup(i.a,-1,i.a);
+}
+void push(int ind, int L, int R) {
+    tree[ind] = min(tree[ind], lazy[ind]);
+    if (L != R) lazy[ind*2] = min(lazy[ind*2], lazy[ind]), lazy[ind*2+1]=min(lazy[ind*2+1], lazy[ind]);
+    lazy[ind] = INF;
+}
+void upd(int ind, int L, int R, int oL, int oR, int val) {
+    if (oR < L || R < oL) return;
+    if (oL <= L && R <= oR) {
+        lazy[ind] = min(lazy[ind], val);
+        push(ind, L, R);
+        return;
+    }
+    push(ind, L, R);
+    int mid = (L+R)/2;
+    upd(ind*2, L, mid, oL, oR, val), upd(ind*2+1, mid+1, R, oL, oR, val);
+    tree[ind] = min(tree[ind*2], tree[ind*2+1]);
+}
+void update(int a, int b, int c) { ///a --> b
+    //w<< "Updating" s a+1 s b+1 s c<<e;
+    while (in[a] != in[b]) {
+        int at = par[a].b; ///Edge from a-->par[a]
+        upd(1, 0, N-2, edg[edg[at][5]][4], edg[at][4], c);
+        at = edg[at][5];
+        int d = edg[at][0];
+        if (dep[d] > dep[edg[at][1]]) d=edg[at][1];
+        a = d;
+        if (d != b) {
+            a = par[d].a;
+            upd(1, 0, N-2, edg[par[d].b][4], edg[par[d].b][4], c);
+        }
+    }
+    if (a == b) return;
+    int at = par[a].b;
+    int x = dep[a]-dep[b]-1;
+    For (i, 0, 20) if (x & (1<<i)) a=anc[i][a];
+    int at2=par[a].b;
+    upd(1, 0, N-2, edg[at2][4], edg[at][4], c);
+}
+int query(int ind, int L, int R, int x) {
+    if (x < L || R < x) return INF;
+    push(ind, L, R);
+    if (L == R) return tree[ind];
+    int mid = (L+R)/2;
+    return min(query(ind*2, L, mid, x), query(ind*2+1, mid+1, R, x));
+}
+
+main() {
+    //ifstream cin("test.in");
+    ifstream cin("disrupt.in"); ofstream cout("disrupt.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> M;
+    For (i, 0, 4*MAXN+1) tree[i] = lazy[i] = INF;
+    For (j, 0, N-1) {
+        int a, b, c; cin >> a >> b; a--; b--; c=0;
+        edg[j][0] = a, edg[j][1] = b, edg[j][2] = INF,  edg[j][3] = c;
+        adj[a].pb(b), cost[a].pb(c);
+        adj[b].pb(a), cost[b].pb(c);
+    }
+    For (j, N, N+M) {
+        int a, b, c; cin >> a >> b >> c; a--; b--;
+        edg[j][0] = a, edg[j][1] = b, edg[j][2] = INF,  edg[j][3] = c;
+        adj[a].pb(b), cost[a].pb(c);
+        adj[b].pb(a), cost[b].pb(c);
+    }
+    next1.push(mp(0, mp(0, 0)));
+    while (!next1.empty()) {
+        int pay = next1.top().a;
+        int loc = next1.top().b.a;
+        int abo = next1.top().b.b;
+        next1.pop();
+        if (vis[loc]) continue;
+        vis[loc] = true;
+        par[loc].a = abo;
+        st[0][loc] = -pay;
+        For(i,0,adj[loc].size())next1.push(mp(-cost[loc][i],mp(adj[loc][i], loc)));
+    }
+    //ffi w<< par[i]+1<<" "; w<<e;
+    For (j, 0, N-1) {
+        int a=edg[j][0], b=edg[j][1];
+        if (par[a].a == b) bel[b].pb(mp(a, j)), par[a].b=j;
+        swap(a, b);
+        if (par[a].a == b) bel[b].pb(mp(a, j)), par[a].b=j;
+    }
+    go(0, 1);
+    //ffi w<< dep[i]<<e;
+    ffi anc[0][i] = par[i].a;
+    For (k, 0, 19) ffi {
+        anc[k+1][i] = anc[k][anc[k][i]];
+        st[k+1][i] = max(st[k][i], st[k][anc[k][i]]);
+    }
+    //ffi w<< st[1][i]<<e;
+    setup(0, -1, 0);
+    For (j, N, M+N) {
+        int a=edg[j][0], b=edg[j][1];
+        int c = LCA(a, b);
+        update(a, c, edg[j][3]), update(b, c, edg[j][3]);
+    }
+    For (j, 0, N-1) {
+        int a=edg[j][0], b=edg[j][1];
+        if (dep[a] < dep[b]) swap(a, b);
+        if (par[a].a == b) { ///Edge IS in MST: ans=min(all_paths_crossing_edge)
+            edg[j][2] = query(1, 0, N-2, edg[par[a].b][4]); ///SET
+            if (edg[j][2] == INF) edg[j][2] = -1;
+        }
+        //if (j == 0) w<< par[a].a s b<<e;
+    }
+    //ffi w<< i+1 s par[i].a+1<<e;
+    //ffj w<< edg[j][4]<< " "; w<<e;
+    //For (i,0,N-1) w<< nums[i]<< " "; w<<e;
+    For (j, 0, N-1) w<< edg[j][2]<<e;
+}

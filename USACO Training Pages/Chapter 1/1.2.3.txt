@@ -1,0 +1,128 @@
+/*
+ID: riya.ar1
+PROG: namenum
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+//Global Variables
+string dict[4617];
+
+
+//check function
+bool check( string letter, string number ) {
+	if (number == "2") {
+		if (letter == "A" || letter == "B" || letter == "C") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "3") {
+		if (letter == "D" || letter == "E" || letter == "F") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "4") {
+		if (letter == "G" || letter == "H" || letter == "I") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "5") {
+		if (letter == "J" || letter == "K" || letter == "L") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "6") {
+		if (letter == "M" || letter == "N" || letter == "O") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "7") {
+		if (letter == "P" || letter == "R" || letter == "S") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "8") {
+		if (letter == "T" || letter == "U" || letter == "V") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	if (number == "9") {
+		if (letter == "W" || letter == "X" || letter == "Y") {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+}
+int main() {
+    ofstream fout ("namenum.out");
+    ifstream ffin ("dict.txt");
+    ifstream fin ("namenum.in");
+    
+    //Read Dictionary
+    for (int i = 0; i < 4617; i++) {
+    	ffin >> dict[i];
+    }
+    
+    //Create Variables
+    string num;
+    int length;
+    bool print;
+    bool found = false;
+ 
+	//Read Input
+	fin >> num;
+	length = num.length();
+	
+	//Algo
+	string a;
+	string b;
+	
+	for (int i=0; i < 4617; i++) {
+		if (dict[i].length() == length) {
+			print = true;
+			for (int j=0; j < length; j++) {
+				a = dict[i][j];
+				b = num[j];
+				if (check(a, b) == false) {
+					print = false;
+				}
+			}
+			
+			if (print == true) {
+				fout << dict[i] << endl;  //CHANGE
+				found = true;
+			}
+		}
+	}
+    if (found == false) {
+	fout << "NONE" << endl;  //CHANGE
+    }
+
+    return 0;
+}

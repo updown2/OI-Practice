@@ -1,0 +1,56 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("speeding.out");
+    ifstream fin ("speeding.in");
+
+    //Declare Variables and Read Input
+    int N, M;
+    fin >> N >> M;  //CHANGE
+    int act[N][2];
+    for (int i=0; i<N; i++) {
+    	fin >> act[i][0] >> act[i][1];  //CHANGE
+    }
+    int bes[M][2];
+    for (int i=0; i<M; i++) {
+    	fin >> bes[i][0] >> bes[i][1];  //CHANGE
+    }
+    
+
+    int use[100];
+    int at = 0;
+    for (int i=0; i<N; i++) {
+    	for (int j=at; j < act[i][0]+at; j++) {
+    		use[j] = act[i][1];
+    	}
+    	at += act[i][0];
+    }
+    
+
+    int use2[100];
+    at = 0;
+    for (int i=0; i<M; i++) {
+    	for (int j=at; j < bes[i][0]+at; j++) {
+    		use2[j] = bes[i][1];
+    	}
+    	at += bes[i][0];
+    }
+    
+    
+    
+    
+    //Algo
+    int out = 0;
+    for (int j=0; j < 100; j++) {
+   		out = max(out, use2[j]-use[j]);
+    }
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

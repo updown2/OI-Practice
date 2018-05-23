@@ -1,0 +1,171 @@
+/*
+ID: riya.ar1
+PROG: transform
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+//Global Variables
+string grid1[10][10];
+string grid2[10][10];
+string grid3[10][10];
+
+
+
+//functions
+int Apply1 (int N, int i, int j) {
+	N = N-1;
+	if (grid2[i][j] == grid1[N-j][i]) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply2 (int N, int i, int j) {
+	N = N-1;
+	if (grid2[i][j] == grid1[N-i][N-j]) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply3 (int N, int i, int j) {
+	N = N-1;
+	if (grid2[i][j] == grid1[j][N-i]) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply4 (int N, int i, int j) {
+	N = N-1;
+	if (grid2[i][j] == grid1[i][N-j]) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply51 (int N, int i, int j) {
+	N = N-1;
+	int g = N-j;
+	if (grid2[i][j] == grid1[N-g][i]) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply52 (int N, int i, int j) {
+	N = N-1;
+	int g = N-j;
+	if (grid2[i][j] == grid1[N-i][N-g] == 1){
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply53 (int N, int i, int j) {
+	N = N-1;
+	int g = N-j;
+	if (grid2[i][j] == grid1[g][N-i] == 1){
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+int Apply6 (int N, int i, int j) {
+	if (grid2[i][j] == grid1[i][j]) {
+		return 1;
+	}
+	else {
+		return 0;
+	}
+}
+
+
+
+int main() {
+    ofstream fout ("transform.out");
+    ifstream fin ("transform.in");
+ 
+	//Create Variables + Read Input
+	int N;
+	fin >> N;  //CHANGE
+	int values[8];
+	values[0] = values[1] = values[2] = values[3] = values[4] = values[5] = values[6] = values[7] = 0;
+	string prog;
+
+	for (int i=0; i < N; i++) {
+		fin >> prog;  //CHANGE
+		for (int j=0; j < N; j++) {
+			grid1[i][j] = prog[j];
+		}
+	}
+
+	for (int i=0; i < N; i++) {
+		fin >> prog;  //CNAHGE
+		for (int j=0; j < N; j++) {
+			grid2[i][j] = prog[j];
+		}
+	}
+	//Make Grid3
+	for (int i=0; i < N; i++) {
+		for (int j=0; j < N; j++) {
+			grid3[i][j] == grid1[i][(N-1)-j];
+		}
+	}
+	
+	//Algo
+	for (int i=0; i < N; i++) {
+		for (int j=0; j < N; j++) {
+			values[0] += Apply1(N, i, j);
+			values[1] += Apply2(N, i, j);
+			values[2] += Apply3(N, i, j);
+			values[3] += Apply4(N, i, j);
+			values[4] += Apply51(N, i, j);
+			values[5] += Apply52(N, i, j);
+			values[6] += Apply53(N, i, j);
+			values[7] += Apply6(N, i, j);
+		}
+	}
+	
+	//Read Results and Output Answer
+	if (values[0] == N*N) {
+		fout << 1 << endl;  //CHANGE
+	}
+	else if (values[1] == N*N) {
+		fout << 2 << endl;  //CHANGE
+	}
+	else if (values[2] == N*N) {
+		fout << 3 << endl;  //CHANGE
+	}
+	else if (values[3] == N*N) {
+		fout << 4 << endl;  //CHANGE
+	}
+	else if (values[4] == N*N) {
+		fout << 5 << endl;  //CHANGE
+	}
+	else if (values[5] == N*N) {
+		fout << 5 << endl;  //CHANGE
+	}
+	else if (values[6] == N*N) {
+		fout << 5 << endl;  //CHANGE
+	}
+	else if (values[7] == N*N) {
+		fout << 6 << endl;  //CHANGE
+	}
+	else {
+		fout << 7 << endl;  //CHANGE
+	}
+
+    return 0;
+}

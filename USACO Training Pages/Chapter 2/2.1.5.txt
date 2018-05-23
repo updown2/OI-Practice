@@ -1,0 +1,45 @@
+/*
+ID: riya.ar1
+PROG: subset
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+//500,000,000 operations
+
+//Global Variables
+ll N;
+ll dp[50][1000];
+
+int main() {
+	ifstream cin ("subset.in");
+	ofstream cout ("subset.out");
+	
+	cin >> N;
+	
+	For (i, 0, N+1) For (j, 0, 1000) dp[i][j] = 0;
+	dp[0][0] = 1;
+	
+	For (i, 0, N+1) {
+		For (j, 0, 1000) {
+			//if (dp[i][j] > 0) w<< i s j s dp[i][j]<<e;
+			dp[i+1][j] += dp[i][j];
+			dp[i+1][j+i+1] += dp[i][j];
+		}
+	}
+	if (N*(N+1) % 4 == 0)w<< dp[N][N*(N+1)/4]/2 << e;
+	else w<<0<<e;
+	
+	
+	
+	return 0;
+}
+

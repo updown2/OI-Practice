@@ -1,0 +1,58 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100000, INF=1000000000000000000;
+///500,000,000
+int N, K, a[MAXN], c[MAXN];
+
+int cows(double ma) {
+    //printf("ma: %I64d\n", ma);
+    int ret = 0;
+    ffi {
+        //w<< i<<e;
+        ret += (sqrt(1+4*a[i]/ma)-1)/2;
+    }
+    //w << "ret" s ret<<e;
+    return ret+N;
+}
+double tim(double ma) {
+    double ret = 0;
+    ffi {
+        int cow = 1 + (sqrt(1+4*a[i]/ma)-1)/2;
+        ret += a[i]/(double)(cow);
+        //w<< i s cow s ret<<e;
+    }
+    return ret;
+}
+
+main() {
+    ifstream cin("tallbarn.in");
+    ofstream cout("tallbarn.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> K; ffi cin >> a[i];
+
+    double sm = 0, big = INF;
+    while (abs(sm-big) >= .000000001) {
+        double mid = (sm+big)/2;
+        //w<< mid s cows(mid)<<e;
+        if (cows(mid) < K) big = mid;
+        else sm = mid;
+    }
+
+    double out = tim(sm);
+    //w<< e<<sm s cows(sm) s out<<e;
+    //if (out + .5 > (int)(out+1)) out++;
+    w<< (int)round(out+sm*(cows(sm)-K))<<e;
+}

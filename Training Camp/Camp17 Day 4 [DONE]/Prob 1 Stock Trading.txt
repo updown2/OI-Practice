@@ -1,0 +1,109 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+//500,000,000 operations
+const int MAXN = 1000000, INF = 1000000000000000000;
+//Global Variables
+int N, L, onmax[4*MAXN+1], onmin[4*MAXN+1], lazy[4*MAXN+1], out;
+set<pair<int, int> > buy, sell;
+set<pair<int, int> >::iterator it;
+
+void push(int index, int L, int R) {
+	onmax[index] += lazy[index];
+	onmin[index] += lazy[index];
+	if (L != R) {
+		lazy[index*2] += lazy[index];
+		lazy[index*2+1] += lazy[index];
+	}
+	lazy[index] = 0;
+}
+int query_max (int index, int L, int R, int oL, int oR) {
+	push(index, L, R);
+	if ( (oR < L) || (oL > R) ) return -INF;
+	if ( (R <= oR) && (L >= oL) ) return onmax[index];
+
+	return max(query_max(index*2, L, (L+R)/2, oL, oR), query_max(index*2+1, 1+(L+R)/2, R, oL, oR ));
+}
+int query_min (int index, int L, int R, int oL, int oR) {
+	push(index, L, R);
+	if ( (oR < L) || (oL > R) ) return INF;
+	if ( (R <= oR) && (L >= oL) ) return onmin[index];
+
+	return min(query_min(index*2, L, (L+R)/2, oL, oR), query_min(index*2+1, 1+(L+R)/2, R, oL, oR ));
+}
+void update_range (int index, int L, int R, int a, int b, int v) {
+	push(index, L, R);
+	if (b<L || a>R) return;
+	else if (a<=L && R<= b) {
+		lazy[index] += v;
+		push(index, L, R);
+	}
+	else {
+		update_range(index*2, L, (L+R)/2, a, b, v);
+		update_range(index*2+1, 1+(L+R)/2, R, a, b, v);
+		onmax[index] = max(onmax[index*2], onmax[index*2+1]);
+		onmin[index] = min(onmin[index*2], onmin[index*2+1]);
+	}
+}
+
+main() {
+    //ifstream cin("test.in");
+	ios_base::sync_with_stdio; cin.tie(0);
+	cin >> N >> L;
+	ffi {
+	    //w<< "i:" s i<<e;
+		int bu, se; cin >> bu >> se;
+		buy.insert(mp(bu, i)), sell.insert(mp(se, i));
+		it = sell.end(), it--;
+		while (!buy.empty() && !sell.empty() && (*buy.begin()).a < (*it).a) {
+			out += abs((*it).a - (*buy.begin()).a);
+			int x1 = (*it).a, x2 = (*it).b;
+			if (x2 > (*buy.begin()).b) { /// sell after buy
+                //w<< "max:" s (*buy.begin()).b s x2 s ":" s query_max(1, 0, N-1, (*buy.begin()).b, x2)<<e;
+				if (query_max(1, 0, N-1, (*buy.begin()).b, x2-1) == L) {
+                    out -= abs((*it).a - (*buy.begin()).a);
+                    buy.erase(buy.begin());
+                    it = sell.end(), it--;
+                    continue;
+				}
+                else {
+                    //w<< "updating:" s (*buy.begin()).b s x2-1 s 1<<e;
+                    update_range(1, 0, N-1, (*buy.begin()).b, x2-1, 1);
+                }
+			}
+			else {
+                //w<< "min:" s x2 s (*buy.begin()).b s ":" s query_min(1, 0, N-1, x2, (*buy.begin()).b)<<e;
+                if (query_min(1, 0, N-1, x2, (*buy.begin()).b-1) == -L) {
+                    out -= abs((*it).a - (*buy.begin()).a);
+                    sell.erase(it);
+                    it = sell.end(), it--;
+                    continue;
+				}
+                else {
+                    //w<< "updating:" s x2 s (*buy.begin()).b-1 s -1<<e;
+                    update_range(1, 0, N-1, x2, (*buy.begin()).b-1, -1);
+                }
+			}
+			buy.insert(*it), sell.insert(*buy.begin());
+			sell.erase(it), buy.erase(buy.begin());
+			it = sell.end(), it--;
+		}
+		//w<< "buy"<<e; for (auto i: buy) w<< i.a s i.b<<e; w<<e;
+		//w<< "sell"<<e; for (auto i: sell) w<< i.a s i.b<<e; w<<e;
+        //ffj w<< query_min(1, 0, N-1, j, j) << " "; w<<e;
+        //ffj w<< query_max(1, 0, N-1, j, j) << " "; w<<e;
+	}
+	w<< out<<e;
+}

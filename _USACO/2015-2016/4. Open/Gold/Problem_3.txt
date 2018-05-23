@@ -1,0 +1,95 @@
+#include<iostream>
+#include<list>
+#include<string>
+#include<cstring>
+#include<sstream>
+#include<cctype>
+#include<string.h>
+#include<algorithm>
+#include<stack>
+#include<fstream>
+#include<cstdlib>
+#include<vector>
+#include<map>
+#include<set>
+#include<utility>
+#include<iomanip>
+#include<queue>
+#include<math.h>
+
+
+using namespace std;
+
+
+typedef long long int ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+//100,000,000 operations
+
+int N;
+int input[248];
+
+int use[248];
+
+int next_r(int pos) {
+	For (i, pos+1, N) {
+		if (use[i] != 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+int next_l(int pos) {
+	for (int i=pos-1; i>=0; i--) {
+		if (use[i] != 0) {
+			return i;
+		}
+	}
+	return -1;
+}
+
+int check(int start) {
+	//Check max value by combining to the right
+	For (i, 1, 100) {  //CHANGE?
+		For (j, start, N-1) {
+			if (use[j] == i) {
+				if (next_r(j) != -1 && use[j] == use[next_r(j)]) {
+					use[j] ++;
+					use[next_r(j)] = 0;
+				}
+			}
+		}
+	}
+	int out = 0;
+	For (i, 0, N) {
+		out = max(out, use[i]);
+	}
+	return out;
+}
+
+
+int main() {
+	ifstream cin ("248.in");
+	ofstream fout ("248.out");
+	
+	cin >> N;
+	For (i, 0, N) {
+		cin >> input[i];
+	}
+	
+	
+	int out = 0;
+	For (i, 0, N) {
+		For (j, 0, N) {
+			use[j] = input[j];
+		}
+		out = max( out, check(i) );
+		/*For (j, 0, N) {
+			cout << use[j] << " ";
+		}
+		cout << endl;*/
+	}
+	fout << out << endl;
+	
+	return 0;
+}
+

@@ -1,0 +1,102 @@
+/*
+ID: riya.ar1
+PROG: ditch
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+//500,000,000 operations
+ 
+//Global Variables
+int N, M;
+int res[201][201]; //(N+1) x (N+1) grid
+bool visited[701];
+vector<vector<int> > adj;
+int source, sink;
+ 
+void connect(int a, int b, int c) {
+	res[a][b] += c;
+	For (i, 0, adj[a].size()) {
+		if (adj[a][i] == b) {
+			return;
+		}
+	}
+	adj[a].push_back( b );
+	adj[b].push_back( a );
+ 
+}
+ 
+int dfs(int x, int cap=10000000/*INF*/) {
+	visited[x] = true;
+	if (x==sink) return cap; //If you are done and can only take cap things, return cap(you're all done)
+ 
+	For (i, 0, adj[x].size()) {
+		if (!visited[adj[x][i]]) {
+			if (res[x][adj[x][i]] > 0) {
+				int cur = dfs(adj[x][i], min(cap, res[x][adj[x][i]]));
+				if (cur > 0) {
+					res[x][adj[x][i]] -= cur;
+					res[adj[x][i]][x] += cur;
+					return cur;
+				}
+			}
+		}
+	}
+ 
+ 
+	return 0;
+}
+ 
+int maxflow() {
+	//Finds the max flow from source to the sink
+	int flow = 0;
+	while (true) {
+		For (i, 0, N+1) {
+			visited[i] = false;
+		}
+		int cur = dfs(source);
+		//cout << cur << endl;
+		if (cur == 0) break;
+		flow += cur;
+ 
+	}
+	return flow;
+}
+ 
+ 
+int main() {
+	ifstream cin ("ditch.in");
+	ofstream cout ("ditch.out");
+ 
+	cin >> M >> N; //M is edges, N is nodes
+	source = 1;
+	sink = N;
+ 
+	vector<int> use;
+	For (i, 0, N+1) {
+		adj.push_back(use);
+	}
+ 
+	For (i, 1, N+1) For (j, 1, N+1) res[i][j] = 0;
+ 
+	For (i, 0, M) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		connect(a, b, c);
+	}
+ 
+	/*For (i, 1, N+1) {
+		cout << i << ": ";
+		For (j, 0, adj[i].size()) {
+			cout << adj[i][j] << " ";
+		}cout << endl;
+	}*/
+ 
+	cout << maxflow() << endl;
+ 
+ 
+	return 0;
+ 
+}

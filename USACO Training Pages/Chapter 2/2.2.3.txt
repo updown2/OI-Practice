@@ -1,0 +1,66 @@
+/*
+ ID: riya.ar1
+ PROG: runround
+ LANG: C++11
+ */
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+int N;
+int z = '0';
+bool seen[11];
+
+bool check () {
+	string a = to_string(N);
+	For (i, 0, a.length()) seen[i] = false;
+	
+	For (i, 0, a.length()) {
+		For (j, i+1, a.length()) {
+			if (a[i] == a[j]) {
+				return false;
+			}
+		}
+	}
+	
+	int at = 0;
+	while (!seen[at]) {
+		//w<<(a[at])-z<<e;
+		seen[at] = true;
+		int b = a[at]-z;
+		at = ( at+(b) ) % a.length();
+	}
+	
+	For (i, 0, a.length()) {
+		if (!seen[i]) return false;
+	}
+	if (at != 0) return false;
+	return true;
+	
+}
+
+int main() {
+	ifstream cin ("runround.in");
+	ofstream cout ("runround.out");
+	
+	cin >> N;
+	N++;
+	while (!check()) {N++;}
+	
+	
+	w<<N<<e;
+	
+	return 0;
+}

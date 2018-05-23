@@ -1,0 +1,77 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <algorithm>
+#include <unordered_map>
+#include <cmath>
+
+using namespace std;
+
+//Global Variables
+int N;
+int out = 200;  //CHANGE
+int friends[12][3];
+
+void check(int stalls[]) {
+	//0(stall) in 6th(horse) position
+	int total = 0;
+	for (int i=0; i<N; i++) {
+		int start = stalls[i];
+		for (int j=0; j<3; j++) {
+			total += fabs(stalls[friends[i][j]-1] - start);
+		}
+	}
+	out = min(total/2, out);
+}
+void choice(int K, int nums[], int so_far[]) {
+	int len = N-K;
+	int ret[len+2];
+	int nums3[K-2];
+	for (int i=0; i<len; i++) {
+		ret[i] = so_far[i];
+	}
+	if (K==2) {
+		ret[len] = nums[0];
+		ret[len+1] = nums[1];
+		check(ret);
+		ret[len] = nums[1];
+		ret[len+1] = nums[0];
+		check(ret);
+	}
+	else {
+		for (int j=0; j<K; j++) {
+			ret[len] = nums[j];
+			swap(nums[0], nums[j]);
+			for (int i=1; i<K; i++) {
+				ret[len+1] = nums[i];
+				swap(nums[1], nums[i]);
+				for (int j=0; j<K-2; j++) {
+					nums3[j] = nums[j+2];
+				}
+				choice(K-2, nums3, ret);
+			}
+		}
+	}
+}
+
+int main() {
+    ofstream fout ("haywire.out");
+    ifstream fin ("haywire.in");
+
+    //Declare Variables and Read Input
+    fin >> N;  //CHANGE
+    int use[N];
+    for (int i=0; i<N; i++) {
+    	use[i] = i;
+    	fin >> friends[i][0] >> friends[i][1] >> friends[i][2];  //CHANGE
+    }
+    int put[] = {};
+    
+	
+    //Algo
+    choice(N, use, put);
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

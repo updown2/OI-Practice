@@ -1,0 +1,104 @@
+/*
+ID: riya.ar1
+PROG: concom
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 1, N+1)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+ 
+//Global Variables
+int M;
+int N = 100;
+int adj[101][101];
+int tot[101][101];
+bool control[101][101];
+
+void set_up(int row) {
+	queue<int> next;
+	ffi {
+		if (control[row][i]) {
+			next.push(i);
+		}
+		tot[row][i] = 0;
+	}
+	
+	while (!next.empty()) {
+		int a = next.front();
+		next.pop();
+		ffi {
+			if (!control[row][i]) {
+				tot[row][i] += adj[a][i];
+				if (tot[row][i] > 50) {
+					control[row][i] = true;
+					next.push(i);
+				}
+			}
+		}
+	}
+	
+	ffi {
+		if (adj[row][i] == 100) {
+			ffj {
+				control[i][j] = control[row][j];
+			}
+		}
+	}
+	
+	
+}
+
+
+int main() {
+	ifstream cin ("concom.in");
+	ofstream cout ("concom.out");
+	
+	cin >> M;
+	ffi {
+		ffj {
+			adj[i][j] = 0;
+			control[i][j] = false;
+			tot[i][j] = 0;
+		}
+	}
+	
+	For (i, 0, M) {
+		int a, b, c;
+		cin >> a >> b >> c;
+		adj[a][b] += c;
+	}
+	
+	ffi {
+		ffj {
+			if (adj[i][j] > 50) {
+				control[i][j] = true;
+			}
+		}
+	}
+	
+	ffi {
+		set_up(i);
+	}
+	
+	
+	ffi {
+		ffj {
+			if (i != j && control[i][j]) w<< i s j <<e;
+		}
+	}
+	
+	
+	
+	return 0;
+}

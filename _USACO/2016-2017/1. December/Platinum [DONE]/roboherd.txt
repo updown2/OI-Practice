@@ -1,0 +1,96 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100000, INF=1000000000000000000;
+///500,000,000
+int N, K, ind[MAXN], cnt, mcost, beg, out;
+vector<int> vals[MAXN];
+
+void go(int at, int took) {
+    if (took > mcost) return;
+    cnt++;
+    For (i, at, N) {
+        if (cnt >= K) return;
+        if (vals[i].size()-1 > ind[i] && took+vals[i][ind[i]+1] <= mcost) {
+            ind[i]++;
+            go(i, took+vals[i][ind[i]]);
+            ind[i]--;
+        }
+        else if (i != at && vals[i].size() != 1) {
+            return;
+        }
+    }
+}
+void get_cost(int at, int took) {
+    if (took > mcost) return;
+    cnt++;
+    out += took;
+    //w<< cnt s took<<e;
+    For (i, at, N) {
+        if (cnt >= K) return;
+        //w<< vals[i].size()-1 s ind[i] s ":" s took+vals[i][ind[i]+1] s mcost<<e;
+        if (vals[i].size()-1 > ind[i] && took+vals[i][ind[i]+1] <= mcost) {
+            ind[i]++;
+            get_cost(i, took+vals[i][ind[i]]);
+            ind[i]--;
+        }
+        else if (i != at && vals[i].size() != 1) {
+            return;
+        }
+    }
+}
+
+bool works() {
+    go(0, beg);
+    return cnt >= K;
+}
+
+main() {
+    //ifstream cin("test.in");
+    ifstream cin("roboherd.in"); ofstream cout("roboherd.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> K;
+    ffi {
+        int a; cin >> a;
+        For (j, 0, a) {
+            int b; cin >> b; vals[i].pb(b);
+        }
+        sort(vals[i].begin(), vals[i].end());
+        for (int j=vals[i].size()-1; j>=1; j--) {
+            vals[i][j] = vals[i][j]-vals[i][j-1];
+        }
+        beg += vals[i][0];
+        vals[i][0] = 0;
+    }
+    sort(vals, vals+N);
+
+    int a = beg, b=10000000000000;
+    while (a != b) {
+        mcost = (a+b)/2;
+        ffi ind[i]=0;
+        cnt = 0;
+        if (works()) b = mcost;
+        else a=mcost+1;
+    }
+    mcost = a-1;
+    cnt = 0;
+    ffi ind[i]=0;
+    get_cost(0, beg);
+    //w<<mcost+1<<e;
+    //w<< cnt s K s mcost+1<<e;
+    //w<< out<<e;
+    out += (K-cnt)*(mcost+1);
+    w<<out<<e;
+}

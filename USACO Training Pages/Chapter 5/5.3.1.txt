@@ -1,0 +1,109 @@
+/*
+ID: riya.ar1
+PROG: milk4
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, T)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int T, N;
+int nums[100];
+int _max;
+bool dp[20001];
+bool ints[100];
+
+
+void print() {
+	ffj {
+		if (dp[j]) {
+			w<< j<< " ";
+		}
+	}
+	w<<e;
+}
+
+bool works(int taken, int at) {
+	if (taken == _max) return dp[T];
+	//w<< taken s at s _max s nums[max(at-1, 0)]<<e;
+	//print();
+	
+	int used[20001];
+	int have;
+	For (i, at, N) {
+		have = 0;
+		//w<< "putting" s nums[i]<<e;
+		For (j, 0, T-nums[i]+1) {
+			if (dp[j] && !dp[j+nums[i]]) {
+				dp[j+nums[i]] = true;
+				used[have] = j+nums[i];
+				//w<< "Putting" s j+nums[i]<<e;
+				have++;
+			}
+		}
+		//print();
+		if (works(taken+1, i+1) ) {
+			ints[i] = true;
+			//w<< nums[i] <<e;
+			return true;
+		}
+		
+		//w<<"removing" s nums[i]<<e;
+		For (j, 0, have) {
+			dp[used[j]] = false;
+			//w<< "Removing" s used[j]<<e;
+		}
+		//print();
+	}
+	return false;
+	
+}
+
+
+int main() {
+	ifstream cin ("milk4.in");
+	ofstream cout ("milk4.out");
+	
+	cin >> T >> N;
+	ffi {
+		cin >> nums[i];
+	}
+	sort(nums, nums+N);
+	
+	int out;
+	For (i, 1, N+1) {
+		//i = number of nums
+		
+		For (j, 1, T+1) dp[j] = false;
+		For (j, 0, N) ints[j] = false;
+		
+		dp[0] = true;
+		_max = i;
+		if (works(0, 0) ) {
+			out = i;
+			break;
+		}
+	}
+	
+	w<< _max;
+	For (i, 0, N) {
+		if (ints[i]) w s nums[i];
+	}
+	w<<e;
+	
+	
+	return 0;
+}
+

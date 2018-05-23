@@ -1,0 +1,219 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+
+
+
+//Global Variables
+ll N, K;
+bool pcs[11][8][8];
+int size[11][2];
+
+void print(int a) {
+	ffi {
+		ffj {
+			w<<pcs[a][i][j];
+		}
+		w<<e;
+	}
+	w<<e;
+}
+
+
+void move_top(int a) {
+	//w<<"Move"<<e;
+	For (i, 0, N-1) {
+		ffj {
+			pcs[a][i][j] = pcs[a][i+1][j];
+		}
+	}
+	ffj pcs[a][N-1][j] = false;
+	//print(a);
+}
+void move_left(int a) {
+	//w<<"Move"<<e;
+	For (j, 0, N-1) {
+		ffi {
+			pcs[a][i][j] = pcs[a][i][j+1];
+		}
+	}
+	ffj pcs[a][j][N-1] = false;
+	//print(a);
+}
+
+void fix(int a) {
+	int count = 0;
+	while (count == 0) { //check top
+		ffi {
+			if (pcs[a][0][i]) count ++;
+		}
+		if (count == 0) move_top(a);
+	}
+	
+	count = 0;
+	while (count == 0) { //check left
+		ffi {
+			if (pcs[a][i][0]) count ++;
+		}
+		if (count == 0) move_left(a);
+	}
+	
+	int x = 0;
+	ffi {
+		count = 0;
+		ffj {
+			if (pcs[a][i][j]) count ++;
+		}
+		//w<<count<<e;
+		if (count > 0) x = i+1;
+	}
+	
+	int y = 0;
+	ffj {
+		count = 0;
+		ffi {
+			if (pcs[a][i][j]) count ++;
+		}
+		if (count > 0) y = j+1;
+	}
+	
+	size[a][0] = x;
+	size[a][1] = y;
+	
+	//w<< size[a][0] s size[a][1] <<e;
+	//print(a);
+	
+}
+
+bool test(int a, int b) {	 
+	int x_off = size[0][0] - size[b][0];
+	int y_off = size[0][1] - size[b][1];
+	
+	//w<< a s b s x_off s y_off<<e;
+	
+	bool grid[8][8];
+	ffi {
+		ffj {
+			grid[i][j] = pcs[a][i][j];
+		}
+	}
+	
+	ffi {
+		ffj {
+			if (pcs[b][i][j]) {
+				int x, y;
+				x = i+x_off;
+				y = j+y_off;
+				
+				
+				//if (grid[x][y]) return;
+				grid[x][y] = pcs[b][i][j];
+			}
+		}
+	}
+	
+	/*w<<"Testing" s a s b<<e;
+	ffi {
+		ffj {
+			w<<grid[i][j];
+		}
+		w<<e;
+	}
+	w<<e;*/
+	
+	For (i, 0, size[0][0]) {
+		For (j, 0, size[0][1]) {
+			if (grid[i][j] != pcs[0][i][j]) return false;
+		}
+	}
+	
+	return true;
+	
+}
+
+bool test2(int a, int b) {	  
+	bool grid[8][8];
+	ffi {
+		ffj {
+			grid[i][j] = pcs[a][i][j];
+		}
+	}
+	
+	ffi {
+		ffj {
+			if (pcs[b][i][j]) {
+				//if (grid[x][y]) return;
+				grid[i][j] = pcs[b][i][j];
+			}
+		}
+	}
+	
+	/*w<<"Testing" s a s b<<e;
+	ffi {
+		ffj {
+			w<<grid[i][j];
+		}
+		w<<e;
+	}
+	w<<e;*/
+	
+	For (i, 0, size[0][0]) {
+		For (j, 0, size[0][1]) {
+			if (grid[i][j] != pcs[0][i][j]) return false;
+		}
+	}
+	
+	return true;
+	
+}
+
+
+
+int main() {
+	ifstream cin ("bcs.in");
+	ofstream cout ("bcs.out");
+	
+	cin >> N >> K;
+	
+	For (a, 0, K+1) {
+		For (b, 0, N) {
+			For (c, 0, N) {
+				char use;
+				cin >> use;
+				if (use == '#') pcs[a][b][c] = true;
+				else pcs[a][b][c] = false;
+			}
+		}
+		fix(a);
+	}
+	
+	For (i, 1, K+1) {
+		For (j, 1, K+1) {
+			if (i != j) {
+				if (test(i, j)) {
+					w<< min(i, j) s max(i, j) <<e;
+					return 0;
+				}
+				if (test2(i, j)) {
+					w<< min(i, j) s max(i, j) <<e;
+					return 0;
+				}
+			}
+		}
+	}
+	
+	
+	return 0;
+}
+

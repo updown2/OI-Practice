@@ -1,0 +1,77 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//Global Variables
+int N;
+int out[100000];
+int cows[100000][2];
+
+//Useful Functions
+void set_out() {
+	for (int i=0; i<N-1; i++) {
+		if (out[i] != 0) {
+			cout << "Checking " << i << " because " << out[i] << endl;
+			int j;
+			for (j=i+1; j<N; j++) {
+				if ((cows[i][0] < cows[j][1]) && (cows[i][1] > cows[j][0])) {
+					if (cows[i][0] > cows[j][0] || cows[j][1] < cows[i][1]) {
+						out[i] = 0;
+						out[j] = 0;
+						cout << "out[i]: " << out[i] << " ,out[j]: " << out[j] << endl;
+						cout << i << " and " << j << " don't work." << endl;
+						break;
+					}
+				}
+				if ((cows[j][0] < cows[i][1]) && (cows[j][1] > cows[i][0])) {
+					if (cows[i][0] > cows[j][0] || cows[j][1] < cows[i][1]) {
+						out[i] = 0;
+						out[j] = 0;
+						cout << "i[0]: " << cows[i][0] << " ,i[1]: " << cows[i][1] << " ,j[0]: " << cows[j][0] << " ,j[1]: " << cows[j][1] << endl;
+						cout << i << " and " << j << " don't work." << endl;
+						break;
+					}
+				}
+			}
+			if (j == N) {
+				out[i] = 1;
+			}
+		}
+		else {
+			cout << "Not checking " << i << endl;
+		}
+	}
+}
+
+int main() {
+    ofstream fout ("crossings.out");
+    ifstream fin ("crossings.in");
+
+    //Declare Variables and Read Input
+    fin >> N;
+	for (int i=0; i<N; i++) {
+		fin >> cows[i][0] >> cows[i][1];
+		if (cows[i][1] < cows[i][0]) {
+			swap(cows[i][1], cows[i][0]);
+		}
+	}
+	
+	//Algo
+	for (int i=0; i<N; i++) {
+		out[i] = -1;
+	}
+	set_out();
+
+    //Output Answer
+	int answer = 0;
+	for (int i=0; i<N; i++) {
+		if (out[i] == 1) {
+			answer ++;
+			cout << i << " works." << endl;
+		}
+	}
+    fout << answer << endl;  //CHANGE
+    return 0;
+}

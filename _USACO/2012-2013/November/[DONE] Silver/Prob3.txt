@@ -1,0 +1,69 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+string a;
+int inp[1000];
+int dp[1001][1000]; //[ind][num of extra ( for Gurneys] = num of ways possible
+int mod = 2012;
+
+int main() {
+	//freopen ("test.in","r",stdin);
+	ifstream cin ("bbreeds.in");
+	ofstream cout ("bbreeds.out");
+	
+	cin >> a;
+	N = a.length();
+	ffi {
+		if (a[i] == '(') inp[i] = 1;
+		else inp[i] = -1;
+		if (i != 0) {
+			inp[i] += inp[i-1];
+		}
+		if (inp[i] < 0) {w<< 0 <<e; return 0;}
+	}
+	if (inp[N-1] != 0) {w<< 0<<e; return 0;}
+	
+	ffa dp[i][j] = 0;
+	dp[0][1] = 1;
+	dp[0][0] = 1;
+	ffa {
+		int G = j;
+		int H = inp[i]-G;
+		//if (dp[i][j] != 0) w<< i s j s H s dp[i][j]<<e;
+		if (a[i+1] == '(') {
+			dp[i+1][G+1] += dp[i][j];
+			dp[i+1][G+1] %= mod;
+			dp[i+1][G] += dp[i][j];
+			dp[i+1][G] %= mod;
+		}
+		else {
+			if (G > 0) {
+				dp[i+1][G-1] += dp[i][j];
+				dp[i+1][G-1] %= mod;
+			}
+			if (H > 0) {
+				dp[i+1][G] += dp[i][j];
+				dp[i+1][G] %= mod;
+			}
+		}
+	}
+	w << dp[N-1][0] << e;
+	
+	
+	return 0;
+}
+

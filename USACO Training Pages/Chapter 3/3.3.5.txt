@@ -1,0 +1,70 @@
+/*
+ID: riya.ar1
+PROG: game1
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi() For(i, 0, N)
+#define ffj() For(j, 0, N)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N;
+int score1[100][100];
+int score2[100][100];
+int ints[100];
+
+int main() {
+	ifstream cin ("game1.in");
+	ofstream cout ("game1.out");
+	
+	cin >> N;
+	ffi() cin >> ints[i];
+	ffi() {
+		ffj () {
+			score1[i][j] = 0;
+			score2[i][j] = 0;
+		}
+	}
+	
+	ffi() {
+		score1[i][i] = ints[i];
+		score2[i][i] = 0;
+	}
+	
+	For (size, 1, N) {
+		For (i, 0, N-size) {
+			//score1[i][i+size] = 
+			if (ints[i] + score2[i+1][i+size] > ints[i+size]+score2[i][i+size-1]) {
+				score1[i][i+size] = ints[i] + score2[i+1][i+size];
+				score2[i][i+size] = score1[i+1][i+size];
+			}
+			else {
+				score1[i][i+size] = ints[i+size] + score2[i][i+size-1];
+				score2[i][i+size] = score1[i][i+size-1];
+			}
+		}
+	}
+	
+	w<< score1[0][N-1] s score2[0][N-1]<<e;
+	
+	
+	return 0;
+}
+
+
+
+
+
+
+
+

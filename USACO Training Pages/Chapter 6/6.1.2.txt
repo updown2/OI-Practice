@@ -1,0 +1,67 @@
+/*
+ID: riya.ar1
+PROG: rectbarn
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+int N, M, P;
+set<int> loc1[3000];
+set<int> loc2[3000];
+set<int>::iterator it;
+bool bad[3000][3000];
+int out = 0;
+
+int main() {
+	//ifstream cin ("test.in");
+	ifstream cin ("rectbarn.in");
+	ofstream cout ("rectbarn.out");
+	cin >> N >> M >> P;
+	ffa bad[i][j] = false;
+	For (i, 0, P) {
+		int a, b; cin >> a >> b; a--; b--;
+		loc1[a].insert(b);
+		loc2[b].insert(a);
+		bad[a][b] = true;
+	}
+	
+	ffj {
+		int height = 0;
+		int left = 0;
+		int right = M-1;
+		ffi {
+			if (bad[i][j]) {height = 0; left = 0; right=M-1; continue;}
+			height++;
+			//Update left
+			//Update right
+			it = loc1[i].upper_bound(j);
+			if (it != loc1[i].end()) {
+				right = min(right, (*it)-1);
+			}
+			if (it != loc1[i].begin()) {
+				it--;
+				left = max(left, (*it)+1);
+			}
+			
+			//w<< i s j s ":" s height s left s right<<e;
+			out = max(out, height*(right-left+1));
+		}
+	}
+	w<<out<<e;
+	
+	return 0;
+}
+

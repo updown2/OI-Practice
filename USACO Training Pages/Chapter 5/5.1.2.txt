@@ -1,0 +1,216 @@
+/*
+ID: riya.ar1
+PROG: starry
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, M;
+int grid[100][100];
+char out[100][100];
+int clusters = 0;
+int letter = 0;
+int lef[500], rig[500], high[500], low[500];
+//x:N, y:M
+
+bool similar(int at1, int at2) {
+	int diffH1 = rig[at1]-lef[at1];
+	int diffV1 = low[at1]-high[at1];
+	int diffH2 = rig[at2]-lef[at2];
+	int diffV2 = low[at2]-high[at2];
+	if (min(diffH1, diffV1) != min(diffH2, diffV2) || max(diffH1, diffV1) != max(diffH2, diffV2)) return false;
+	
+	int count1 = 0;
+	int count2 = 0;
+	ffa {
+		if (grid[i][j] == at1) count1++;
+		if (grid[i][j] == at2) count2++;
+	}
+	if (count1 != count2) return false;
+	
+	if (diffH1 == diffH2) {
+		//Check all 4 possibilities
+		//#1: same
+		bool worked = true;
+		For (i, 0, diffV1+1) {
+			For (j, 0, diffH1+1) {
+				if ( (grid[i+high[at1]][j+lef[at1]] == at1 && grid[i+high[at2]][j+lef[at2]] == at2) || (grid[i+high[at1]][j+lef[at1]] != at1 && grid[i+high[at2]][j+lef[at2]] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+		
+		//#2: flip horizontally
+		worked = true;
+		For (i, 0, diffV1+1) {
+			For (j, 0, diffH1+1) {
+				if ( (grid[i+high[at1]][j+lef[at1]] == at1 && grid[i+high[at2]][lef[at2]+diffH2-j] == at2) || (grid[i+high[at1]][j+lef[at1]] != at1 && grid[i+high[at2]][lef[at2]+diffH2-j] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+		
+		//#3: flip vertically
+		worked = true;
+		For (i, 0, diffV1+1) {
+			For (j, 0, diffH1+1) {
+				if ( (grid[i+high[at1]][j+lef[at1]] == at1 && grid[high[at2]+diffV2-i][j+lef[at2]] == at2) || (grid[i+high[at1]][j+lef[at1]] != at1 && grid[high[at2]+diffV2-i][j+lef[at2]] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+		
+		//#4: flip both horizontally and vertically
+		worked = true;
+		For (i, 0, diffV1+1) {
+			For (j, 0, diffH1+1) {
+				if ( (grid[i+high[at1]][j+lef[at1]] == at1 && grid[high[at2]+diffV2-i][lef[at2]+diffH2-j] == at2) || (grid[i+high[at1]][j+lef[at1]] != at1 && grid[high[at2]+diffV2-i][lef[at2]+diffH2-j] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+	}
+	if (diffH1 == diffV2) {
+		//Check all 4 possibilities
+		//#1: rotate + same
+		bool worked = true;
+		For (i, 0, diffV2+1) {
+			For (j, 0, diffH2+1) {
+				if ( (grid[j+high[at1]][i+lef[at1]] == at1 && grid[i+high[at2]][j+lef[at2]] == at2) || (grid[j+high[at1]][i+lef[at1]] != at1 && grid[i+high[at2]][j+lef[at2]] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+		
+		//#2: rotate + flip horizontally
+		worked = true;
+		For (i, 0, diffV2+1) {
+			For (j, 0, diffH2+1) {
+				if ( (grid[j+high[at1]][i+lef[at1]] == at1 && grid[i+high[at2]][lef[at2]+diffH2-j] == at2) || (grid[j+high[at1]][i+lef[at1]] != at1 && grid[i+high[at2]][lef[at2]+diffH2-j] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+		
+		//#3: rotate + flip vertically
+		worked = true;
+		For (i, 0, diffV2+1) {
+			For (j, 0, diffH2+1) {
+				//w << j+high[at1] s i+lef[at1] s high[at2]+diffV2-i s j+lef[at2] << e;
+				if ( (grid[j+high[at1]][i+lef[at1]] == at1 && grid[high[at2]+diffV2-i][j+lef[at2]] == at2) || (grid[j+high[at1]][i+lef[at1]] != at1 && grid[high[at2]+diffV2-i][j+lef[at2]] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+		
+		//#4: rotate + flip both horizontally and vertically
+		worked = true;
+		For (i, 0, diffV2+1) {
+			For (j, 0, diffH2+1) {
+				if ( (grid[j+high[at1]][i+lef[at1]] == at1 && grid[high[at2]+diffV2-i][lef[at2]+diffH2-j] == at2) || (grid[j+high[at1]][i+lef[at1]] != at1 && grid[high[at2]+diffV2-i][lef[at2]+diffH2-j] != at2)) {}
+				else worked = false;
+			}
+		}
+		if (worked) return true;
+	}
+	
+	return false;
+}
+void set_up(int at) {
+	ffa {
+		if (grid[i][j] == at) {
+			out[i][j] = 'a'+letter;
+		}
+	}
+}
+void floodfill(int x, int y) {
+	if (x < 0 || y < 0 || x >=N || y >= M) return;
+	if (grid[x][y] != -1) return;
+	grid[x][y] = clusters;
+	high[clusters] = min(high[clusters], x);
+	low[clusters] = max(low[clusters], x);
+	rig[clusters] = max(rig[clusters], y);
+	lef[clusters] = min(lef[clusters], y);
+	
+	
+	For (i, x-1, x+2) {
+		For (j, y-1, y+2) {
+			floodfill(i, j);
+		}
+	}
+}
+
+
+int main() {
+	ifstream cin ("starry.in");
+	ofstream cout ("starry.out");
+	
+	cin >> M >> N;
+	
+	char a;
+	ffa {
+		cin >> a;
+		if (a == '1') grid[i][j] = -1;
+		else grid[i][j] = -2;
+		out[i][j] = ' ';
+	}
+	
+	high[0] = N;
+	low[0] = 0;
+	rig[0] = 0;
+	lef[0] = M;
+	ffa {
+		if (grid[i][j] == -1) {
+			floodfill(i, j);
+			clusters ++;
+			high[clusters] = N;
+			low[clusters] = 0;
+			rig[clusters] = 0;
+			lef[clusters] = M;
+		}
+	}
+	
+	ffa {
+		if (out[i][j] == ' ') {
+			if (grid[i][j] == -2) {
+				out[i][j] = '0';
+			}
+			else {
+				set_up(grid[i][j]);
+				For (k, 0, clusters) {
+					if (similar(grid[i][j], k) ) set_up(k);
+				}
+				letter++;
+			}
+		}
+	}
+	
+	ffi {
+		ffj w<<out[i][j];
+		w<<e;
+	}
+	
+	/*ffi {
+		ffj w<<grid[i][j]<< " ";
+		w<<e;
+	}
+	
+	w<<similar(3, 11)<<e;*/
+	
+	
+}
+

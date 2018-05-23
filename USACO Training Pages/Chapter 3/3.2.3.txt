@@ -1,0 +1,85 @@
+/*
+ID: riya.ar1
+PROG: spin
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, 5)
+#define ffj For(j, 0, 360)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int wedges[5][11];
+int speed[5];
+int up[5];
+
+
+bool check() {
+	int on[360];
+	ffj on[j] = 0;
+	ffi {
+		for (int j=1; j<wedges[i][0]*2; j+=2 ){
+			//w<< wedges[i][j] s  wedges[i][j]+wedges[i][j+1]+1 << e;
+			For (k, wedges[i][j], wedges[i][j]+wedges[i][j+1]+1) {
+				int use = k+up[i];
+				use %= 360;
+				on[use]++;
+			}
+		}
+	}
+	ffj {
+		//w<< on[j] << " ";
+		if (on[j] == 5) {
+			return true;
+		}
+	}
+	//w<<e;
+	return false;
+}
+void rotate() {
+	ffi {
+		up[i] += speed[i];
+		up[i] %= 360;
+	}
+}
+
+int main() {
+	ifstream cin ("spin.in");
+	ofstream cout ("spin.out");
+	
+	ffi {
+		up[i] = 0;
+		cin >> speed[i];
+		cin >> wedges[i][0];
+		For (j, 1, wedges[i][0]*2+1) {
+			cin >> wedges[i][j];
+		}
+	}
+	
+	For (t, 0, 10000) {
+		if (check()) {
+			w<< t <<e;
+			return 0;
+		}
+		rotate();
+	}
+	
+	w << "none" <<e;
+	
+	return 0;
+}
+
+
+
+
+
+

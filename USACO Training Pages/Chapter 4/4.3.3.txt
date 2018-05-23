@@ -1,0 +1,191 @@
+/*
+ID: riya.ar1
+PROG: lgame
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int value[] = {2, 5, 4, 4, 1, 6, 5, 5, 1, 7, 6, 3, 5, 2, 3, 5, 7, 2, 1, 2, 4, 6, 6, 7, 5, 
+
+7};
+char inp[7];
+int N;
+int score = 0;
+int M = 0;
+int a = 'a';
+set<string> opt;
+set<pair<string, string> > all;
+set<pair<string, string> >:: iterator it;
+
+bool good(int len, int ind) {
+	string sec = "";
+	For (i, ind, ind+len) {
+		sec += inp[i];
+	}
+	//if (sec == "program") w<<"hi" s (opt.find(sec) != opt.end()) <<e;
+	//w << word s sec << e;
+	return (opt.find(sec) != opt.end());
+}
+int scor (int len, int ind) {
+	int out = 0;
+	For (i, ind, ind+len) {
+		out += value[inp[i]-a];
+	}
+	//if (len == N && ind == 0) w<<"hi2" s out<<e;
+	return out;
+}
+int val() {
+	int dp[8][2];
+	For (i, 0, N+1) { dp[i][0] = 0; dp[i][1] = -1; }
+	int ret = 0;
+	ffi {
+		if (i >= 1) {
+			if (dp[i-1][0] > dp[i][0]) {
+				dp[i][0] = dp[i-1][0];
+				dp[i][1] = dp[i-1][1];
+			}
+		}
+		For (j, 1, N+1) {
+			if (good(j, i) ) {
+				if ( dp[i+j][0] < dp[i][0]+scor(j, i) ) {
+					dp[i+j][0] =  dp[i][0]+scor(j, i);
+					dp[i+j][1] = i;
+				}
+			}	
+		}
+		
+		ret = max(ret, dp[i][0]);
+	}
+	return max(ret, dp[N][0]);
+}
+
+void print() {
+	
+	int dp[8][2];
+	For (i, 0, N+1) { dp[i][0] = 0; dp[i][1] = -1; }
+	int ret = 0;
+	ffi {
+		if (i >= 1) {
+			if (dp[i-1][0] > dp[i][0]) {
+				dp[i][0] = dp[i-1][0];
+				dp[i][1] = dp[i-1][1];
+			}
+		}
+		For (j, 1, N+1) {
+			if (good(j, i) ) {
+				if ( dp[i+j][0] < dp[i][0]+scor(j, i) ) {
+					dp[i+j][0] =  dp[i][0]+scor(j, i);
+					dp[i+j][1] = i;
+				}
+			}	
+		}
+		
+		ret = max(ret, dp[i][0]);
+	}
+	ret = max(ret, dp[N][0]);
+	if (ret != score) return;
+	
+	//w<<"S1: "; ffi w<< inp[i]; w<<e;
+	
+	int ind;
+	for (int i=N; i>=0; i--) {
+		if (dp[i][0] == ret) {
+			ind = i;
+		}
+	}
+	
+	int prev = dp[ind][1];
+	string out = "";
+	if (dp[prev][1] == -1) {
+		//one word
+		For (i, prev, ind) {
+			out+= inp[i];
+		}
+		if (all.find(mp(out, "")) == all.end()) {
+			all.insert(mp(out, ""));
+		}
+		return;
+	}
+	//w<<"Extra: "; ffi w<<inp[i];w<<e;
+	
+	//two words
+	string w1 = "";
+	string w2 = "";
+	For (i, prev, ind) {
+		w1 += inp[i];
+	}
+	int start = prev;
+	for (int i=prev-1; dp[i][0] == dp[prev][0]; i--) {
+		start = i;
+	}
+	For (i, dp[start][1], start) {
+		w2 += inp[i];
+	}
+	//w<< w1 s w2<<e;
+	if (w1 <= w2) {
+		if (all.find(mp(w1, w2)) == all.end()) {
+			all.insert(mp(w1, w2));
+		}
+	}
+}
+
+
+
+int main() {
+	ifstream cin ("lgame.in");
+	ifstream dict ("lgame.dict");
+	ofstream cout ("lgame.out");
+	
+	string b; dict >> b;
+	while (b != ".") {
+		opt.insert(b);
+		M++;
+		dict >> b;
+	}
+	
+	
+	
+	string inpu; cin >> inpu;
+	N = inpu.length();
+	ffi {
+		inp[i] = inpu[i];
+	}
+	sort(inp, inp+N);
+	
+	
+	do {
+		score = max(score, val() );
+	} while ( next_permutation(inp, inp+N) );
+	
+	cout << score << e;
+	
+	do {
+		print();
+	} while ( next_permutation(inp, inp+N) );
+	
+	for (it = all.begin(); it != all.end(); it++) {
+		pair<string, string> curr = *it;
+		if (curr.b == "") {
+			w<< curr.a<<e;
+		}
+		else {
+			w<<curr.a s curr.b<<e;
+		}
+	}
+	
+	
+	return 0;
+}

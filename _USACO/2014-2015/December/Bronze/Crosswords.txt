@@ -1,0 +1,76 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+//GLobal Variables
+int R, C;
+std::string crossword[52][52];
+std::string out[52][52];
+int clues = 0;
+
+int main() {
+    ofstream fout ("crosswords.out");
+    ifstream fin ("crosswords.in");
+
+    //Read Input
+    string in;
+    fin >> R >> C;  //CHANGE
+    for (int i=0; i<R; i++) {
+    	fin >> in;  //CHANGE
+    	for (int j=0; j<C; j++) {
+    		crossword[i][j] = in[j];
+    		
+    	}
+    }
+    
+    //Algo
+    //Loop through cells
+    for (int i=0; i<R; i++) {
+    	for (int j=0; j<C; j++) {
+    		if (crossword[i][j].compare(".") == 0) {
+    			//cout << i << " " << j << endl;
+	    		//Check if it's a vertical clue
+	    		if (i == 0 && crossword[i+1][j].compare(".")==0 && crossword[i+2][j].compare(".")==0) {
+	    			if (out[i+1][j+1].compare("C") != 0) {
+		    			clues ++;
+		    			out[i+1][j+1] = "C";
+	    			}
+	    		}
+	    		else if ((crossword[i-1][j].compare("#")==0) && (crossword[i+1][j].compare(".")==0) && (crossword[i+2][j].compare(".")==0)) {
+	    			if (out[i+1][j+1].compare("C") != 0) {
+		    			clues ++;
+		    			out[i+1][j+1] = "C";
+	    			}
+	    		}
+	    		
+	    		//Check if it's a horizontal clue
+	    		if (j == 0 && crossword[i][j+1].compare(".")==0 && crossword[i][j+2].compare(".")==0) {
+	    			if (out[i+1][j+1].compare("C") != 0) {
+		    			clues ++;
+		    			out[i+1][j+1] = "C";
+	    			}
+	    		}
+	    		else if ((crossword[i][j-1].compare("#")==0) && crossword[i][j+1].compare(".")==0 && crossword[i][j+2].compare(".")==0) {
+	    			if (out[i+1][j+1].compare("C") != 0) {
+		    			clues ++;
+		    			out[i+1][j+1] = "C";
+	    			}
+	    		}
+    		}
+    	}
+    }
+    
+
+    //Output Answer
+    fout << clues << endl;  //CHANGE
+    for (int i=0; i<R+1; i++) {
+    	for (int j=0; j<C+1; j++) {
+    		if (out[i][j].compare("C") == 0) {
+				fout << i << " " << j << endl;  //CHANGE
+	    	}
+    	}
+    }
+    return 0;
+}

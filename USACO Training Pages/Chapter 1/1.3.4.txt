@@ -1,0 +1,149 @@
+/*
+ID: riya.ar1
+PROG: combo
+LANG: C++11
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cmath>
+
+using namespace std;
+
+int main() {
+    ofstream fout ("combo.out");
+    ifstream fin ("combo.in");
+
+    //Declair Variables and Read Input
+    int N, out = 0;
+    int comb1[3], comb2[3];
+    fin >> N >> comb1[0] >> comb1[1] >> comb1[2] >> comb2[0] >> comb2[1] >> comb2[2];  //CHANGE
+    
+    //Algo
+    for (int a=1; a < N+1; a++) {
+    	for (int b=1; b < N+1; b++) {
+    		for (int c=1; c< N+1; c++) {
+    			//Check each possibility
+    			
+    			//Check comb1
+    			if ( ( comb1[0] + 2 >= a) && ( comb1[0] - 2 <= a) && ( comb1[1] + 2 >= b) && ( comb1[1] - 2 <= b) && ( comb1[2] + 2 >= c) && ( comb1[2] - 2 <= c) ) {
+    				out += 1;
+    				//cout << a << ", " << b << ", " << c << endl;
+    			}
+    			else if ( ( comb2[0] + 2 >= a) && ( comb2[0] - 2 <= a) && ( comb2[1] + 2 >= b) && ( comb2[1] - 2 <= b) && ( comb2[2] + 2 >= c) && ( (comb2[2] - 2) % N <= c) ) {
+    				out += 1;
+    				//cout << a << ", " << b << ", " << c << endl;
+    			}
+    			else {
+    				int a1, b1, c1;
+    				if (a >= N-1) {
+    					if ((comb1[0] + 2 >= a) && ( comb1[0] - 2 <= a)) {a1 = a;}
+    					else {
+    						a1 = a-N;
+    					}
+    				}
+    				else if (a <= 2) {
+    					if ((comb1[0] + 2 >= a) && ( comb1[0] - 2 <= a)) {a1 = a;}
+    					else {
+    						a1 = a+N;
+    					}
+    				}
+    				else {
+    					a1 = a;
+    				}
+    				if (b >= N-1) {
+    					if ((comb1[1] + 2 >= b) && ( comb1[1] - 2 <= b)) {b1 = b;}
+    					else {
+    						b1 = b-N;
+    					}
+    				}
+    				else if (b <= 2) {
+    					if ((comb1[1] + 2 >= b) && ( comb1[1] - 2 <= b)) {b1 = b;}
+    					else {
+    						b1 = b+N;
+    					}
+    				}
+    				else {
+    					b1 = b;
+    				}
+    				if (c >= N-1) {
+    					if ((comb1[2] + 2 >= c) && ( comb1[2] - 2 <= c)) {c1 = c;}
+    					else {
+    						c1 = c-N;
+    					}
+    				}
+    				else if (c <= 2) {
+    					if ((comb1[2] + 2 >= c) && ( comb1[2] - 2 <= c)) {c1 = c;}
+    					else {
+    						c1 = c+N;
+    					}
+    				}
+    				else {
+    					c1 = c;
+    				}
+    				if ( (comb1[0] + 2 >= a1) && ( comb1[0] - 2 <= a1) && ( comb1[1] + 2 >= b1) && ( comb1[1] - 2 <= b1) && ( comb1[2] + 2 >= c1) && ( comb1[2] - 2 <= c1) ) {
+	    				out += 1;
+	    				//cout << a << ", " << b << ", " << c << endl;
+	    			}
+	    			else {
+	    				
+	    				if (a >= N-1) {
+	    					if (( comb2[0] + 2 >= a) && ( comb2[0] - 2 <= a)) {a1 = a;}
+	    					else {
+	    						a1 = a-N;
+	    					}
+	    				}
+	    				else if (a <= 2) {
+	    					if (( comb2[0] + 2 >= a) && ( comb2[0] - 2 <= a)) {a1 = a;}
+	    					else {
+	    						a1 = a+N;
+	    					}
+	    				}
+	    				else {
+	    					a1 = a;
+	    				}
+	    				if (b >= N-1) {
+	    					if (( comb2[1] + 2 >= b) && ( comb2[1] - 2 <= b)) {b1 = b;}
+	    					else {
+	    						b1 = b-N;
+	    					}
+	    				}
+	    				else if (b <= 2) {
+	    					if (( comb2[1] + 2 >= b) && ( comb2[1] - 2 <= b)) {b1 = b;}
+	    					else {
+	    						b1 = b+N;
+	    					}
+	    				}
+	    				else {
+	    					b1 = b;
+	    				}
+	    				if (c >= N-1) {
+	    					if (( comb2[2] + 2 >= c) && ( comb2[2] - 2 <= c)) {c1 = c;}
+	    					else {
+	    						c1 = c-N;
+	    					}
+	    				}
+	    				else if (c <= 2) {
+	    					if (( comb2[2] + 2 >= c) && ( comb2[2] - 2 <= c)) {c1 = c;}
+	    					else {
+	    						c1 = c+N;
+	    					}
+	    				}
+	    				else {
+	    					c1 = c;
+	    				}
+	    				
+		    			if ( ( comb2[0] + 2 >= a1) && ( comb2[0] - 2 <= a1) && ( comb2[1] + 2 >= b1) && ( comb2[1] - 2 <= b1) && ( comb2[2] + 2 >= c1) && ( comb2[2] - 2 <= c1) ) {
+		    				out += 1;
+		    				//cout << a << ", " << b << ", " << c << endl;
+		    			}
+	    			}
+    			}
+    		}
+    	}
+    }
+
+    //Output Answer
+    fout << out << endl;  //CHANGE
+    return 0;
+}

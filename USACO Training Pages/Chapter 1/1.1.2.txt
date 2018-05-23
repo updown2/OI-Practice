@@ -1,0 +1,41 @@
+/*
+ID: riya.ar1
+PROG: ride
+LANG: C++
+*/
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+int main() {
+    string OUT;
+    int f1, s1;
+    ofstream fout ("ride.out");
+    ifstream fin ("ride.in");
+    string a, b;
+    fin >> a >> b;
+    
+    int first = 1;
+	int offset = 'A' - 1;
+	for(int it=0; it < a.length(); it++) {
+		first = first * (a[it] - offset);
+	}
+	
+	int second = 1;
+	for(int it=0; it < b.length(); it++) {
+		second = second * (b[it] - offset);
+	}
+    
+    f1 = first % 47;
+    s1 = second % 47;
+    
+    if (f1 == s1) {
+    	fout << "GO" << endl;
+    }
+    else {
+    	fout << "STAY" << endl;
+    }
+    return 0;
+}

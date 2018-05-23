@@ -1,0 +1,181 @@
+/*
+ID: riya.ar1
+PROG: maze1
+LANG: C++11
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+//500,000,000 operations
+
+//Global Variables
+
+
+int main() {
+	ifstream cin ("maze1.in");
+	ofstream cout ("maze1.out");
+	int N, M;
+int grid1[1000][1000];
+int grid2[1000][1000];
+bool found = false;
+int x1, y1, x2, y2;
+
+queue<int> que1;
+queue<int> que2;
+queue<int> que3;
+	string in;
+	getline(cin, in);
+	stringstream ss(in);
+	ss >> M >> N;
+	N = 2*N+1;
+	M = 2*M+1;
+	ffi {
+		getline(cin, in);
+		ffj {
+			if (in[j] == ' ') grid1[i][j] = 0;
+			else grid1[i][j] = -1;
+			
+			if (i == 0 && grid1[i][j] == 0) {
+				if (!found) {
+					found = true;
+					x1 = i+1;
+					y1 = j;
+				}
+				else {
+					x2 = i+1; y2 = j;
+				}
+				grid1[i][j] = -1;
+			}
+			if (i == N-1 && grid1[i][j] == 0) {
+				if (!found) {
+					found = true;
+					x1 = i-1;
+					y1 = j;
+				}
+				else {
+					x2 = i-1; y2 = j;
+				}
+				grid1[i][j] = -1;
+			}
+			if (j == 0 && grid1[i][j] == 0) {
+				if (!found) {
+					found = true;
+					x1 = i;
+					y1 = j+1;
+				}
+				else {
+					x2 = i; y2 = j+1;
+				}
+				grid1[i][j] = -1;
+			}
+			if (j == M-1 && grid1[i][j] == 0) {
+				if (!found) {
+					found = true;
+					x1 = i;
+					y1 = j-1;
+				}
+				else {
+					x2 = i; y2 = j-1;
+				}
+				grid1[i][j] = -1;
+			}
+		}
+	}
+	ffi ffj grid2[i][j] = grid1[i][j];
+	
+	que1.push(x1);
+	que2.push(y1);
+	que3.push(1);
+	while (!que1.empty()) {
+		int x = que1.front();
+		int y = que2.front();
+		int moves = que3.front();
+		que1.pop(); que2.pop(); que3.pop();
+		if (x >= 0 && x<N && y>=0 && y<M && grid1[x][y] == 0) {
+			//w << x s y s moves<<e;
+			grid1[x][y] = moves;
+			
+			if (grid1[x-1][y] == 0) {
+				que1.push(x-2);
+				que2.push(y);
+				que3.push(moves+1);
+			}
+			if (grid1[x+1][y] == 0) {
+				que1.push(x+2);
+				que2.push(y);
+				que3.push(moves+1);
+			}
+			if (grid1[x][y-1] == 0) {
+				que1.push(x);
+				que2.push(y-2);
+				que3.push(moves+1);
+			}
+			if (grid1[x][y+1] == 0) {
+				que1.push(x);
+				que2.push(y+2);
+				que3.push(moves+1);
+			}
+		}
+	}
+	
+	
+	que1.push(x2);
+	que2.push(y2);
+	que3.push(1);
+	while (!que1.empty()) {
+		int x = que1.front();
+		int y = que2.front();
+		int moves = que3.front();
+		que1.pop(); que2.pop(); que3.pop();
+		if (x >= 0 && x<N && y>=0 && y<M && grid2[x][y] == 0) {
+			//w << x s y s moves<<e;
+			grid2[x][y] = moves;
+			
+			if (grid2[x-1][y] == 0) {
+				que1.push(x-2);
+				que2.push(y);
+				que3.push(moves+1);
+			}
+			if (grid2[x+1][y] == 0) {
+				que1.push(x+2);
+				que2.push(y);
+				que3.push(moves+1);
+			}
+			if (grid2[x][y-1] == 0) {
+				que1.push(x);
+				que2.push(y-2);
+				que3.push(moves+1);
+			}
+			if (grid2[x][y+1] == 0) {
+				que1.push(x);
+				que2.push(y+2);
+				que3.push(moves+1);
+			}
+		}
+	}
+	
+	/*ffi {
+		ffj {
+			w<<grid[i][j] << " ";
+		}
+		w<<e;
+	}*/
+	int out = 0;
+	ffi {
+		ffj {
+			out = max(out, min(grid1[i][j], grid2[i][j]));
+		}
+	}
+	w<< out <<e;
+		
+	
+	return 0;
+}
+
