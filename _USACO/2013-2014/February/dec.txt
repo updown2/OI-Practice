@@ -1,0 +1,80 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//500,000,000 operations
+//Global Variables
+int N, B;
+int bonus[20][3];
+int score[20][20];
+int dp[1049000];
+bool done[1049000];
+queue<int> next1;
+
+int compare(const void * a, const void * b) {
+	const int * ia = (const int *)a;
+	const int * ib = (const int *)b;
+	
+	if (ia[0] == ib[0]) return ia[1]-ib[1];
+	return ia[0] - ib[0];
+}
+
+void solve(int at) {
+	
+	int event = __builtin_popcount(at);
+	ffi {
+		if (!(at&(1<<i))) {
+			int total = dp[at]+score[i][event];
+			For (j, 0, B) {
+				if (total >= bonus[j][1] && event+1 == bonus[j][0]) {
+					total += bonus[j][2];
+				}
+			}
+			//w<< "2:" s i s (at|(1<<i)) s total<<e;
+			dp[at|(1<<i)] = max(dp[at|(1<<i)], total);
+			next1.push(at|(1<<i));
+		}
+	}
+}
+
+
+int main() {
+	ifstream cin ("dec.in");
+	ofstream cout ("dec.out");
+	
+	cin >> N >> B;
+	For (i, 0, B) {
+		cin >> bonus[i][0] >> bonus[i][1] >> bonus[i][2];
+	}
+	qsort(bonus, B, 3*sizeof(int), compare);
+	
+	ffa cin >> score[i][j];
+	
+	next1.push(0);
+	
+	while (!next1.empty()) {
+		int at = next1.front();
+		next1.pop();
+		if (!done[at]) {
+			done[at] = true;
+			//w<< at s dp[at]<<e;
+	
+			solve(at);
+		}
+	}
+	
+	//For (i, 0, pow(2.0, N) ) w<< i s dp[i]<<e;
+	
+	w<< dp[(int)pow(2.0, N)-1] << e;
+}
+

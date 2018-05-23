@@ -1,0 +1,127 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define true 1
+//100,000,000 operations
+//Global Variables
+int N, M;
+char grid[100][100];
+
+int solve() {
+	int out = min(N, M);
+	int wildS[100][100];
+	int wildR[100][100];
+	int rough[100][100];
+	int smooth[100][100];
+	int pw[100][100];
+	For (i, 0, N) For (j, 0, M) pw[i][j] = 0;
+	
+	while (true) {
+		//Set rough, smooth, and wild
+		int current = 0;
+		int i1;
+		int j1;
+		int current2 = 0;
+		int i2;
+		int j2;
+		For (i, 0, N) {
+			For (j, 0, M) {
+				if (i == 0 || j == 0) {
+					rough[i][j] = (grid[i][j] != 'S');
+					smooth[i][j] = (grid[i][j]!='R');
+					if (grid[i][j] == 'W') {
+						wildR[i][j] = 1;
+						wildS[i][j] = 1;
+					}
+					else {
+						wildR[i][j] = 0;
+						wildS[i][j] = 0;
+					}
+				}
+				else {
+					int use = grid[i][j]=='W';
+					if (grid[i][j] != 'S') {
+						rough[i][j] = min( min(rough[i-1][j], rough[i][j-1]), rough[i-1][j-1]) + 1;
+						if (rough[i][j] == 1) wildR[i][j] = (grid[i][j]=='W');
+						else wildR[i][j] = min( min( (use), wildR[i-1][j-1]), min(wildR[i-1][j], wildR[i][j-1]) );
+					}
+					else {
+						rough[i][j] = 0;
+						wildR[i][j] = 0;
+					}
+					if (grid[i][j] != 'R') {
+						smooth[i][j] = min( min(smooth[i-1][j], smooth[i][j-1]), smooth[i-1][j-1]) + 1;
+						if (smooth[i][j] == 1) wildS[i][j] = (grid[i][j]=='W');
+						else wildS[i][j] = min( min( (use), wildS[i-1][j-1]), min(wildS[i-1][j], wildS[i][j-1]));
+					}
+					else {
+						smooth[i][j] = 0;
+						wildS[i][j] = 0;
+					}
+				}
+				if (pw[i][j] == 1) {
+					wildR[i][j] = 1;
+					wildS[i][j] = 1;
+				}
+				if (wildR[i][j] == 0) {
+					if (rough[i][j] > current) {
+						current =  rough[i][j];
+						i1 = i;
+						j1 = j;
+					}
+				}
+				if (wildS[i][j] == 0) {
+					if (smooth[i][j] > current2) {
+						current2 = smooth[i][j];
+						i2 = i;
+						j2 = j;
+					}
+				}
+			}
+		}
+		
+		
+		if (current == 0 && current2 == 0) {
+			return out;
+		}
+		
+		if (current < current2) {
+			out = min(out, current2);
+			pw[i2][j2] = 1;
+			for (int i = i2; i>i2-current2; i--) {
+				for (int j = j2; j>j2-current2; j--) {
+					grid[i][j] = 'W';
+				}
+			}
+		}
+		else {
+			out = min(out, current);
+			pw[i1][j1] = 1;
+			for (int i = i1; i>i1-current; i--) {
+				for (int j = j1; j>j1-current; j--) {
+					grid[i][j] = 'W';
+				}
+			}
+		}
+		//cout << current << " " << current2 << endl;
+	}
+}
+
+
+int main() {
+	ifstream cin ("skicourse.in");
+	ofstream cout ("skicourse.out");
+	
+	cin >> N >> M;
+	
+	string in;
+    For (n, 0, N) {
+		cin >> in;
+		For (m, 0, M) {
+			grid[n][m] = in[m];
+		}
+	}
+	
+	cout << solve() << endl;
+}

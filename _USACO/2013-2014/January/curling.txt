@@ -1,0 +1,178 @@
+#include <bits/stdc++.h>
+
+using namespace std;
+typedef long long ll;
+
+#define For(i, a, b) for(int i=a; i<b; i++)
+//100,000,000 operations
+
+//Global Variables
+int N;
+
+struct Point {
+	double x, y;
+};
+
+Point locA[50000];
+Point locB[50000];
+Point hullA1[50000];
+int A1_len;
+int A2_len;
+int B1_len;
+int B2_len;
+Point hullA2[50000];
+Point hullB1[50000];
+Point hullB2[50000];
+
+bool ccw(Point a, Point b, Point c)
+{ return ((b.x-a.x)*(c.y-a.y) - (b.y-a.y)*(c.x-a.x)) >= 0; }
+
+
+
+bool xcompare(Point a, Point b) {
+	if (a.x<b.x) return true;
+	if (a.x == b.x && a.y < b.y) return true;
+	return false;
+	
+}
+
+void compute_hull ( const Point* i_loc, Point* o_hull1, int* len1, Point* o_hull2, int* len2 ) {
+	*len1 = 0;
+	For (i, 0, N) {
+		o_hull1[*len1] = i_loc[i];
+		(*len1) ++;
+		while( (*len1)-3>= 0 && ccw( o_hull1[(*len1)-3], o_hull1[(*len1)-2], o_hull1[(*len1)-1] ) ) {
+			(*len1) --;
+			o_hull1[(*len1)-1] = o_hull1[*len1];
+		}
+	}
+	
+	*len2 = 0;
+	for (int i=N-1; i>=0; i--) {
+		o_hull2[*len2] = i_loc[i];
+		(*len2)++;
+		while( (*len2)-3>= 0 && ccw( o_hull2[(*len2)-3], o_hull2[(*len2)-2], o_hull2[(*len2)-1] ) ) {
+			(*len2) --;
+			o_hull2[(*len2)-1] = o_hull2[*len2];
+		}
+	}
+}
+
+double slope( Point a, Point b) {
+	return (a.y-b.y)/(a.x-b.x);
+}
+
+bool is_below ( Point loc, const Point* upper, int upper_len ) {
+	//Find two points it's between
+	int low = 0;
+	int high = upper_len - 1;
+	if ( (loc.x > upper[high].x) || (loc.x < upper[low].x) ) return false;
+	while ( (low + 1) < high) {
+		int mid = (low+high)/2;
+		if (loc.x < upper[mid].x) {
+			high = mid;
+		}
+		else if (loc.x > upper[mid].x) {
+			low = mid;
+		}
+		else {
+			if (loc.y > upper[mid].y) {
+				return false;
+			}
+			return true;
+		}
+	}
+	assert ( (low+1) == high);
+	if (upper[low].x == upper[high].x) return (loc.y <= upper[high].y) || (loc.y <= upper[low].y);
+	return (slope(upper[low], upper[high]) >= slope(upper[low], loc) );
+	
+}
+
+bool is_above ( Point loc, const Point* lower, int lower_len ) {
+	//Find two points it's between
+	int low = 0;
+	int high = lower_len - 1;
+	//cout << "Check: " << loc.x << " " << loc.y << "; " << lower[high].x << " " << lower[low].x << endl;
+	if ( (loc.x > lower[high].x) || (loc.x < lower[low].x) ) return false;
+	while ( (low + 1) < high) {
+		int mid = (low+high)/2;
+		if (loc.x < lower[mid].x) {
+			high = mid;
+		}
+		else if (loc.x > lower[mid].x) {
+			low = mid;
+		}
+		else {
+			if (loc.y < lower[mid].y) {
+				return false;
+			}
+			return true;
+		}
+	}
+	assert ( (low+1) == high);
+	if (lower[low].x == lower[high].x) return (loc.y >= lower[high].y) || (loc.y >= lower[low].y);
+	//cout << low << "; " << slope(lower[low], lower[high]) << " " << slope(lower[low], loc) << endl;
+	return (slope(lower[low], lower[high]) <= slope(lower[low], loc) );
+	
+}
+
+
+void print( const Point* i_hull, int len1) {
+	cout << "Hull start:" << endl;
+	For (i, 0, len1) {
+		cout << i_hull[i].x << " " << i_hull[i].y << endl;
+	}
+	cout << "Hull end." << endl;
+}
+
+int main() {
+	ifstream cin ("curling.in");
+	ofstream cout ("curling.out");
+	
+	cin >> N;
+	
+	For (i, 0, N) {
+		cin >> locA[i].x >> locA[i].y;
+	}
+	For (i, 0, N) {
+		cin >> locB[i].x >> locB[i].y;
+	}
+	
+	sort(locA, locA+N, xcompare);
+	sort(locB, locB+N, xcompare);
+	
+	compute_hull (locA, hullA1, &A1_len, hullA2, &A2_len);
+	compute_hull (locB, hullB1, &B1_len, hullB2, &B2_len);
+	
+	sort(hullA2, hullA2+A2_len, xcompare);
+	sort(hullB2, hullB2+B2_len, xcompare);
+	
+	//print(hullA1, A1_len);
+	//print(hullA2, A2_len);
+	//print(hullB1, B1_len);
+	//print(hullB2, B2_len);
+	
+	
+	
+	
+	Point test;
+	test.x = 1; test.y = 1;
+	
+	int out1 = 0;
+	For (i, 0, N) {
+		if ( (is_below(locB[i], hullA1, A1_len) ) && (is_above(locB[i], hullA2, A2_len) ) ) out1++;
+		//cout << locB[i].x << " " << locB[i].y << "; " << is_below(locB[i], hullA1, A1_len);
+		//cout << " " << is_above(locB[i], hullA2, A2_len) << endl;
+	}
+	int out2 = 0;
+	For (i, 0, N) {
+		if ( (is_below(locA[i], hullB1, B1_len) ) && (is_above(locA[i], hullB2, B2_len) ) ) out2++;
+		//cout << locA[i].x << " " << locA[i].y << "; " << is_below(locA[i], hullB1, B1_len);
+		//cout << " " << is_above(locA[i], hullB2, B2_len) << endl;
+	}
+	
+	cout << out1 << " " << out2 << endl;
+	
+	return 0;
+}
+

@@ -1,0 +1,71 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+//100,000,000 operations
+//Global Variables
+int N, L;
+int dp[1048600];
+bool visited[1048600];
+vector<int> shows[20];
+int t[20];
+int exp1;
+vector<int>::iterator i1;
+int out = 1000000;
+queue<int> myqueue;
+
+void dfs (int S) {
+	if (visited[S]) return;
+	visited[S] = true;
+	if (dp[S] >= L) {
+		out = min(out, __builtin_popcount(S));
+		//cout << S << endl;
+	}
+	else {
+		For (i, 0, N) {
+			if ( !((1<<i) & S)) {
+				i1 = upper_bound (shows[i].begin(), shows[i].end(), dp[S]);
+				//cout << i << " " << shows[i].size() << endl;
+				//For (j, 0, shows[i].size()) cout << shows[i][j] << " "; cout << endl;
+				int at = i1-shows[i].begin();
+				at = max(0, at-1);
+				//cout << at << endl;
+				if (shows[i][at] <= dp[S]) {
+					dp[S+(1<<i)] = max(dp[S+(1<<i)], shows[i][at]+t[i]);
+					myqueue.push (S+(1<<i));
+				}
+			}
+		}
+	}
+}
+
+
+int main() {
+	ifstream cin ("movie.in");
+	ofstream cout ("movie.out");
+	
+	cin >> N >> L;
+	exp1 = (int)pow(2.0, N);
+	
+	For (i, 0, N) {
+		int a;
+		cin >> t[i];
+		cin >> a;
+		For (j, 0, a) {
+			int b;
+			cin >> b;
+			shows[i].push_back(b);
+		}
+	}
+	For (i, 0, exp1) {dp[i] = -1; visited[i] = false;}
+	dp[0] = 0;
+	myqueue.push (0);
+	while (!myqueue.empty()){
+		int next = myqueue.front();
+		myqueue.pop();
+		dfs(next);
+	}
+	if (out == 1000000) out = -1;
+	cout << out << endl;
+}
+

@@ -1,0 +1,82 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+//Global Variables
+int N, M, K, Q, hub[200], len_out[200][20000], len_in[200][20000];
+vector<int> adj[20000], cost[20000];
+vector<int> adj2[20000], cost2[20000];
+bool vis[20000], ish[20000];
+
+main() {
+    ifstream cin ("vacationgold.in");
+	ofstream cout ("vacationgold.out");
+	cin >> N >> M >> K >> Q;
+	ffj {
+        int a, b, c; cin >> a >> b >> c; a--; b--;
+        adj[a].pb(b); cost[a].pb(c);
+        adj2[b].pb(a); cost2[b].pb(c);
+	}
+	For (i, 0, K) {
+	    cin >> hub[i]; hub[i]--; ish[hub[i]] = true;
+	    For (j, 0, N) len_out[i][j] = len_in[i][j] = 1000000000;
+    }
+	For (k, 0, K) {
+        priority_queue<pair<int, int> > next1; ///(-dist, ind)
+        next1.push(mp(0, hub[k]));
+        ffi vis[i] = false;
+        while (!next1.empty()) {
+            int dist = next1.top().a;
+            int ind = next1.top().b;
+            next1.pop();
+            if (vis[ind]) continue;
+            len_out[k][ind] = -dist;
+            //w<< hub[k]+1 s "to" s ind+1 s "takes" s -dist<<e;
+            vis[ind] = true;
+            For (i, 0, adj[ind].size()) if (!vis[adj[ind][i]]) {
+                next1.push(mp(dist-cost[ind][i], adj[ind][i]));
+            }
+        }
+	}
+	For (k, 0, K) {
+        priority_queue<pair<int, int> > next1; ///(-dist, ind)
+        next1.push(mp(0, hub[k]));
+        ffi vis[i] = false;
+        while (!next1.empty()) {
+            int dist = next1.top().a;
+            int ind = next1.top().b;
+            next1.pop();
+            if (vis[ind]) continue;
+            len_in[k][ind] = -dist;
+            //w<< ind+1 s "to" s hub[k]+1 s "takes" s -dist<<e;
+            vis[ind] = true;
+            For (i, 0, adj2[ind].size()) if (!vis[adj2[ind][i]]) {
+                next1.push(mp(dist-cost2[ind][i], adj2[ind][i]));
+            }
+        }
+	}
+
+	int out1 = 0, out2 = 0;
+	For (q, 0, Q) {
+        int a, b; cin >> a >> b; a--; b--;
+        int mmin = 1000000000;
+        For (k, 0, K) {
+            mmin = min(mmin, len_in[k][a]+len_out[k][b]);
+        }
+        if (mmin < 1000000000) {
+            out1++;
+            out2 += mmin;
+        }
+	}
+	w<< out1<<e<<out2<<e;
+}
