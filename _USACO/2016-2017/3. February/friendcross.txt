@@ -1,0 +1,147 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 1, N+1)
+#define ffj For(j, 0, N)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+//500,000,000 operations
+const int MAXN = 100001;
+//Global Variables
+int N, K, lef[MAXN], rig[MAXN], locr[MAXN], save[MAXN], grid[MAXN], ft[100013], out;
+vector<int> tree[4*MAXN], on[4*MAXN];
+void update(int x, int v) {while(x<=N) ft[x]+=v, x+=(x&-x);}
+int query (int x) { return x>0 ? ft[x]+query(x-(x&-x)):0;}
+/// point is (save[i], lef[i]), grid[save[i]] = lef[i]
+
+void up(int x, int y, int v) {while(x<on[y].size()) on[y][x]+=v, x+=(x&-x);}
+int qu (int x, int y) {return x>0 ? on[y][x]+qu(x-(x&-x), y):0;}
+
+void build(int ind, int L, int R) {
+    tree[ind].pb(0), on[ind].pb(0);
+    if (L == R) {
+        tree[ind].pb(grid[L]);
+        on[ind].pb(0);
+        return;
+    }
+    int mid = (L+R)/2;
+    build(ind*2, L, mid), build(ind*2+1, mid+1, R);
+
+    int at1 = 1, at2 = 1, s1 = tree[ind*2].size(), s2 = tree[ind*2+1].size();
+    while (at1 != s1 || at2 != s2) {
+        on[ind].pb(0);
+        if (at1 == s1) {
+            tree[ind].pb(tree[ind*2+1][at2]);
+            at2++;
+        }
+        else if (at2 == s2) {
+            tree[ind].pb(tree[ind*2][at1]);
+            at1++;
+        }
+        else if (tree[ind*2][at1] < tree[ind*2+1][at2]) {
+            tree[ind].pb(tree[ind*2][at1]);
+            at1++;
+        }
+        else {
+            tree[ind].pb(tree[ind*2+1][at2]);
+            at2++;
+        }
+    }
+    //for (int i: tree[ind*2]) if (i != 0) tree[ind].pb(i), on[ind].pb(0);
+    //for (int i: tree[ind*2+1]) if (i != 0) tree[ind].pb(i), on[ind].pb(0);
+    //sort(tree[ind].begin(), tree[ind].end());
+}
+int query_tree(int ind, int L, int R, int oL, int oR, int lQ, int rQ) {
+    if (oR < L || oL > R) return 0;
+    //w<< L s R<<e;
+    if (oL <= L && R <= oR) {
+        //w<< "DASD"<<e;
+        int a = 1, b = tree[ind].size()-1;
+        //w<< a s b<<e;
+        if (b == 0) { return 0;}
+        if (tree[ind].size() == 1 || tree[ind][b] < lQ || tree[ind][a] > rQ) { return 0;}
+        //w<< "DSAD"<<e;
+        /// find lower index
+        while (a != b) {
+            int mid = (a+b)/2;
+            if (tree[ind][mid] >= lQ) b=mid;
+            else a=mid+1;
+        }
+        //w<< "Loc 2"<<e;
+        int lind = a;
+        a = 1, b = tree[ind].size()-1;
+        /// find upper index
+        while (a != b) {
+            int mid = (a+b+1)/2;
+            if (tree[ind][mid] <= rQ) a=mid;
+            else b=mid-1;
+        }
+        int x = qu(a, ind)-qu(lind-1, ind);
+        /*
+            w<< "range:" s L s R<<e;
+            w<< "values:" s lQ s rQ s tree[ind][lind] s tree[ind][a]<<e;
+            for (int i: tree[ind]) w<< i << " "; w<<e;
+            w<< 0<< " "; For (i, 1, tree[ind].size()) w<< qu(i, ind)-qu(i-1, ind)<< " "; w<<e;
+            w<< lind s a s ":" s x<<e;
+            w<< x<<e;
+        */
+        return x;
+    }
+    int mid = (L+R)/2;
+    int x = query_tree(ind*2, L, mid, oL, oR, lQ, rQ)+query_tree(ind*2+1, mid+1, R, oL, oR, lQ, rQ);
+    //w<< x<<e;
+    return x;
+}
+void update_tree(int ind, int L, int R, int v) {
+    if (v < L || v > R) return;
+    int a = 1, b = tree[ind].size()-1;
+    /// find grid[v]
+
+    while (a != b) {
+        int mid = (a+b+1)/2;
+        if (tree[ind][mid] > grid[v]) b=mid-1;
+        else a=mid;
+    }
+    //for (int i: tree[ind]) w<< i << " "; w<<e;
+    //w<< 0<< " "; For (i, 1, tree[ind].size()) w<< qu(i, ind)-qu(i-1, ind)<< " "; w<<e;
+    //w<< "updating" s a s ind<<e;
+    up(a, ind, 1);
+    //for (int i: on[ind]) w<< i<< " "; w<<e;
+    //w<< 0<< " "; For (i, 1, tree[ind].size()) w<< qu(i, ind)-qu(i-1, ind)<< " "; w<<e;
+    if (L != R) update_tree(ind*2, L, (L+R)/2, v), update_tree(ind*2+1, (L+R)/2+1, R, v);
+}
+
+main() {
+    //ifstream cin("test.in");
+	ifstream cin ("friendcross.in"); ofstream cout ("friendcross.out");
+	cin >> N >> K;
+	ffi cin >> lef[i];
+	ffi {cin >> rig[i]; locr[rig[i]] = i;}
+	ffi save[i] = locr[lef[i]];
+	ffi grid[save[i]] = lef[i];
+	build(1, 1, N);
+	ffi {out += query(N)-query(save[i]); update(save[i], 1);}
+    //ffi w<< save[i] s lef[i]<<e;
+    //ffi w<< grid[i]<<e;
+    //w<< "inversions:" s out<<e;
+    ffi {
+        /// query
+        //if (i == 3) print = true;
+        //else print = false;
+        //w<< "quering from" s save[i] s N s ", value" s lef[i]-K s lef[i]+K<<e;
+        int x = query_tree(1, 1, N, save[i], N, lef[i]-K, lef[i]+K);
+        //w<< x<<e;
+        out -= x;
+        /// update
+        update_tree(1, 1, N, save[i]);
+    }
+    w<< out<<e;
+}
