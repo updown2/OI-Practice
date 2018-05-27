@@ -1,0 +1,111 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(ll i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+//500,000,000 operations
+int dp[6][6][6][6][6];
+int inW[25];
+int outN[25];
+bool taken[25];
+int maxRow[5];
+int putRow[5];
+int maxCol[5];
+int outW = 0;
+
+int go(int a, int b, int c, int d, int f, int l) {
+	if (a==6 || b > a || c > b || d > c || f > d) return 0;
+	if (taken[l]) return go(a, b, c, d, f, l+1);
+	if (dp[a][b][c][d][f] != -1) return dp[a][b][c][d][f];
+	int out = 0;
+	if (a < 5 && maxCol[a] < l && maxRow[0] < l) out += go(a+1, b, c, d, f, l+1);
+	if (b < 5 && maxCol[b] < l && maxRow[1] < l) out += go(a, b+1, c, d, f, l+1);
+	if (c < 5 && maxCol[c] < l && maxRow[2] < l) out += go(a, b, c+1, d, f, l+1);
+	if (d < 5 && maxCol[d] < l && maxRow[3] < l) out += go(a, b, c, d+1, f, l+1);
+	if (f < 5 && maxCol[f] < l && maxRow[4] < l) out += go(a, b, c, d, f+1, l+1);
+	dp[a][b][c][d][f] = out;
+	return out;
+}
+
+bool ele(int at, int l) {
+	if (taken[l] || maxRow[at/5] > l || maxCol[at%5] > l) return false;
+	return true;
+}
+
+int solveW() {
+	int out = 1;
+	For (i, 0, 25) {
+		int l;
+		putRow[i/5]++;
+		for (l=0; l<inW[i]; l++) {
+			if (ele(i, l)) {
+				maxRow[i/5] = l;
+				maxCol[i%5] = l;
+				memset(dp, -1, 6*6*6*6*6*(sizeof(int)));
+				dp[5][5][5][5][5] = 1;
+				taken[l] = true;
+				out += go(putRow[0], putRow[1], putRow[2], putRow[3], putRow[4], 0);
+				taken[l] = false;
+			}
+		}
+		taken[l] = true;
+		maxRow[i/5] = l;
+		maxCol[i%5] = l;
+	}
+	return out;
+}
+void solveN(int b) {
+	int done = 0;
+
+	For (i, 0, 25) {
+		int l;
+		putRow[i/5]++;
+		for (l=0; l<25; l++) {
+			if (ele(i, l)) {
+				maxRow[i/5] = l;
+				maxCol[i%5] = l;
+				memset(dp, -1, 6*6*6*6*6*(sizeof(int)));
+				dp[5][5][5][5][5] = 1;
+				taken[l] = true;
+
+				int uses = go(putRow[0], putRow[1], putRow[2], putRow[3], putRow[4], 0);
+				if (done + uses >= b) break;
+				done += uses;
+				taken[l] = false;
+			}
+		}
+		outN[i] = l;
+	}
+}
+
+
+main() {
+	//ifstream cin ("test.in");
+	For (i, 0, 5) maxRow[i] = -1, maxCol[i] = -1;
+	go(0, 0, 0, 0, 0, 0);
+	char a; cin >> a;
+	if (a == 'N') {
+		int b; cin >> b;
+		solveN(b);
+		For (i, 0, 25) {
+			w<< (char)(outN[i]+'A');
+		}
+		w<<e;
+		return 0;
+	}
+	For (i, 0, 25) {
+		char a; cin >> a;
+		inW[i] = a-'A';
+	}
+	w<< solveW()<<e;
+}
