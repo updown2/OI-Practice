@@ -1,0 +1,104 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M+2)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=100000, MAXM=200002, INF=10000000000;
+///500,000,000
+struct ev {
+    int a, b;
+    bool st;
+    ev(int x, int y, bool c=false) {a=x, b=y, st=c;}
+    ev () {}
+}inp[MAXN], hv[MAXN*2];
+bool compb(ev a, ev b) {if (a.b==b.b) return a.a>b.a; return a.b<b.b;}
+bool comp(ev a, ev b) {
+    int c, d;
+    a.st ? c=a.a : c=a.b;
+    b.st ? d=b.a : d=b.b;
+    if (c == d) return a.st;
+    return c < d;
+}
+int N, M, dp[MAXM], lef[MAXM], rig[MAXM];
+multiset<int> on;
+
+int on1[4*MAXM+1];
+
+void update(int q, int L, int R, int x, int v) {
+    if (x > R || x < L) return;
+    if (L == R) {on1[q] = v; return;}
+    update(q*2, L, (L+R)/2, x, v), update(q*2+1, (L+R)/2+1, R, x, v);
+    on1[q] = max(on1[q*2], on1[q*2+1]);
+
+}
+int query(int q, int L, int R, int oL, int oR) {
+    if (oR < L || oL > R) return -INF;
+    if (oL <= L && R <= oR) return on1[q];
+    return max(query(q*2, L, (L+R)/2, oL, oR), query(q*2+1, (L+R)/2+1, R, oL, oR));
+}
+
+main() {
+    //ifstream cin("test.in");
+    ifstream cin("photo.in"); ofstream cout("photo.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> M >> N;
+    ffi {
+        int a, b; cin >> a >> b;
+        inp[i] = ev(a, b);
+        hv[i*2] = ev(a, b, true);
+        hv[i*2+1] = ev(a, b, false);
+    }
+    sort(inp, inp+N, compb);
+    sort(hv, hv+(2*N), comp);
+    //ffi w<< inp[i].a s inp[i].b<<e;
+    //For (i, 0, 2*N) w<< hv[i].a s hv[i].b s hv[i].st<<e;
+    int at = 0, loc=1;
+    ffi {
+        For (j, loc, inp[i].b+1) lef[j] = at;
+        at = max(at, inp[i].a);
+        loc=inp[i].b+1;
+    }
+    For (j, loc, M+2) lef[j] = at;
+    //ffj w<< lef[j]<<e;
+    at = 0;
+    For (j, 1, M+2) {
+        while (hv[at].a == j && hv[at].st) {
+            on.insert(hv[at].a);
+            at++;
+        }
+        //w<< j s on.size()<<e;
+        if (on.size() == 0) rig[j] = j-1;
+        else rig[j] = (*(on.begin()))-1;
+        while (hv[at].b == j && !hv[at].st) {
+            on.erase(on.find(hv[at].a));
+            at++;
+        }
+    }
+    //ffj w<< rig[j]<<e;
+    //For (i, 0, 4*MAXM+1) on1[i] = INF;
+    For (i, 1, M+2) {
+        if (lef[i] > rig[i]) dp[i] = -INF;
+        else {
+            dp[i] = 1+query(1, 0, M+1, lef[i], rig[i]);
+            //w<< lef[i] s rig[i] s query(1, 0, M+1, lef[i], rig[i])<<e;
+        }
+        //w<< "UPDATING"<<e;
+        update(1, 0, M+1, i, dp[i]);
+        //For (j, 1, M*4+1) w<< on1[j]<<" "; w<<e;
+        //w<< "PRINTING"<<e;
+        //ffj w<< query(1, 0, M+1, j, j)<< " "; w<<e;
+    }
+    //ffj w<<lef[j] s rig[j] s dp[j]<<e;
+    dp[M+1] = max(dp[M+1], (ll)0);
+    w<< dp[M+1]-1<<e;
+}

@@ -1,0 +1,85 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, N)
+//#define ffa ffi ffj
+#define ffa For(i, 1, MAXN) For(j, 1, MAXN)
+#define s <<" "<<
+#define w cout
+#define e endl
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+/// 500,000,000 operations
+const int MAXN = 1001;
+/// Global Variables
+int N, mh, ma, cnt[MAXN];
+bool bad[MAXN];
+vector<pair<int, int> > G, H;
+set<int> x;
+set<int>::iterator it1, it2;
+vector<int> y;
+
+main () {
+    //ifstream cin ("test.in");
+    ifstream cin ("cowrect.in"); ofstream cout ("cowrect.out");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi {
+        int a, b; char c;
+        cin >> a >> b >> c;
+        if (c == 'H') {
+            x.insert(a);
+            H.pb(mp(a, b));
+        }
+        else {
+            G.pb(mp(a, b));
+        }
+    }
+    //w<< "here 1"<<e;
+    for (it1 = x.begin(); it1 != x.end(); it1++) {
+        For (i, 0, MAXN) bad[i] = false;
+        for (it2 = it1; it2 != x.end(); it2++) {
+            int x1 = (*it1), x2 = (*it2);
+            //w<< x1 s x2<<e;
+            y.clear();
+            For (j, 0, G.size()) {
+                pair<int, int> i = G[j];
+                if (x1 <= i.a && i.a <= x2) bad[i.b] = true, y.pb(i.b);
+            }
+            For (j, 0, H.size()) {
+                pair<int, int> i = H[j];
+                if (x1 <= i.a && i.a <= x2) y.pb(i.b);
+            }
+            //w<< "for eached"<<e;
+            sort(y.begin(), y.end());
+            int at1 = 0, at2 = 0, cnt = 1;
+            while (at1 != y.size()) {
+                int y1 = y[at1], y2 = y[at2];
+                //w<< "y:" s y1 s y2 s cnt<<e;
+                if (bad[y2]) {
+                    at1 = at2 = at2+1;
+                    cnt = 1;
+                    continue;
+                }
+                int a = (x2-x1)*(y2-y1);
+                if (cnt > mh || (cnt == mh && a < ma)) {
+                    mh = cnt;
+                    ma = a;
+                }
+                at2++; cnt++;
+                //w<< "-->" s at2 s cnt<<e;
+                if (at2 == y.size()) {
+                //w<< "increiment" s at1<<e;
+                    at1++; at2 = at1;
+                    cnt = 1;
+                }
+            }
+        }
+    }
+    w<< mh<<e<<ma<<e;
+}
