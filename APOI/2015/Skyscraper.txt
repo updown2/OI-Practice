@@ -1,0 +1,59 @@
+/*
+dijstra's on the location
+*/
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define int ll
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+#define s <<" "<<
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+/// 500,000,000
+const int MAXN = 30000, INF = 1000000000000000000;
+/// Global Variables
+int N, M, dist[MAXN], B[MAXN], P[MAXN];
+bool vis[MAXN];
+vector<int> dogs[MAXN];
+priority_queue<pair<int, int> > next1; /// (-dist, loc)
+ 
+void go(int loc) {
+    vis[loc] = true;
+    For (i, 0, dogs[loc].size()) {
+        int x = dogs[loc][i];
+        for (int j=loc+P[x], add = 1; j<N; j+= P[x], add++) if (dist[loc]+add < dist[j]) {
+            dist[j] = min(dist[j], dist[loc]+add);
+            next1.push(mp(-dist[j], j));
+        }
+        for (int j=loc-P[x], add = 1; j>= 0; j-= P[x], add++) if (dist[loc]+add < dist[j]) {
+            dist[j] = min(dist[j], dist[loc]+add);
+            next1.push(mp(-dist[j], j));
+        }
+    }
+}
+ 
+main() {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> M;
+    ffi dist[i] = INF;
+    ffj {
+        cin >> B[j] >> P[j];
+        dogs[B[j]].pb(j);
+    }
+    next1.push(mp(0, B[0]));
+    dist[B[0]] = 0;
+    while (!next1.empty()) {
+        int i = next1.top().b; next1.pop();
+        if (!vis[i]) go(i);
+    }
+    if (dist[B[1]] == INF) w<< -1<<e;
+    else w<< dist[B[1]]<<e;
+}

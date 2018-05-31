@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+using namespace std;
+#define int long long
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+#define s <<" "<<
+#define pb push_back
+/// 500,000,000
+const int MAXN = 1000;
+/// Global Variables
+int N, inp[MAXN], dp2, dp3, ones[MAXN];
+bool two, three, last[MAXN];
+ 
+main() {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N;
+    ffi cin >> inp[i];
+    ffi if (inp[i] == 1) ones[i] = 1;
+    For (i, 1, N) ones[i] += ones[i-1];
+    int curr = -1;
+    for (int i=N-1; i>=0; i--) {
+        if (inp[i] == 1) N--;
+        else break;
+    }
+    for (int i=N-1; i>=0; i--) {
+        if (inp[i] == 2) {
+            two = true;
+            if (!three) last[i] = true;
+        }
+        else if (inp[i] == 3) {
+            three = true;
+            if (!two) last[i] = true;
+        }
+    }
+    ffi {
+        int add = 3;
+        if (last[i]) add = 2;
+        if (inp[i] == 1) dp2++, dp3++;
+        else if (inp[i] == 2) {
+            dp2 = min(dp2+add, dp3+1+ones[i]);
+            dp3 = min(dp2+ones[i]+1, dp3+1);
+        }
+        else {
+            dp3 = min(dp3+add, dp2+1+ones[i]);
+            dp2 = min(dp3+ones[i]+1, dp2+1);
+        }
+    }
+    w<< min(dp3, dp2)+ones[N-1]<<e;
+}
