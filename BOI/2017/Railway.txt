@@ -1,3 +1,6 @@
+/*
+sort by dfs order then use prefix sums
+*/
 #include<bits/stdc++.h>
 using namespace std;
 typedef long long ll;
