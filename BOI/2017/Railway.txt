@@ -1,0 +1,90 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define int ll
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define w cout
+#define e "\n"
+#define s <<" "<<
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+/// 500,000,000
+const int MAXN = 100000, INF = 1000000000000000000;
+/// Global Variables
+int N, M, K, pre[MAXN], anc[MAXN][20], dep[MAXN], ord[MAXN], cnt;
+vector<int> adj[MAXN];
+pair<int, int> ooo[MAXN];
+map<pair<int, int>, int> edg;
+
+void go(int at, int p) {
+    anc[at][0] = p;
+    dep[at] = dep[p]+1;
+    For (i, 0, adj[at].size()) if (adj[at][i] != p) go(adj[at][i], at);
+    ord[at] = cnt;
+    cnt++;
+}
+int LCA (int A, int B) {
+    if (dep[A] > dep[B]) swap(A, B); /// B is lower in the tree
+    int x = dep[B]-dep[A];
+    //w<< A+1 s B+1 s ":" s x<<e;
+    For (i, 0, 20) if (x & (1<<i)) {
+        //w<< "advancing" s B+1 s i<<e;
+        B = anc[B][i];
+        //w<< "it is now" s B+1<<e;
+    }
+    //w<< A+1 s B+1<<e;
+    if (A == B) return A;
+    for (int i=19; i>=0; i--) if (anc[A][i] != anc[B][i]) {
+        A = anc[A][i], B = anc[B][i];
+    }
+    return anc[A][0];
+}
+void set_up(int at, int p) {
+    For (i, 0, adj[at].size()) if (adj[at][i] != p) {
+        set_up(adj[at][i], at);
+        pre[at] += pre[adj[at][i]];
+    }
+}
+
+main() {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> N >> M >> K;
+    For (i, 1, N) {
+        int a, b; cin >> a >> b; a--; b--;
+        adj[a].pb(b); adj[b].pb(a);
+        edg[mp(min(a, b), max(a, b))] = i;
+    }
+    dep[0] = -1;
+    go(0, 0);
+    For (k, 1, 20) ffi anc[i][k] = anc[anc[i][k-1]][k-1];
+    ffj {
+        int a; cin >> a;
+        For (i, 0, a) {
+            int b; cin >> b; b--;
+            ooo[i] = mp(ord[b], b);
+        }
+        sort(ooo, ooo+a);
+        For (i, 0, a) {
+            int prev = ooo[i].b, nex = ooo[(i+1)%a].b;
+            pre[prev]++;
+            pre[nex]++;
+            pre[LCA(prev, nex)] -= 2;
+        }
+    }
+    set_up(0, 0);
+    //ffi w<< i+1 s ":" s pre[i]/2 s "," s pre[i]<<e;
+    set<int> o2;
+    ffi {
+        pre[i] /= 2;
+        if (pre[i] >= K) o2.insert(edg[mp(min(i, anc[i][0]), max(i, anc[i][0]))]);
+    }
+    w<< o2.size()<<e;
+    for (int i: o2) w<< i<<" ";
+    if (o2.size() != 0) w<<e;
+}
