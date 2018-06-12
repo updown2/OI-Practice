@@ -1,0 +1,75 @@
+/*
+when adding a node, if it is part of the diameter it will extend to one of the already-in-the-diameter nodes
+*/
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 0, N)
+#define ffj For(j, 0, M)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+//#define int ll
+//500,000,000 operations
+const int MAXN = 100000;
+//Global Variables
+int Q, dep[MAXN], ancestor[MAXN][20], N, a1[MAXN], a2[MAXN];
+
+int LCA(int A, int B) {
+	if (dep[A] > dep[B]) swap(A, B);
+	int d = dep[B] - dep[A];
+	For (i, 0, 18) {
+		if (d&(1<<i) ) B = ancestor[B][i];
+	}
+	if (A == B) return A;
+
+	for (int i=17; i>= 0; i--) {
+		if (ancestor[A][i] != ancestor[B][i]) {
+			A = ancestor[A][i];
+			B = ancestor[B][i];
+		}
+	}
+	return ancestor[A][0];
+}
+int dist (int A, int B) {
+	return dep[A] + dep[B] - 2*dep[LCA(A, B)];
+}
+
+int main() {
+	ifstream cin ("newbarn.in"); ofstream cout ("newbarn.out");
+	//ifstream cin ("test.in");
+	ios_base::sync_with_stdio; cin.tie(0);
+	cin >> Q;
+	For (q, 0, Q) {
+		char a; int b; cin >> a >> b;
+		b--;
+		if (a == 'B') {
+			if (b == -2) {b = N; dep[N] = -1;}
+			a1[N] = a2[N] = -1;
+			ancestor[N][0] = b;
+			For (k, 0, 17) ancestor[N][k+1] = ancestor[ancestor[N][k]][k];
+			dep[N] = dep[b]+1;
+			int top = ancestor[N][17];
+			if (a1[top] == -1) a1[top] = N;
+			else if (a2[top] == -1) a2[top] = N;
+			else {
+                int curr = dist(a1[top], a2[top]), c1 = dist(N, a2[top]), c2 = dist(a1[top], N);
+                if (curr > max(c1, c2)) {}
+                else if (c1 > c2) a1[top] = N;
+                else a2[top] = N;
+			}
+			N++;
+			//w<< a1 s a2<<e;
+		}
+		else {
+            int top = ancestor[b][17];
+			w<< max(dist(a1[top], b), dist(a2[top], b)) <<e;
+		}
+	}
+}
