@@ -3,7 +3,7 @@ structure looks like:
   _
  / \
 /   \
-and answer can't be more than slightly more than 200,000 (I'm using 300,000). Calculate from top to bottom
+and answer can't be more than slightly more than 200,000 (I'm using current best answer). Calculate from top to bottom
 */
 #include <bits/stdc++.h>
 using namespace std;
