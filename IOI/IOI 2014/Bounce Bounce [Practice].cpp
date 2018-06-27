@@ -1,5 +1,7 @@
 /*
-the sum of angles is (A-2)*180 for A = N, N-2, N-4, ... with some exceptions
+N++
+N positions to hit, skip 0 (every 1), skip 1(every 2), etc
+must hit all so the gcd has to be 1
 */
 #include <bits/stdc++.h>
 using namespace std;
