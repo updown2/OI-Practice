@@ -1,0 +1,93 @@
+#include <bits/stdc++.h>
+using namespace std;
+typedef long long ll;
+#define For(i, a, b) for(int i=a; i<b; i++)
+#define ffi For(i, 1, W)
+#define ffj For(j, 1, L)
+#define ffa ffi ffj
+#define s <<" "<<
+#define w cout
+#define e "\n"
+#define pb push_back
+#define mp make_pair
+#define a first
+#define b second
+#define int ll
+const int MAXN=1001, MAXR=251, INF=1000000000000000000;
+///500,000,000
+int L, W, N, K, pre[MAXR][MAXR], up[MAXR], down[MAXR], lef[MAXR], rig[MAXR];
+
+int a(int r1, int r2, int l1, int l2) {
+    if (r1 > r2 || l1 > l2) return 0;
+    return pre[r2][l2]-pre[r2][l1-1]-pre[r1-1][l2]+pre[r1-1][l1-1];
+}
+int p(int r1, int r2, int l1, int l2) {
+    if (r1 > r2 || l1 > l2) return 0;
+    return 2*(l2-l1+r2-r1+2);
+}
+
+main() {
+    //ifstream cin("test.in");
+    ios_base::sync_with_stdio(0); cin.tie(0);
+    cin >> L >> W >> N >> K;
+    L++; W++;
+    For (i, 0, N) {
+        int a, b; cin >> a >> b;
+        pre[b][a]++;
+    }
+    //ffi {ffj w<< pre[i][j]<< " ";w<<e;}w<<e;
+    ffa pre[i][j] += pre[i-1][j]+pre[i][j-1]-pre[i-1][j-1];
+    For (i, 0, MAXR) up[i] = down[i] = lef[i] = rig[i] = INF;
+
+    //ffi {ffj w<< pre[i][j]<< " ";w<<e;}
+
+    For (l1, 1, L) For (l2, l1, L) {
+        int r1 = 1;
+        For (r2, 1, W) {
+            //w<< r1 s r2 s ":" s l1 s l2<<e;
+            while (a(r1, r2, l1, l2) > K) {
+                r1++;
+            }
+            while (a(r1, r2, l1, l2) == K) {
+                up[r1] = min(up[r1], p(r1, r2, l1, l2));
+                down[r2] = min(down[r2], p(r1, r2, l1, l2));
+                //w<< r1 s r2 s ":" s l1 s l2 s "   :" s p(r1, r2, l1, l2)<<e;
+                r1++;
+            }
+        }
+    }
+    For (i, 2, W) down[i] = min(down[i], down[i-1]);
+    for (int i=W-2; i>=1; i--) up[i] = min(up[i], up[i+1]);
+
+    //ffi w<< down[i] s up[i]<<e;
+
+    int out = INF;
+    For (i, 2, W) out = min(out, down[i-1]+up[i]);
+
+    For (r1, 1, W) For (r2, r1, W) {
+        int l1 = 1;
+        For (l2, 1, L) {
+            //w<< r1 s r2 s ":" s l1 s l2<<e;
+            while (a(r1, r2, l1, l2) > K) {
+                l1++;
+            }
+            while (a(r1, r2, l1, l2) == K) {
+                rig[l1] = min(rig[l1], p(r1, r2, l1, l2));
+                lef[l2] = min(lef[l2], p(r1, r2, l1, l2));
+                //w<< r1 s r2 s ":" s l1 s l2 s "   :" s p(r1, r2, l1, l2)<<e;
+                l1++;
+            }
+        }
+    }
+
+    //For (i, 1, L) w<< lef[i] s rig[i]<<e;
+
+    For (i, 2, L) lef[i] = min(lef[i], lef[i-1]);
+    for (int i=L-2; i>=1; i--) rig[i] = min(rig[i], rig[i+1]);
+
+    //ffi w<< down[i] s up[i]<<e;
+
+    For (i, 2, L) out = min(out, lef[i-1]+rig[i]);
+    if (out == INF) w<< "NO"<<e;
+    else w<< out<<e;
+}
