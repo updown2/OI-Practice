@@ -1,9 +1,5 @@
 /*
-make a dfs order and create a segtree on that order so that we can search a subtree quickly
-for every node, binary search for the value of c[i] that is too big to take all c[i] of that value
-keep subtracting c[i] (maybe binary search on how many times) until the sum <= M
-O(N * log^2 N)
-root is 0
+https://github.com/timpostuvan/CompetitiveProgramming/blob/master/Olympiad/APIO/Dispatching2012.cpp
 */
 #include <bits/stdc++.h>
 using namespace std;
