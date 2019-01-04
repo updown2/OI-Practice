@@ -1,3 +1,8 @@
+/*
+compress sccs
+remove end nodes that cannot be reached
+for every left node, find the range of right nodes that it can reach using dp
+*/
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
