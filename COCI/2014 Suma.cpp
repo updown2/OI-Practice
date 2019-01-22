@@ -1,3 +1,12 @@
+/*
+For every time that two nodes "connect", union find to find the max size
+There are at most 4*N^2 times
+For the nodes that are always connected (V=V and H=H), connect those and
+keep them connected when reseting the union find
+When reseting, only need to reset the nodes that were modified and each node
+is modified a max of 4 times (plus if it is always connected bc that could
+be a parent) so it should be fine
+*/
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
