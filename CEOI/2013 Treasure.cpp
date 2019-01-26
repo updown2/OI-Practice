@@ -1,5 +1,6 @@
 /*
-http://ceoi2013.hsin.hr/tasks/tasks_and_solutions.pdf
+prefix sums from (1, 1) to (i, j)
+only query ranges size (x, y) where x & y are > N/2
 */
 #include "treasure.h"
 #include <bits/stdc++.h>
