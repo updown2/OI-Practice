@@ -1,5 +1,9 @@
 /*
 https://github.com/mostafa-saad/MyCompetitiveProgramming/blob/master/Olympiad/COCI/official/2009/contest1_solutions/solutions.pdf
+to find the diameter of trees "above" a node, you have to consider 3 cases:
+- the longest path going from node 0 not into the current subtree + dist from node to root
+- biggest diameter of subtree of all the subtrees from the root except the one that contains the current node
+- biggest diameter of all the subtrees coming out of nodes on the path from the root to the current node except for subtrees that contain the current node
 */
 #include <bits/stdc++.h>
 using namespace std;
