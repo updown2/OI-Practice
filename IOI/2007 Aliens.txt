@@ -1,0 +1,5 @@
+- Binary search to the right to find the # of gray squares to the right (check 1 to the right, then 2, then 4, etc until a white and then start the binary search)
+- Repeat with the left, top, and bottom but don't need to do the double for the top and bottom bc we know the total height
+- Binary search up down, left and right to find the size of the formation (no need for doubling)
+
+- # of queries: 8 binary searches + 2 doubling = 10 * 30 = 300
