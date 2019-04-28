@@ -14,8 +14,8 @@ typedef long long ll;
 #define a first
 #define b second
 //#define int ll
-//500,000,000 operations
 const int MAXN = 500000;
+//500,000,000 operations
 int N;
 ll W;
 pair<pair<double, int>, pair<int, int> > inp[MAXN];
@@ -24,28 +24,6 @@ multiset<int> vals;
 multiset<int>::iterator it1;
 set<pair<int, int> > vals2;
 set<pair<int, int> >::iterator it2;
-
-bool works1(int x) {
-    if (x == 0) return true;
-    //w<< "trying" s x<<e;
-    vals.clear();
-    ll tot = 0;
-    For (i, 0, x) {
-        vals.insert(inp[i].b.b);
-        tot += inp[i].b.b;
-    }
-    if (inp[x-1].a.a*tot <=W) return true;
-    //w<< inp[x-1].a.a s tot<<e;
-    For (i, x, N) {
-        vals.insert(inp[i].b.b); tot += inp[i].b.b;
-        it1 = vals.end(); it1--;
-        tot -= *it1;
-        vals.erase(it1);
-        //w<< inp[i].a.a s tot<<e;
-        if (inp[i].a.a*tot <=W) return true;
-    }
-    return false;
-}
 
 main() {
     //ifstream cin ("test.in");
