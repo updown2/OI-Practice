@@ -1,7 +1,7 @@
 /*
 http://blog.brucemerry.org.za/2014/07/
 */
-//#include "friend.h"
+#include "friend.h"
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
