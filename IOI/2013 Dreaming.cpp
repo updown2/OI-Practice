@@ -4,7 +4,8 @@ is minimized
 - connect the x's from all the components to the x in the biggest component
 - ans = max(path in one component, biggest depth + 2nd biggest depth + L, 2nd biggest depth + 3rd biggest depth + 2*L
 */
-#include "dreaming.h"
+//#include "dreaming.h"
+#include "grader.h"
 #include <bits/stdc++.h>
 using namespace std;
 typedef long long ll;
