@@ -57,7 +57,6 @@ int main() {
 		else {
 			forw[i] = forw[i-1];
 		}
-		//w<<forw[i]<<e;
 	}
 	
 	while (!have.empty()) have.erase(have.begin());
@@ -82,19 +81,11 @@ int main() {
 		
 	}
 	
-	/*w<<e;
-	ffi {
-		w<<backward[i]<<e;
-
-	}*/
-	
 	int out = 0;
 	For (i, 0, N+1) {
 		out = max(out, forw[i] + backward[i+1]);
 	}
 	
 	w<<out<<e;
-	
-	return 0;
 }
 
