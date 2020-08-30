@@ -8,9 +8,8 @@ char grid[30][30];
 bool visited[30][30];
 priority_queue< pair<int, pair<int, int> > > next1; //(-moves, (x, y) )
 int out = 0;
-int moves;
 
-void add (int x, int y, int old_x, int old_y) {
+void add (int x, int y, int old_x, int old_y, int moves) {
 	if (x < 0 || x >= N || y < 0 || y >= N || visited[x][y]) {
 		return;
 	}
@@ -38,7 +37,7 @@ main() {
 			memset(visited, false, sizeof(visited) );
 			next1.push(make_pair(0, make_pair(i, j)));
 			while (!next1.empty()) {
-				moves = next1.top().first;
+				int moves = next1.top().first;
 				int x = next1.top().second.first;
 				int y = next1.top().second.second;
 				next1.pop();
@@ -49,10 +48,10 @@ main() {
 				visited[x][y] = true;
 				out = max(out, -moves);
 				
-				add(x-1, y, x, y);
-				add(x+1, y, x, y);
-				add(x, y-1, x, y);
-				add(x, y+1, x, y);
+				add(x-1, y, x, y, moves);
+				add(x+1, y, x, y, moves);
+				add(x, y-1, x, y, moves);
+				add(x, y+1, x, y, moves);
 			}
 		}
 	}
