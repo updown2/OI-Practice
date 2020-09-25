@@ -9,20 +9,20 @@ const int MAXN=100000;
 int N, K, on, out, inp[MAXN];
 map<int, int> cnt;
 
-
 void add(int i) {
-    if (cnt.find(inp[i]) == cnt.end()) {
-		cnt[inp[i]] = 0;
+	int val = inp[i];
+    if (cnt.find(val) == cnt.end()) {
+		cnt[val] = 0;
 	}
-    if (cnt[inp[i]] == 0) {
+    if (cnt[val] == 0) {
 		on++;
 	}
-    cnt[inp[i]]++;
+    cnt[val]++;
 }
 void remove(int i) {
-    i = inp[i];
-    cnt[i] --;
-    if (cnt[i] == 0) {
+    int val = inp[i];
+    cnt[val] --;
+    if (cnt[val] == 0) {
 		on--;
 	}
 }
